@@ -1,0 +1,14 @@
+.order_confirmed {
+    .card-header {
+        h1 {
+            margin: 0;
+            @media (max-width: 991px) {
+                font-size: 20px;
+            }
+        }
+        span {
+            font-size: 40px;
+            color: var(--green);
+        }
+    }
+}

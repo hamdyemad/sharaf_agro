@@ -1,0 +1,13 @@
+.payment {
+    .cart_summary {
+        background-color: $gray-100;
+        border-radius: 10px;
+        padding: 0px 20px;
+        max-height: 400px;
+        overflow: auto;
+        img {
+            width: 70px;
+            height: 70px;
+        }
+    }
+}

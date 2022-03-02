@@ -1,0 +1,17 @@
+.all_users {
+    img {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+    }
+    span {
+        width: max-content;
+        padding-inline-start: 10px;
+    }
+    a,
+    button {
+        display: flex;
+        align-items: center;
+        height: 100%;
+    }
+}

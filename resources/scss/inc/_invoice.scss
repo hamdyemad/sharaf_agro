@@ -1,0 +1,17 @@
+.invoice {
+    img {
+        width: 100px;
+        height: 100px;
+        @media (max-width: 991px) {
+            width: 70px;
+            height: 70px;
+        }
+    }
+    .line {
+        padding-right: 10px;
+    }
+    strong {
+        display: inline-block;
+        width: max-content;
+    }
+}

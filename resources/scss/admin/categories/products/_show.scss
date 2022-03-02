@@ -1,0 +1,23 @@
+.show_product {
+    .card-header {
+        h1 {
+            @media (max-width: 991px) {
+                font-size: 20px;
+            }
+        }
+    }
+    img {
+        width: 250px;
+        height: 250px;
+        border-radius: 10px;
+        @media (max-width: 991px) {
+            width: 200px !important;
+            height: 200px !important;
+            margin: auto;
+            border-radius: 10px;
+        }
+    }
+    .owl-stage {
+        margin: auto;
+    }
+}

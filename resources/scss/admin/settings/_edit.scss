@@ -1,0 +1,11 @@
+.edit_settings {
+    img {
+        width: 200px;
+        height: 150px;
+        border-radius: 10px;
+        @media (max-width: 991px) {
+            height: 100px;
+            width: 100px;
+        }
+    }
+}

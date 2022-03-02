@@ -1,0 +1,32 @@
+.show_category {
+    .card-header {
+        h1 {
+            @media (max-width: 991px) {
+                font-size: 20px;
+            }
+        }
+    }
+    img {
+        width: 300px;
+        height: 150px;
+        border-radius: 10px;
+        @media (max-width: 991px) {
+            width: 100px;
+            height: 100px;
+        }
+    }
+    .category_products {
+        h4 {
+            width: max-content;
+        }
+        img {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            @media (max-width: 991px) {
+                width: 50px;
+                height: 50px;
+            }
+        }
+    }
+}

@@ -1,0 +1,11 @@
+.create_user {
+    img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        @media (max-width: 991px) {
+            width: 70px;
+            height: 70px;
+        }
+    }
+}

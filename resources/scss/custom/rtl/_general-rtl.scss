@@ -1,0 +1,13 @@
+html {
+    direction: rtl;
+}
+
+body {
+    text-align: right;
+}
+
+#page-topbar {
+    .badge-pill {
+        right: 0;
+    }
+}
