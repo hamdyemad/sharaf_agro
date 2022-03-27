@@ -65,3 +65,121 @@ File: Main Css File
 @import "custom/pages/email";
 @import "custom/pages/directory";
 @import "custom/pages/timeline";
+
+body {
+    font-family: "Cairo", sans-serif;
+    font-size: 16px;
+}
+
+::-webkit-scrollbar {
+    background-color: $gray-400;
+    border-radius: 30px;
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--primary) !important;
+    border-radius: 30px;
+}
+
+.select2-search__field {
+    text-align: left;
+}
+.was-validated .form-control:invalid,
+.form-control.is-invalid {
+    background-position: right calc(0.375em + 0.1875rem) center;
+    padding-right: 15px !important;
+}
+
+@import "./preloader";
+// Admin
+/*  Back End   */
+
+// Categories
+@import "./admin/categories/create";
+@import "./admin/categories/edit";
+@import "./admin/categories/index";
+@import "./admin/categories/show";
+
+// Products
+@import "./admin/categories/products/create";
+@import "./admin/categories/products/index";
+@import "./admin/categories/products/show";
+
+// Orders
+@import "./admin/orders/create";
+@import "./admin/orders/show";
+@import "./admin/orders/index";
+
+// Settings
+@import "./admin/settings/edit";
+
+// Users
+@import "./admin/users/index";
+@import "./admin/users/create";
+
+// Roles
+@import "./admin/roles/index";
+@import "./admin/roles/create";
+
+// Languages
+@import "./admin/languages/create";
+
+/* INC */
+@import "./inc/invoice";
+
+/*  Front End   */
+@import "./frontend/navbar";
+@import "./frontend/home";
+@import "./frontend/branch";
+@import "./frontend/product";
+@import "./frontend/cart";
+@import "./frontend/payment";
+@import "./frontend/order_confirmed";
+@import "./frontend/user/profile";
+@import "./frontend/inc/user_side_nav";
+@import "./frontend/footer";
+
+.order_tracker {
+    padding: 55px 0;
+    .track {
+        position: relative;
+        h3 {
+            width: max-content;
+            margin: auto;
+            @media (max-width: 991px) {
+                font-size: 18px;
+            }
+        }
+        &.active {
+            color: var(--green) !important;
+        }
+        span.mdi {
+            font-size: 30px;
+        }
+    }
+}
+
+.bell {
+    display: block;
+    .notify {
+        background-color: var(--red);
+        position: absolute;
+        top: 0;
+        right: -10px;
+        font-size: 16px;
+    }
+    .mdi {
+        position: relative;
+        margin: auto;
+        font-size: 35px;
+        background: #fff;
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+        display: block;
+        border-radius: 50%;
+        text-align: center;
+    }
+}

@@ -21,4 +21,9 @@
 @endsection
 
 @section('footerScript')
+<script>
+        if("{{ request('session_id') }}" == 'success_payment') {
+            toastr.success('تم الدفع بنجاح');
+        }
+</script>
 @endsection

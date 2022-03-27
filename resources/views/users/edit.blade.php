@@ -1,15 +1,15 @@
 @extends('layouts.master')
 
 @section('title')
-تعديل الموظف
+{{ translate('edit employee') }}
 @endsection
 
 @section('content')
     @component('common-components.breadcrumb')
         @slot('title') {{ $user->name }} @endslot
-        @slot('li1') لوحة التحكم @endslot
+        @slot('li1') {{ translate('dashboard') }} @endslot
         @slot('route1') {{ route('dashboard') }} @endslot
-        @slot('li2') كل الموظفين @endslot
+        @slot('li2') {{ translate('all employees') }} @endslot
         @slot('route2') {{ route('users.index') }} @endslot
         @slot('li3') {{ $user->name }} @endslot
     @endcomponent
@@ -17,7 +17,7 @@
         <div class="container">
             <div class="card">
                 <div class="card-header">
-                    تعديل الموظف
+                    {{ translate('edit employee') }}
                 </div>
                 <div class="card-body">
                     <form class="form-horizontal mt-4" method="POST" action="{{ route('users.update', $user) }}"
@@ -28,7 +28,7 @@
                             @if(Auth::user()->type == 'admin')
                                 <div class="col-12 col-md-6 branch_col">
                                     <div class="form-group">
-                                        <label for="branch_id">الفرع</label>
+                                        <label for="branch_id">{{ translate('the branch') }}</label>
                                         <select class="form-control select2" name="branch_id">
                                             @foreach ($branches as $branch)
                                             <option value="{{ $branch->id }}" @if ($user->branch_id ==  $branch->id) selected @endif>{{ $branch->name }}</option>
@@ -42,9 +42,9 @@
                             @endif
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="name">الأسم</label>
+                                    <label for="name">{{ translate('name') }}</label>
                                     <input type="text" name="name" value="{{ $user->name }}"
-                                        class="form-control" placeholder="ادخل الأسم">
+                                        class="form-control">
                                     @error('name')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -53,9 +53,9 @@
                             @if(request('type') == 'sub-admin')
                                 <div class="col-12 col-md-6">
                                     <div class="form-group">
-                                        <label for="category">الصلاحيات</label>
+                                        <label for="category">{{ translate('permessions') }}</label>
                                         <select class="form-control select2 select2-multiple" name="roles[]"
-                                            data-placeholder="أختر الصلاحيات" multiple>
+                                            data-placeholder="{{ translate('choose') }}" multiple>
                                             @foreach ($roles as $role)
                                                 <option value="{{ $role->id }}" @if ($user->roles->contains($role->id)) selected @endif>
                                                     {{ $role->name }}</option>
@@ -69,9 +69,9 @@
                             @endif
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="useremail">البريد الألكترونى</label>
+                                    <label for="useremail">{{ translate('email') }}</label>
                                     <input type="email" name="email" class="form-control" name="email"
-                                        value="{{ $user->email }}" id="useremail" placeholder="أدخل البريد الألكترونى"
+                                        value="{{ $user->email }}" id="useremail"
                                         autocomplete="email">
                                     @error('email')
                                         <div class="text-danger">{{ $message }}</div>
@@ -80,7 +80,7 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="name">الصورة الشخصية</label>
+                                    <label for="name">{{ translate('profile picture') }}</label>
                                     <input type="file" class="form-control input_files" accept="image/*" hidden
                                         name="avatar" value="{{ old('avatar') }}">
                                     <button type="button" class="btn btn-primary form-control files">
@@ -97,23 +97,23 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="username">الهاتف</label>
+                                    <label for="username">{{ translate('phone') }}</label>
                                     <input type="text" name="phone" value="{{ $user->phone }}" autocomplete="phone"
-                                        class="form-control" autofocus id="name" placeholder="أدخل الهاتف">
+                                        class="form-control" autofocus id="phone">
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="username">العنوان</label>
+                                    <label for="username">{{ translate('address') }}</label>
                                     <input type="text" name="address" value="{{ $user->address }}" autocomplete="address"
-                                        class="form-control" autofocus id="name" placeholder="أدخل العنوان">
+                                        class="form-control" autofocus id="address">
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="userpassword">الرقم السرى</label>
+                                    <label for="userpassword">{{ translate('password') }}</label>
                                     <input type="password" class="form-control" name="password"
-                                        autocomplete="new-password" id="userpassword" placeholder="ادخل الرقم السرى">
+                                        autocomplete="new-password" id="userpassword">
                                     @error('password')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -121,10 +121,8 @@
                             </div>
                             <div class="col">
                                 <div class="form-group">
-                                    <button class="btn btn-primary w-md waves-effect waves-light" type="submit">تعديل
-                                        الحساب</button>
-                                    <a href="{{ route('users.index') }}" class="btn btn-info">الرجوع الى
-                                        المستخدمين</a>
+                                    <button class="btn btn-primary w-md waves-effect waves-light" type="submit">{{ translate('edit') }}</button>
+                                    <a href="{{ route('users.index') }}" class="btn btn-info">{{ translate('back to employees') }}</a>
                                 </div>
                             </div>
                         </div>

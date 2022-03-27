@@ -1,24 +1,24 @@
 @extends('layouts.master')
 
 @section('title')
-الحالات
+{{ translate('statuses') }}
 @endsection
 
 @section('content')
     @component('common-components.breadcrumb')
-        @slot('title') الحالات @endslot
-        @slot('li1') لوحة التحكم @endslot
+        @slot('title') {{ translate('statuses') }} @endslot
+        @slot('li1') {{ translate('dashboard') }} @endslot
         @slot('route1') {{ route('dashboard') }} @endslot
-        @slot('li3') الحالات @endslot
+        @slot('li3') {{ translate('statuses') }} @endslot
     @endcomponent
     <div class="all_statuses">
         <div class="card">
             <div class="card-header">
                 <div class="d-flex flex-column flex-md-row text-center text-md-right justify-content-between">
-                    <h2>الحالات</h2>
+                    <h2>{{ translate('statuses') }}</h2>
                     @can('statuses.create')
                         <div>
-                            <a href="{{ route('statuses.create') }}" class="btn btn-primary mb-2">أنشاء حالة جديد</a>
+                            <a href="{{ route('statuses.create') }}" class="btn btn-primary mb-2">{{ translate('create') }}</a>
                         </div>
                     @endcan
                 </div>
@@ -26,14 +26,14 @@
                     <div class="row">
                         <div class="col-6">
                             <div class="form-group">
-                                <label for="name">أسم الحالة</label>
+                                <label for="name">{{ translate('status name') }}</label>
                                 <input class="form-control" name="name" type="text" value="{{ request('name') }}">
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="name"></label>
-                                <input type="submit" value="بحث" class="form-control btn btn-primary mt-1">
+                                <input type="submit" value="{{ translate('search') }}" class="form-control btn btn-primary mt-1">
                             </div>
                         </div>
                     </div>
@@ -45,11 +45,11 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>أسم الحالة</th>
-                                <th>الحالة الأفتراضية</th>
-                                <th>وقت الأنشاء</th>
-                                <th>وقت أخر تعديل</th>
-                                <th>الأعدادات</th>
+                                <th>{{ translate('status name') }}</th>
+                                <th>{{ translate('default status') }}</th>
+                                <th>{{ translate('creation date') }}</th>
+                                <th>{{ translate('last update date') }}</th>
+                                <th>{{ translate('settings') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -59,7 +59,7 @@
                                     <td>{{ $status->name }}</td>
                                     <td>
                                         @if($status->default_val)
-                                            <div class="badge badge-success">افتراضي</div>
+                                            <div class="badge badge-success">{{ translate('default') }}</div>
                                         @endif
                                     </td>
                                     <td>
@@ -72,7 +72,7 @@
                                         <div class="options d-flex">
                                             @can('statuses.edit')
                                                 <a class="btn btn-info mr-1" href="{{ route('statuses.edit', $status) }}">
-                                                    <span>تعديل</span>
+                                                    <span>{{ translate('edit') }}</span>
                                                     <span class="mdi mdi-circle-edit-outline"></span>
                                                 </a>
 
@@ -80,7 +80,7 @@
                                             @can('statuses.destroy')
                                                 <button class="btn btn-danger" data-toggle="modal"
                                                     data-target="#modal_{{ $status->id }}">
-                                                    <span>ازالة</span>
+                                                    <span>{{ translate('delete') }}</span>
                                                     <span class="mdi mdi-delete-outline"></span>
                                                 </button>
                                                 <!-- Modal -->

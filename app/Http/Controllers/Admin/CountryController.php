@@ -20,7 +20,7 @@ class CountryController extends Controller
     public function index(Request $request)
     {
         $this->authorize('countries.index');
-        Carbon::setLocale('ar');
+        Carbon::setLocale(app()->getLocale());
         $countries = Country::latest();
         if($request->name) {
             $countries = $countries->where('name', 'like', '%'. $request->name . '%');
@@ -72,15 +72,15 @@ class CountryController extends Controller
             'name' => 'required|string|unique:countries,name'
         ];
         $messages = [
-            'name.required' => 'الأسم مطلوب',
-            'name.unique' => 'يجب أن تختار أسم غير موجود بالفعل'
+            'name.required' => translate('the name is required'),
+            'name.unique' => translate('you should choose a name is not exists')
         ];
         $validator = Validator::make($request->all(), $rules, $messages);
         if($validator->fails()) {
-            return redirect()->back()->withErrors($validator->errors())->with('error', 'يوجد مشكلة ما')->withInput($request->all());
+            return redirect()->back()->withErrors($validator->errors())->with('error', translate('there is something error'))->withInput($request->all());
         }
         Country::create($creation);
-        return redirect()->back()->with('success', 'تم انشاء البلد بنجاح');
+        return redirect()->back()->with('success', translate('created successfully'));
     }
 
     /**
@@ -129,15 +129,15 @@ class CountryController extends Controller
             'name' => ['required','string',Rule::unique('countries', 'name')->ignore($country->id)]
         ];
         $messages = [
-            'name.required' => 'الأسم مطلوب',
-            'name.unique' => 'يجب أن تختار أسم غير موجود بالفعل'
+            'name.required' => translate('the name is required'),
+            'name.unique' => translate('you should choose a name is not exists')
         ];
         $validator = Validator::make($request->all(), $rules, $messages);
         if($validator->fails()) {
-            return redirect()->back()->withErrors($validator->errors())->with('error', 'يوجد مشكلة ما')->withInput($request->all());
+            return redirect()->back()->withErrors($validator->errors())->with('error', translate('there is something error'))->withInput($request->all());
         }
         $country->update($creation);
-        return redirect()->back()->with('info', 'تم تعديل البلد بنجاح');
+        return redirect()->back()->with('info', translate('updated successfully'));
     }
 
     public function allCities(Request $request) {
@@ -157,6 +157,6 @@ class CountryController extends Controller
     {
         $this->authorize('countries.destroy');
         Country::destroy($country->id);
-        return redirect()->back()->with('error', 'تم ازالة ' . $country->name . ' بنجاح');
+        return redirect()->back()->with('error', translate('deleted successfully'));
     }
 }

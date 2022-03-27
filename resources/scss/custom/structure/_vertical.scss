@@ -33,6 +33,7 @@
 }
 
 .vertical-menu {
+    z-index: 9999 !important;
     width: $sidebar-width;
     z-index: 1001;
     background: $sidebar-bg;

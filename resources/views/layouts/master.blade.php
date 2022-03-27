@@ -20,9 +20,12 @@
     <!-- headerCss -->
     @yield('headerCss')
 
+    <!-- Cairo Font -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo&display=swap" rel="stylesheet">
+
 
     <!-- Bootstrap Css -->
     <link href="{{ URL::asset('/css/bootstrap.min.css') }}" id="bootstrap-style" rel="stylesheet" type="text/css" />
@@ -36,7 +39,14 @@
     <!-- App Css-->
     <link href="{{ URL::asset('/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
     {{-- RTL Bootstrap --}}
-    <link href="{{ URL::asset('/css/app-rtl.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
+    @php
+    $language = App\Models\Language::where('code', App::getLocale())->first();
+    @endphp
+    @if($language)
+        @if($language->rtl)
+            <link href="{{ URL::asset('/css/app-rtl.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
+        @endif
+    @endif
     <!-- Responsive Table css -->
     <link href="{{ URL::asset('/libs/rwd-table/rwd-table.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- Bootstrap Css -->
@@ -98,6 +108,7 @@
     <script src="{{ URL::asset('/js/pages/form-advanced.init.js') }}"></script>
 
     <script src="{{ URL::asset('/libs/owl/owl.carousel.min.js') }}"></script>
+    <script src="{{ URL::asset('/libs/jquery.ddslick.min.js') }}"></script>
     <!-- App js -->
 
     <script src="{{ URL::asset('/js/app.min.js') }}"></script>

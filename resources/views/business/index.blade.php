@@ -1,46 +1,46 @@
 @extends('layouts.master')
 @section('title')
-المعاملات المالية
+{{ translate('financial transactions') }}
 @endsection
 @section('content')
     @component('common-components.breadcrumb')
-        @slot('title') المعاملات المالية @endslot
-        @slot('li1') لوحة التحكم @endslot
+        @slot('title') {{ translate('financial transactions') }} @endslot
+        @slot('li1') {{ translate('dashboard') }} @endslot
         @slot('route1') {{ route('dashboard') }} @endslot
-        @slot('li3') كل المعاملات المالية @endslot
+        @slot('li3') {{ translate('all financial transactions') }} @endslot
     @endcomponent
     <div class="card">
         <div class="card-header">
             <div class="d-flex flex-column-reverse flex-md-row justify-content-between">
-                <h2>المعاملات المالية</h2>
+                <h2>{{ translate('financial transactions') }}</h2>
                 @can('business.create')
-                    <a href="{{ route('business.create') }}" class="btn btn-primary mb-2">انشاء معاملة مالية جديدة</a>
+                    <a href="{{ route('business.create') }}" class="btn btn-primary mb-2">{{ translate('create financial transactions') }}</a>
                 @endcan
             </div>
             <form action="{{ route('business.index') }}" method="GET">
                 <div class="row">
                     <div class="col-12 col-md-6">
                         <div class="form-group">
-                            <label for="name">أسم المعاملة</label>
+                            <label for="name">{{ translate('financial name') }}</label>
                             <input class="form-control" name="name" type="text" value="{{ request('name') }}">
                         </div>
                     </div>
                     <div class="col-12 col-md-6">
                         <div class="form-group">
-                            <label for="category">نوع المعاملة المالية</label>
+                            <label for="category">{{ translate('type') }}</label>
                             <select class="form-control select2" name="type">
-                                <option value="">أختر نوع المعاملة</option>
-                                <option value="income" @if (request('type') == 'income') selected @endif>ايراد</option>
-                                <option value="expense" @if (request('type') == 'expense') selected @endif>مصروف</option>
+                                <option value="">{{ translate('choose') }}</option>
+                                <option value="income" @if (request('type') == 'income') selected @endif>{{ translate('income') }}</option>
+                                <option value="expense" @if (request('type') == 'expense') selected @endif>{{ translate('expenses') }}</option>
                             </select>
                         </div>
                     </div>
                     @if(Auth::user()->type == 'admin')
                         <div class="col-12 col-md-6">
                             <div class="form-group">
-                                <label for="category">الفرع</label>
+                                <label for="category">{{ translate('the branch') }}</label>
                                 <select class="form-control select2" name="branch_id">
-                                    <option value="">أختر الفرع</option>
+                                    <option value="">{{ translate('choose') }}</option>
                                     @foreach ($branches as $branch)
                                         <option value="{{ $branch->id }}" @if (request('branch_id') == $branch->id) selected @endif>{{ $branch->name }}</option>
                                     @endforeach
@@ -51,7 +51,7 @@
                     <div class="col-12 col-md-6">
                         <div class="form-group">
                             <label for="name"></label>
-                            <input type="submit" value="بحث" class="form-control btn btn-primary mt-1">
+                            <input type="submit" value="{{ translate('search') }}" class="form-control btn btn-primary mt-2">
                         </div>
                     </div>
                 </div>
@@ -60,16 +60,15 @@
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table mb-0">
-
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>أسم المعاملة المالية</th>
-                            <th>نوع المعاملة المالية</th>
-                            <th>الفرع</th>
-                            <th>وقت الأنشاء</th>
-                            <th>وقت أخر تعديل</th>
-                            <th>الأعدادات</th>
+                            <th>{{ translate('financial name') }}</th>
+                            <th>{{ translate('financial type') }}</th>
+                            <th>{{ translate('branch') }}</th>
+                            <th>{{ translate('creation date') }}</th>
+                            <th>{{ translate('creation date') }}</th>
+                            <th>{{ translate('settings') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -97,14 +96,14 @@
                                     <div class="options d-flex">
                                         @can('business.edit')
                                             <a class="btn btn-info mr-1" href="{{ route('business.edit', $business) }}">
-                                                <span>تعديل</span>
+                                                <span>{{ translate('edit') }}</span>
                                                 <span class="mdi mdi-circle-edit-outline"></span>
                                             </a>
                                         @endcan
                                         @can('business.destroy')
                                             <button class="btn btn-danger" data-toggle="modal"
                                                 data-target="#modal_{{ $business->id }}">
-                                                <span>ازالة</span>
+                                                <span>{{ translate('delete') }}</span>
                                                 <span class="mdi mdi-delete-outline"></span>
                                             </button>
                                             <!-- Modal -->

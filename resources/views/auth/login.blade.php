@@ -24,11 +24,11 @@
                                 <form method="POST" class="form-horizontal mt-4" action="{{ route('login') }}">
                                     @csrf
                                     <div class="form-group">
-                                        <label for="username">البريد الألكترونى</label>
+                                        <label for="username">{{ translate('email') }}</label>
                                         <input id="email" type="text"
                                             class="form-control @error('email') is-invalid @enderror" name="email"
                                             value="{{ old('email') }}" autocomplete="email" autofocus
-                                            placeholder="البريد الألكترونى">
+                                            placeholder="{{ translate('email') }}">
                                         @error('email')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -37,10 +37,10 @@
 
                                     </div>
                                     <div class="form-group">
-                                        <label for="userpassword">الرقم السرى</label>
+                                        <label for="userpassword">{{ translate('password') }}</label>
                                         <input id="password" type="password"
                                             class="form-control @error('password') is-invalid @enderror" name="password"
-                                            autocomplete="current-password" placeholder="الرقم السرى">
+                                            autocomplete="current-password" placeholder="{{ translate('password') }}">
                                         @error('password')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
@@ -52,12 +52,12 @@
                                             <div class="custom-control custom-checkbox">
                                                 <input type="checkbox" class="custom-control-input" name="remember"
                                                     id="customControlInline" {{ old('remember') ? 'checked' : '' }}>
-                                                <label class="custom-control-label" for="customControlInline">تذكرنى</label>
+                                                <label class="custom-control-label" for="customControlInline">{{ translate('remember me') }}</label>
                                             </div>
                                         </div>
                                         <div class="col-6 text-right">
                                             <button class="btn btn-primary w-md waves-effect waves-light"
-                                                type="submit">تسجيل الدخول</button>
+                                                type="submit">{{ translate('login') }}</button>
                                         </div>
                                     </div>
                                     <div class="form-group mb-0 row">

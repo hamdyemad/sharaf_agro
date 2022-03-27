@@ -1,22 +1,22 @@
 @extends('layouts.master')
 
 @section('title')
-انشاء معاملة مالية
+{{ translate('create financial transactions') }}
 @endsection
 @section('content')
     @component('common-components.breadcrumb')
-        @slot('title') المعاملات المالية @endslot
-        @slot('li1') لوحة التحكم @endslot
-        @slot('li2') المعاملات المالية @endslot
+        @slot('title') {{ translate('financial transactions') }} @endslot
+        @slot('li1') {{ translate('dashboard') }} @endslot
+        @slot('li2') {{ translate('financial transactions') }} @endslot
         @slot('route1') {{ route('dashboard') }} @endslot
         @slot('route2') {{ route('business.index') }} @endslot
-        @slot('li3') انشاء معاملة مالية @endslot
+        @slot('li3') {{ translate('create financial transactions') }} @endslot
     @endcomponent
     <div class="create">
         <div class="container">
             <div class="card">
                 <div class="card-header">
-                    انشاء معاملة مالية
+                    {{ translate('create financial transactions') }}
                 </div>
                 <div class="card-body">
                     <form action="{{ route('business.store') }}" method="POST">
@@ -24,7 +24,7 @@
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label for="name">أسم المعاملة المالية</label>
+                                    <label for="name">{{ translate('financial name') }}</label>
                                     <input type="text" class="form-control" name="name" value="{{ old('name') }}">
                                     @error('name')
                                         <div class="text-danger">{{ $message }}</div>
@@ -34,9 +34,9 @@
                             @if(Auth::user()->type == 'admin')
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label for="category">الفرع</label>
+                                    <label for="category">{{ translate('the branch') }}</label>
                                     <select class="form-control select2" name="branch_id">
-                                        <option value="">أختر الفرع</option>
+                                        <option value="">{{ translate('choose') }}</option>
                                         @foreach ($branches as $branch)
                                         <option value="{{ $branch->id }}" @if (old('branch_id') == $branch->id) selected @endif>{{ $branch->name }}</option>
                                         @endforeach
@@ -51,11 +51,11 @@
                             @endif
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label for="category">نوع المعاملة المالية</label>
+                                    <label for="category">{{ translate('financial type') }}</label>
                                     <select class="form-control select2" name="type">
-                                        <option value="">أختر نوع المعاملة</option>
-                                        <option value="income" @if (old('type') == 'income') selected @endif>ايراد</option>
-                                        <option value="expense" @if (old('type') == 'expense') selected @endif>مصروف</option>
+                                        <option value="">{{ translate('choose') }}</option>
+                                        <option value="income" @if (old('type') == 'income') selected @endif>{{ translate('income') }}</option>
+                                        <option value="expense" @if (old('type') == 'expense') selected @endif>{{ translate('expenses') }}</option>
                                     </select>
                                     @error('type')
                                         <div class="text-danger">{{ $message }}</div>
@@ -65,9 +65,8 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <label for=""></label>
-                                    <input type="submit" value="أنشاء" class="btn btn-success">
-                                    <a href="{{ route('business.index') }}" class="btn btn-info">رجوع الى المعاملات
-                                        المالية</a>
+                                    <input type="submit" value="{{ translate('create') }}" class="btn btn-success">
+                                    <a href="{{ route('business.index') }}" class="btn btn-info">{{ translate('back to financial transactions') }}</a>
                                 </div>
                             </div>
                         </div>

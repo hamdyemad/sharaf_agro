@@ -1,23 +1,23 @@
 @extends('layouts.master')
 
 @section('title')
-البلاد
+{{ translate('countries') }}
 @endsection
 
 @section('content')
     @component('common-components.breadcrumb')
-        @slot('title') البلاد @endslot
-        @slot('li1') لوحة التحكم @endslot
+        @slot('title') {{ translate('countries') }} @endslot
+        @slot('li1') {{ translate('dashboard') }} @endslot
         @slot('route1') {{ route('dashboard') }} @endslot
-        @slot('li3') البلاد @endslot
+        @slot('li3') {{ translate('countries') }} @endslot
     @endcomponent
     <div class="card">
         <div class="card-header">
             <div class="d-flex flex-column flex-md-row text-center text-md-right justify-content-between">
-                <h2>البلاد</h2>
+                <h2>{{ translate('countries') }}</h2>
                 @can('countries.create')
                     <div>
-                        <a href="{{ route('countries.create') }}" class="btn btn-primary mb-2">أنشاء بلد جديدة</a>
+                        <a href="{{ route('countries.create') }}" class="btn btn-primary mb-2">{{ translate('create new country') }}</a>
                     </div>
                 @endcan
             </div>
@@ -25,30 +25,30 @@
                 <div class="row">
                     <div class="col-6 col-md-3">
                         <div class="form-group">
-                            <label for="name">أسم البلد</label>
+                            <label for="name">{{ translate('country name') }}</label>
                             <input class="form-control" name="name" type="text" value="{{ request('name') }}">
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="form-group">
-                            <label for="name">كود البلد</label>
+                            <label for="name">{{ translate('country code') }}</label>
                             <input class="form-control" name="code" type="text" value="{{ request('code') }}">
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="form-group">
-                            <label for="category">مرئى ام لا</label>
+                            <label for="category">{{ translate('available') }}</label>
                             <select class="form-control select2" name="active">
                                 <option value="">أختر</option>
-                                <option @if(request('active') == 'true') selected @endif value="true">مرئى</option>
-                                <option @if(request('active') == 'false') selected @endif value="false">غير مرئى</option>
+                                <option @if(request('active') == 'true') selected @endif value="true">{{ translate('available') }}</option>
+                                <option @if(request('active') == 'false') selected @endif value="false">{{ translate('not available') }}</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="form-group">
                             <label for="name"></label>
-                            <input type="submit" value="بحث" class="form-control btn btn-primary mt-1">
+                            <input type="submit" value="{{ translate('search') }}" class="form-control btn btn-primary mt-1">
                         </div>
                     </div>
                 </div>
@@ -61,13 +61,13 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>أسم البلد</th>
-                            <th>كود البلد</th>
-                            <th>عدد المدن</th>
-                            <th>مرئى</th>
-                            <th>وقت الأنشاء</th>
-                            <th>وقت أخر تعديل</th>
-                            <th>الأعدادات</th>
+                            <th>{{ translate('country name') }}</th>
+                            <th>{{ translate('country code') }}</th>
+                            <th>{{ translate('country cities') }}</th>
+                            <th>{{ translate('available') }}</th>
+                            <th>{{ translate('creation date') }}</th>
+                            <th>{{ translate('last update date') }}</th>
+                            <th>{{ translate('settings') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -82,9 +82,9 @@
                                 <td>{{ $country->cities->count() }}</td>
                                 <td>
                                     @if ($country->active)
-                                        <span class="badge badge-success">مرئى</span>
+                                        <span class="badge badge-success">{{ translate('available') }}</span>
                                     @else
-                                        <span class="badge badge-danger">غير مرئى</span>
+                                        <span class="badge badge-danger">{{ translate('not available') }}</span>
                                     @endif
                                 </td>
                                 <td>
@@ -97,14 +97,14 @@
                                     <div class="options d-flex">
                                         @can('countries.edit')
                                             <a class="btn btn-info mr-1" href="{{ route('countries.edit', $country) }}">
-                                                <span>تعديل</span>
+                                                <span>{{ translate('edit') }}</span>
                                                 <span class="mdi mdi-circle-edit-outline"></span>
                                             </a>
                                         @endcan
                                         @can('countries.destroy')
                                             <button class="btn btn-danger" data-toggle="modal"
                                                 data-target="#modal_{{ $country->id }}">
-                                                <span>ازالة</span>
+                                                <span>{{ translate('delete') }}</span>
                                                 <span class="mdi mdi-delete-outline"></span>
                                             </button>
                                             <!-- Modal -->

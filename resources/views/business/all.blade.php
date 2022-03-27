@@ -2,17 +2,17 @@
 
 
 @section('title')
-الأيرادات والمصروفات
+{{ translate('revenues and expenses') }}
 @endsection
 
 @section('content')
     @component('common-components.breadcrumb')
-        @slot('title') الأيرادات والمصروفات @endslot
-        @slot('li1') لوحة التحكم @endslot
-        @slot('li2') المعاملات المالية @endslot
+        @slot('title') {{ translate('revenues and expenses') }} @endslot
+        @slot('li1') {{ translate('dashboard') }} @endslot
+        @slot('li2') {{ translate('financial transactions') }} @endslot
         @slot('route1') {{ route('dashboard') }} @endslot
         @slot('route2') {{ route('business.index') }} @endslot
-        @slot('li3') الأيرادات والمصروفات @endslot
+        @slot('li3') {{ translate('revenues and expenses') }} @endslot
     @endcomponent
     <div class="all_expenses">
         @if(Auth::user()->type == 'admin')
@@ -25,7 +25,7 @@
                 <div class="card-body">
                     <div class="card">
                         <div class="card-header">
-                            <h2>الأيرادات</h2>
+                            <h2>{{ translate('incomes') }}</h2>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -41,14 +41,14 @@
                                         @endcomponent
                                     </div>
                                 @empty
-                                    <div class="alert alert-primary w-100">لا يوجد ايرادات حاليا</div>
+                                    <div class="alert alert-primary w-100">{{ translate('there is no incomes yet') }}</div>
                                 @endforelse
                             </div>
                         </div>
                     </div>
                     <div class="card">
                         <div class="card-header">
-                            <h2>المصروفات</h2>
+                            <h2>{{ translate('expenses') }}</h2>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -64,7 +64,7 @@
                                         @endcomponent
                                     </div>
                                 @empty
-                                    <div class="alert alert-primary w-100">لا يوجد مصروفات حاليا</div>
+                                    <div class="alert alert-primary w-100">{{ translate('there is no expenses yet') }}</div>
                                 @endforelse
                             </div>
                         </div>

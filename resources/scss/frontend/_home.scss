@@ -1,8 +1,10 @@
 .frontend .home {
     section.header {
         position: relative;
-        background-image: url("../../../public/images/background.jpg");
-        background-size: cover;
+        img {
+            width: 100%;
+            height: 100%;
+        }
         @media (max-width: 991px) {
             height: 300px !important;
         }
@@ -42,10 +44,7 @@
     }
     .all_branches {
         .branches {
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            @import "./inc/dots_and_nav";
             .branch {
                 &:not(:last-of-type) {
                     margin-left: 20px;
@@ -64,17 +63,19 @@
                     img {
                         width: 100%;
                         height: 100px;
-                        @media (max-width: 991px) {
-                            width: 100px;
-                        }
                     }
                     h2 {
+                        text-align: center;
                         padding-top: 10px;
+                        @media (max-width: 991px) {
+                            font-size: 16px;
+                        }
                     }
                 }
             }
         }
         .branches_with_categories {
+            @import "./inc/dots_and_nav";
             .item {
                 text-align: center;
                 img {

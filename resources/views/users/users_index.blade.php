@@ -1,56 +1,56 @@
 @extends('layouts.master')
 
 @section('title')
-المستخدمين
+{{ translate('users') }}
 @endsection
 
 @section('content')
     @component('common-components.breadcrumb')
-        @slot('title') المستخدمين @endslot
-        @slot('li1') لوحة التحكم @endslot
+        @slot('title') {{ translate('users') }} @endslot
+        @slot('li1') {{ translate('dashboard') }} @endslot
         @slot('route1') {{ route('dashboard') }} @endslot
-        @slot('li3') المستخدمين @endslot
+        @slot('li3') {{ translate('users') }} @endslot
     @endcomponent
     <div class="all_users">
         <div class="card">
             <div class="card-header">
                 <div class="d-flex flex-column flex-md-row text-center text-md-right justify-content-between">
-                    <h2>المستخدمين</h2>
+                    <h2>{{ translate('users') }}</h2>
                 </div>
                 <form action="{{ route('users.index') }}" method="GET">
                     <div class="row">
                         <div class="col-12 col-md-6">
                             <div class="form-group">
-                                <label for="name">أسم المستخدم</label>
+                                <label for="name">{{ translate('name') }}</label>
                                 <input class="form-control" name="name" type="text" value="{{ request('name') }}">
                             </div>
                         </div>
                         <div class="col-12 col-md-6">
                             <div class="form-group">
-                                <label for="name">البريد الألكترونى</label>
+                                <label for="name">{{ translate('email') }}</label>
                                 <input class="form-control" name="email" type="text" value="{{ request('email') }}">
                             </div>
                         </div>
                         <div class="col-12 col-md-6">
                             <div class="form-group">
-                                <label for="name">الهاتف</label>
+                                <label for="name">{{ translate('phone') }}</label>
                                 <input class="form-control" name="phone" type="text" value="{{ request('phone') }}">
                             </div>
                         </div>
                         <div class="col-12 col-md-6">
                             <div class="form-group">
-                                <label for="banned">الحذر</label>
+                                <label for="banned">{{ translate('banned') }}</label>
                                 <select class="form-control" name="banned">
-                                    <option value="">أختر</option>
-                                    <option value="1" @if (request('banned') == 1) selected @endif>محذور</option>
-                                    <option value="2" @if (request('banned') == 2) selected @endif>غير محذور</option>
+                                    <option value="">{{ translate('choose') }}</option>
+                                    <option value="1" @if (request('banned') == 1) selected @endif>{{ translate('banned') }}</option>
+                                    <option value="2" @if (request('banned') == 2) selected @endif>{{ translate('not banned') }}</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-12 col-md-6">
                             <div class="form-group">
                                 <label for="name"></label>
-                                <input type="submit" value="بحث" class="form-control btn btn-primary mt-1">
+                                <input type="submit" value="{{ translate('search') }}" class="form-control btn btn-primary mt-1">
                             </div>
                         </div>
                     </div>
@@ -63,14 +63,14 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>أسم المستخدم</th>
-                                <th>البريد الألكترونى</th>
-                                <th>الهاتف</th>
-                                <th>العنوان</th>
-                                <th>الحذر</th>
-                                <th>وقت الأنشاء</th>
-                                <th>وقت أخر تعديل</th>
-                                <th>الأعدادات</th>
+                                <th>{{ translate('name') }}</th>
+                                <th>{{ translate('email') }}</th>
+                                <th>{{ translate('phone') }}</th>
+                                <th>{{ translate('address') }}</th>
+                                <th>{{ translate('banned') }}</th>
+                                <th>{{ translate('creation date') }}</th>
+                                <th>{{ translate('last update date') }}</th>
+                                <th>{{ translate('settings') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -94,11 +94,11 @@
                                         <form action="{{ route('users.banned', $user) }}" method="POST">
                                             @csrf
                                             <div class="form-group">
-                                                <input type="checkbox" onchange="this.form.submit()" name="active" id="switch4" switch="bool"
+                                                <input type="checkbox" onchange="this.form.submit()" name="active" id="switch-{{ $loop->index }}" switch="bool"
                                                 @if($user->banned)
                                                 checked
                                                 @endif />
-                                                <label for="switch4" data-on-label="Yes" data-off-label="No"></label>
+                                                <label for="switch-{{ $loop->index }}" data-on-label="{{ translate('yes') }}" data-off-label="{{ translate('no') }}"></label>
                                             </div>
                                         </form>
                                     </td>
@@ -113,7 +113,7 @@
                                             @can('users.destroy')
                                                 <button class="btn btn-danger" data-toggle="modal"
                                                     data-target="#modal_{{ $user->id }}">
-                                                    <span>ازالة</span>
+                                                    <span>{{ translate('delete') }}</span>
                                                     <span class="mdi mdi-delete-outline"></span>
                                                 </button>
                                                 <!-- Modal -->

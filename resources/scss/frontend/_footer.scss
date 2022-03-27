@@ -1,7 +1,7 @@
 .footer_fixed {
     margin: 0;
     padding: 10px;
-    z-index: 1;
+    z-index: 99;
     background-color: $gray-200;
     position: fixed;
     bottom: -2px;
@@ -25,6 +25,47 @@
                 display: block;
                 border-radius: 50%;
                 text-align: center;
+            }
+        }
+    }
+}
+.modal.products_search {
+    .card {
+        padding: 10px;
+        margin-top: 10px;
+    }
+    .modal-content {
+        .products {
+            max-height: 400px;
+            overflow: auto;
+            list-style-type: none;
+            margin: 0;
+        }
+        li {
+            &:not(:last-of-type) {
+                margin-bottom: 5px;
+            }
+            img {
+                width: 70px;
+                height: 70px;
+                border-radius: 10px;
+                @media (max-width: 991px) {
+                    width: 50px;
+                    height: 50px;
+                }
+            }
+            a {
+                transition: all 0.2s ease-in-out;
+                display: flex;
+                align-items: center;
+                padding: 0px 15px;
+                border-radius: 10px;
+                &:hover {
+                    background-color: $gray-200;
+                }
+                img {
+                    padding-left: 10px;
+                }
             }
         }
     }

@@ -21,7 +21,7 @@ class BusinessController extends Controller
     public function index(Request $request)
     {
         $this->authorize('business.index');
-        Carbon::setLocale('ar');
+        Carbon::setLocale(app()->getLocale());
         $branches = Branch::orderBy('name')->get();
         if(Auth::user()->type == 'admin') {
             $businesses = Business::latest();
@@ -53,7 +53,7 @@ class BusinessController extends Controller
         if(count($branches) > 0) {
             return view('business.create', compact('branches'));
         } else {
-            return redirect()->back()->with('error', 'يجب انشاء فروع اولا');
+            return redirect()->back()->with('error', translate('you should create branch first'));
         }
     }
 
@@ -72,22 +72,22 @@ class BusinessController extends Controller
             'type' => ['required', Rule::in(['expense', 'income'])]
         ];
         $messages = [
-            'name.required' => 'أسم المعاملة مطلوب',
-            'type.required' => 'نوع المعاملة مطلوب',
-            'branch_id.required' => 'الفرع مطلوب',
-            'branch_id.exists' => 'الفرع يجب ان يكون موجود',
-            'type.in' => 'يجب أن تكون المعاملة مصروف أو ايراد',
+            'name.required' => translate('the name is required'),
+            'type.required' => translate('the type is required'),
+            'branch_id.required' => translate('the branch is required'),
+            'branch_id.exists' => translate('the branch should be exists'),
+            'type.in' => translate('the transaction must be an expense or income'),
         ];
         $validator = Validator::make($request->all(), $rules, $messages);
         if($validator->fails()) {
-            return redirect()->back()->withErrors($validator->errors())->with('error', 'يوجد مشكلة ما')->withInput($request->all());
+            return redirect()->back()->withErrors($validator->errors())->with('error', translate('there is something error'))->withInput($request->all());
         }
         Business::create([
             'name' => $request->name,
             'branch_id' => $request->branch_id,
             'type' => $request->type
         ]);
-        return redirect()->back()->with('success', 'تم أنشاء المعاملة بنجاح');
+        return redirect()->back()->with('success', translate('created successfully'));
     }
 
     /**
@@ -130,22 +130,22 @@ class BusinessController extends Controller
             'type' => ['required', Rule::in(['expense', 'income'])]
         ];
         $messages = [
-            'name.required' => 'أسم المعاملة مطلوب',
-            'type.required' => 'نوع المعاملة مطلوب',
-            'type.in' => 'يجب أن تكون المعاملة مصروف أو ايراد',
-            'branch_id.required' => 'الفرع مطلوب',
-            'branch_id.exists' => 'الفرع يجب ان يكون موجود'
+            'name.required' => translate('the name is required'),
+            'type.required' => translate('the type is required'),
+            'type.in' => translate('the transaction must be an expense or income'),
+            'branch_id.required' => translate('the branch is required'),
+            'branch_id.exists' => translate('the branch should be exists')
         ];
         $validator = Validator::make($request->all(), $rules, $messages);
         if($validator->fails()) {
-            return redirect()->back()->withErrors($validator->errors())->with('error', 'يوجد مشكلة ما')->withInput($request->all());
+            return redirect()->back()->withErrors($validator->errors())->with('error', translate('there is something error'))->withInput($request->all());
         }
         $business->update([
             'branch_id' => $request->branch_id,
             'name' => $request->name,
             'type' => $request->type
         ]);
-        return redirect()->back()->with('success', 'تم تعديل المعاملة بنجاح');
+        return redirect()->back()->with('success', translate('updated successfully'));
     }
 
     public function all() {
@@ -169,6 +169,6 @@ class BusinessController extends Controller
     {
         $this->authorize('business.destroy');
         Business::destroy($business->id);
-        return redirect()->back()->with('success', 'تمت ازالة المعاملة بنجاح');
+        return redirect()->back()->with('success', translate('deleted successfully'));
     }
 }

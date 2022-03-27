@@ -85,6 +85,7 @@
                                                 <th><span>المدينة</span></th>
                                                 <th><span>رقم العميل</span></th>
                                                 <th><span>حالة الطلب</span></th>
+                                                <th><span>دفع مقدما</span></th>
                                                 <th><span>فرع الطلب</span></th>
                                                 <th><span>وقت الأنشاء</span></th>
                                             </tr>
@@ -119,6 +120,13 @@
                                                         <span>{{ $order->status->name }}</span>
                                                     </td>
                                                     <td>
+                                                        @if($order->paid)
+                                                        <span class="badge badge-success">نعم</span>
+                                                        @else
+                                                        <span class="badge badge-secondary">لا</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
                                                         <div class="badge badge-primary p-2">({{ $order->branch->name }})</div>
                                                         @if($order->type == 'online')
                                                             <div class="badge badge-primary mt-2">طلب أونلاين</div>
@@ -129,12 +137,10 @@
                                                     </td>
                                                     <td>
                                                         <div class="options d-flex">
-                                                            @can('orders.show')
-                                                                <a class="btn btn-success mr-1" href="{{ route('frontend.orders.show', $order) }}">
-                                                                    <span>اظهار</span>
-                                                                    <span class="mdi mdi-eye"></span>
-                                                                </a>
-                                                            @endcan
+                                                            <a class="btn btn-success mr-1" href="{{ route('frontend.orders.show', $order) }}">
+                                                                <span>اظهار</span>
+                                                                <span class="mdi mdi-eye"></span>
+                                                            </a>
                                                         </div>
                                                     </td>
                                                 </tr>

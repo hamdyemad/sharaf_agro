@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.4.1",
+        "cartalyst/stripe-laravel": "12.0",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "guzzlehttp/guzzle": "^7.2.0",
@@ -16,7 +17,11 @@
         "laravel/framework": "^7.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
+        "mcamara/laravel-localization": "^1.7",
+        "nexmo/laravel": "^3.0",
         "pusher/pusher-php-server": "^4.1",
+        "srmklive/paypal": "~3.0",
+        "stripe/stripe-php": "^7.119",
         "yoeunes/toastr": "^1.2"
     },
     "require-dev": {
@@ -43,10 +48,6 @@
         "classmap": [
             "database/seeds",
             "database/factories"
-        ],
-        "files": [
-            "App/Http/Kernel.php",
-            "App/Http/Helpers.php"
         ]
     },
     "autoload-dev": {

@@ -1,0 +1,49 @@
+.owl-nav {
+    display: block !important;
+    @media (max-width: 991px) {
+        display: none !important;
+    }
+    button {
+        transition: all 0.2s ease-in-out;
+        top: 50%;
+        transform: translateY(-50%);
+        position: absolute;
+        width: 40px !important;
+        height: 40px !important;
+        line-height: 28px !important;
+        text-align: center !important;
+        background-color: var(--primary) !important;
+        color: #fff !important;
+        border-radius: 50%;
+        pointer-events: all;
+        &:hover {
+            opacity: 0.8;
+        }
+        &.owl-prev {
+            right: -45px;
+        }
+        &.owl-next {
+            left: -45px;
+        }
+        span {
+            font-size: 60px;
+        }
+    }
+}
+.owl-dots {
+    margin: 5px 0;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    button {
+        transition: all 0.3s ease-in-out;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background-color: $gray-400;
+        margin: 0px 5px;
+        &.active {
+            background-color: var(--primary);
+        }
+    }
+}

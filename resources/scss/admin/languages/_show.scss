@@ -1,0 +1,29 @@
+.show_order {
+    img {
+        width: 100px;
+        height: 100px;
+    }
+    strong,
+    span {
+        font-size: 18px;
+    }
+
+    .first {
+        border-left: 1px solid $gray-400;
+    }
+
+    @media print {
+        .invoice {
+            padding: 20px;
+        }
+        .badge {
+            border: unset !important;
+            background-color: unset;
+            color: black;
+            font-weight: bold;
+        }
+        .statuses_history {
+            display: none;
+        }
+    }
+}

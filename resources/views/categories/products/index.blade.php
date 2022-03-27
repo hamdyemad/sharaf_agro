@@ -1,23 +1,23 @@
 @extends('layouts.master')
 
 @section('title')
-الأكلات
+{{ translate('foods') }}
 @endsection
 @section('content')
     @component('common-components.breadcrumb')
-        @slot('title') الأكلات @endslot
-        @slot('li1') لوحة التحكم @endslot
+        @slot('title') {{ translate('foods') }} @endslot
+        @slot('li1') {{ translate('dashboard') }} @endslot
         @slot('route1') {{ route('dashboard') }} @endslot
-        @slot('li3') كل الأكلات @endslot
+        @slot('li3') {{ translate('foods') }} @endslot
     @endcomponent
     <div class="all_products">
         <div class="card">
             <div class="card-header">
                 <div class="d-flex flex-column flex-md-row text-center text-md-right justify-content-between">
-                    <h2>الأكلات</h2>
+                    <h2>{{ translate('foods') }}</h2>
                     @can('products.create')
                         <div>
-                            <a href="{{ route('products.create') }}" class="btn btn-primary mb-2">أنشاء أكلة جديدة</a>
+                            <a href="{{ route('products.create') }}" class="btn btn-primary mb-2">{{ translate('create new food') }}</a>
                         </div>
 
                     @endcan
@@ -26,22 +26,22 @@
                     <div class="row">
                         <div class="col-6 col-md-3">
                             <div class="form-group">
-                                <label for="name">أسم الأكلة</label>
+                                <label for="name">{{ translate('food name') }}</label>
                                 <input class="form-control" name="name" type="text" value="{{ request('name') }}">
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="form-group">
-                                <label for="name">الوصف</label>
+                                <label for="name">{{ translate('description') }}</label>
                                 <input class="form-control" name="description" type="text"
                                     value="{{ request('description') }}">
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="form-group">
-                                <label for="category">أسم الصنف</label>
+                                <label for="category">{{ translate('choose category') }}</label>
                                 <select class="form-control select2" name="category_id">
-                                    <option value="">أختر الصنف</option>
+                                    <option value="">{{ translate('choose') }}</option>
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}" @if ($category->id == request('category_id')) selected @endif>
                                             {{ $category->name }}</option>
@@ -51,38 +51,38 @@
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="form-group">
-                                <label for="discount">السعر</label>
+                                <label for="discount">{{ translate('price') }}</label>
                                 <input class="form-control" name="price" type="text" value="{{ request('price') }}">
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="form-group">
-                                <label for="discount">الخصم</label>
+                                <label for="discount">{{ translate('discount') }}</label>
                                 <input class="form-control" name="discount" type="text"
                                     value="{{ request('discount') }}">
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="form-group">
-                                <label for="price_after_discount">السعر بعد الخصم</label>
+                                <label for="price_after_discount">{{ translate('price after discount') }}</label>
                                 <input class="form-control" name="price_after_discount" type="text"
                                     value="{{ request('price_after_discount') }}">
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="form-group">
-                                <label for="viewed_number">رقم الظهور</label>
+                                <label for="viewed_number">{{ translate('appearance number') }}</label>
                                 <input class="form-control" name="viewed_number" type="number"
                                     value="{{ request('viewed_number') }}">
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="form-group">
-                                <label for="category">مرئى</label>
+                                <label for="category">{{ translate('available') }}</label>
                                 <select class="form-control select2" name="active">
-                                    <option value="">أختار</option>
-                                    <option @if(request('active') == 'true') selected @endif value="true">مرئى</option>
-                                    <option @if(request('active') == 'false') selected @endif value="false">غير مرئى</option>
+                                    <option value="">{{ translate('choose') }}</option>
+                                    <option @if(request('active') == 'true') selected @endif value="true">{{ translate('available') }}</option>
+                                    <option @if(request('active') == 'false') selected @endif value="false">{{ translate('not available') }}</option>
                                 </select>
                                 @error('active')
                                     <div class="text-danger">{{ $message }}</div>
@@ -91,18 +91,18 @@
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="form-group">
-                                <label for="date_range">الوقت</label>
+                                <label for="date_range">{{ translate('creation date') }}</label>
                                 <div class="input-daterange input-group" id="date-range">
-                                    <input type="text" class="form-control" placeholder="من" name="start"
+                                    <input type="text" class="form-control" placeholder="{{ translate('from') }}" name="start"
                                         value="{{ request('start') }}" />
-                                    <input type="text" class="form-control" placeholder="الى" name="end"
+                                    <input type="text" class="form-control" placeholder="{{ translate('to') }}" name="end"
                                         value="{{ request('end') }}" />
                                 </div>
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
                             <label for=""></label>
-                            <input type="submit" value="بحث" class="form-control btn btn-primary mt-1">
+                            <input type="submit" value="{{ translate('search') }}" class="form-control btn btn-primary mt-1">
                         </div>
                     </div>
                 </form>
@@ -113,18 +113,18 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>أسم الأكلة</th>
-                                <th>الصنف</th>
-                                <th>الفرع</th>
-                                <th>الوصف</th>
-                                <th>السعر</th>
-                                <th>الخصم</th>
-                                <th>السعر بعد الخصم</th>
-                                <th>مرئى</th>
-                                <th>رقم الظهور</th>
-                                <th>وقت الأنشاء</th>
-                                <th>وقت أخر تعديل</th>
-                                <th>الأعدادات</th>
+                                <th>{{ translate('food name') }}</th>
+                                <th>{{ translate('category') }}</th>
+                                <th>{{ translate('branch') }}</th>
+                                <th>{{ translate('description') }}</th>
+                                <th>{{ translate('price') }}</th>
+                                <th>{{ translate('discount') }}</th>
+                                <th>{{ translate('price after discount') }}</th>
+                                <th>{{ translate('available') }}</th>
+                                <th>{{ translate('appearance number') }}</th>
+                                <th>{{ translate('creation date') }}</th>
+                                <th>{{ translate('last update date') }}</th>
+                                <th>{{ translate('settings') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -179,9 +179,9 @@
                                 </td>
                                 <td>
                                     @if ($product->active)
-                                        <div class="badge badge-success w-100 p-2">نعم</div>
+                                        <div class="badge badge-success w-100 p-2">{{ translate('yes') }}</div>
                                     @else
-                                        <div class="badge badge-secondary w-100">لا</div>
+                                        <div class="badge badge-secondary w-100">{{ translate('no') }}</div>
                                     @endif
                                 </td>
                                 <td>
@@ -198,20 +198,20 @@
                                         @can('products.show')
                                             <a class="btn btn-success mr-1"
                                                 href="{{ route('products.show', $product) }}">
-                                                <span>اظهار</span>
+                                                <span>{{ translate('show') }}</span>
                                                 <span class="mdi mdi-eye"></span>
                                             </a>
                                         @endcan
                                         @can('products.edit')
                                             <a class="btn btn-info mr-1" href="{{ route('products.edit', $product) }}">
-                                                <span>تعديل</span>
+                                                <span>{{ translate('edit') }}</span>
                                                 <span class="mdi mdi-circle-edit-outline"></span>
                                             </a>
                                         @endcan
                                         @can('products.destroy')
                                             <button class="btn btn-danger" data-toggle="modal"
                                                 data-target="#modal_{{ $product->id }}">
-                                                <span>ازالة</span>
+                                                <span>{{ translate('delete') }}</span>
                                                 <span class="mdi mdi-delete-outline"></span>
                                             </button>
                                             <!-- Modal -->
@@ -225,10 +225,10 @@
                             @if($product->variants)
                                 @if(isset($product->variants->groupBy('type')['size']))
                                     <tr>
-                                        <td>الحجم</td>
-                                        <td>السعر</td>
-                                        <td>الخصم</td>
-                                        <td>السعر بعد الخصم</td>
+                                        <td>{{ translate('size') }}</td>
+                                        <td>{{ translate('price') }}</td>
+                                        <td>{{ translate('discount') }}</td>
+                                        <td>{{ translate('price after discount') }}</td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
@@ -257,8 +257,8 @@
                                 @endif
                                 @if(isset($product->variants->groupBy('type')['extra']))
                                     <tr>
-                                        <td>الأضافة</td>
-                                        <td>السعر</td>
+                                        <td>{{ translate('extra') }}</td>
+                                        <td>{{ translate('price') }}</td>
                                         <td></td>
                                         <td></td>
                                         <td></td>

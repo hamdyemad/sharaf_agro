@@ -19,7 +19,7 @@ class BranchController extends Controller
     public function index(Request $request)
     {
         $this->authorize('branches.index');
-        Carbon::setLocale('ar');
+        Carbon::setLocale(app()->getLocale());
         $branches = Branch::latest();
         if($request->name) {
            $branches->where('name', 'like', '%' . $request->name . '%');
@@ -60,10 +60,10 @@ class BranchController extends Controller
             'phone' => 'required|string'
         ];
         $messages = [
-            'name.required' => 'الأسم مطلوب',
-            'name.unique' => 'يجب أن تختار أسم غير موجود بالفعل',
-            'address.required' => 'العنوان مطلوب',
-            'phone.required' => 'الرقم مطلوب',
+            'name.required' => translate('the name is required'),
+            'name.unique' => translate('you should choose a name is not already exists'),
+            'address.required' => translate('the address is required'),
+            'phone.required' => translate('the phone is required'),
         ];
         $validator = Validator::make($request->all(), $rules, $messages);
         if($validator->fails()) {
@@ -74,7 +74,7 @@ class BranchController extends Controller
             'address' => $request->address,
             'phone' => $request->phone
         ]);
-        return redirect()->back()->with('success', 'تم انشاء الفرع بنجاح');
+        return redirect()->back()->with('success', translate('created successfully'));
     }
 
     /**
@@ -116,21 +116,21 @@ class BranchController extends Controller
             'phone' => 'required|string'
         ];
         $messages = [
-            'name.required' => 'الأسم مطلوب',
-            'name.unique' => 'يجب أن تختار أسم غير موجود بالفعل',
-            'address.required' => 'العنوان مطلوب',
-            'phone.required' => 'الرقم مطلوب',
+            'name.required' => translate('the name is required'),
+            'name.unique' => translate('you should choose a name is not already exists'),
+            'address.required' => translate('the address is required'),
+            'phone.required' => translate('the phone is required'),
         ];
         $validator = Validator::make($request->all(), $rules, $messages);
         if($validator->fails()) {
-            return redirect()->back()->withErrors($validator->errors())->with('error', 'يوجد مشكلة ما')->withInput($request->all());
+            return redirect()->back()->withErrors($validator->errors())->with('error', translate('there is something error'))->withInput($request->all());
         }
         $branch->update([
             'name' => $request->name,
             'address' => $request->address,
             'phone' => $request->phone
         ]);
-        return redirect()->back()->with('info', 'تم تعديل الفرع بنجاح');
+        return redirect()->back()->with('info', translate('updated successfully'));
     }
 
     /**
@@ -143,6 +143,6 @@ class BranchController extends Controller
     {
         $this->authorize('branches.destroy');
         Branch::destroy($branch->id);
-        return redirect()->back()->with('error', 'تم ازالة فرع ' . $branch->name . ' بنجاح');
+        return redirect()->back()->with('error', translate('deleted successfully'));
     }
 }

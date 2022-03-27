@@ -1,22 +1,22 @@
 @extends('layouts.master')
 
 @section('title')
-تعديل الطلب
+{{ translate('edit order') }}
 @endsection
 @section('content')
     @component('common-components.breadcrumb')
-        @slot('title') الطلبات @endslot
-        @slot('li1') لوحة التحكم @endslot
-        @slot('li2') الطلبات @endslot
+        @slot('title') {{ translate('orders') }} @endslot
+        @slot('li1') {{ translate('dashboard') }} @endslot
+        @slot('li2') {{ translate('orders') }} @endslot
         @slot('route1') {{ route('dashboard') }} @endslot
         @slot('route2') {{ route('orders.index') }} @endslot
-        @slot('li3') تعديل الطلب @endslot
+        @slot('li3') {{ translate('edit order') }} @endslot
     @endcomponent
     <div class="create_order">
         <div class="container">
             <div class="card">
                 <div class="card-header">
-                    تعديل الطلب
+                    {{ translate('edit order') }}
                 </div>
                 <div class="card-body">
                     <form action="{{ route('orders.update', $order) }}" method="POST">
@@ -26,7 +26,7 @@
                             @if(Auth::user()->type == 'admin')
                                 <div class="col-12 col-md-6 branch_col">
                                     <div class="form-group">
-                                        <label for="name">فرع انشاء الطلب</label>
+                                        <label for="branch_id">{{ translate('order branch creation') }}</label>
                                         <select class="form-control select2 branch_select" name="branch_id">
                                             @foreach ($branches as $branch)
                                                 <option value="{{ $branch->id }}" @if($order->branch_id == $branch->id) selected @endif>{{ $branch->name }}</option>
@@ -39,17 +39,17 @@
                             @endif
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="name">نوع الطلب</label>
+                                    <label for="type">{{ translate('order type') }}</label>
                                     <select class="form-control order_type select2" name="type">
-                                        <option value="inhouse" @if($order->type == 'inhouse') selected @endif>فى الفرع</option>
-                                        <option value="online" @if($order->type == 'online') selected @endif>أونلاين</option>
+                                        <option value="inhouse" @if($order->type == 'inhouse') selected @endif>{{ translate('receipt from the branch') }}</option>
+                                        <option value="online" @if($order->type == 'online') selected @endif>{{ translate('online order') }}</option>
                                     </select>
                                 </div>
                             </div>
                             @if($order->type == 'online')
                                 <div class="col-12 col-md-6 country_col">
                                     <div class="form-group">
-                                        <label for="country">البلد</label>
+                                        <label for="country">{{ translate('country') }}</label>
                                         <select class="form-control select2 select_country" name="country_id">
                                             @foreach ($countries as $country)
                                             <option value="{{ $country->id }}" @if($order->city->country_id == $country->id) selected @endif>{{ $country->name }}</option>
@@ -59,7 +59,7 @@
                                 </div>
                                 <div class="col-12 col-md-6 city_col">
                                     <div class="form-group">
-                                        <label for="country">المدينة</label>
+                                        <label for="city_id">{{ translate('city') }}</label>
                                         <select class="form-control select_city" name="city_id">
                                             @foreach ($cities as $city)
                                             <option value="{{ $city->id }}" data-shipping="{{ $city->price }}" @if($order->city->id == $city->id) selected @endif>{{ $city->name }}</option>
@@ -72,7 +72,7 @@
                                 </div>
                                 <div class="col-12 col-md-6 address_col">
                                     <div class="form-group">
-                                        <label for="customer_address">عنوان العميل</label>
+                                        <label for="customer_address">{{ translate('customer address') }}</label>
                                         <input type="text" class="form-control" name="customer_address" value="{{ $order->customer_address }}">
                                         @error('customer_address')
                                             <div class="text-danger">{{ $message }}</div>
@@ -82,7 +82,7 @@
                             @endif
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="customer_name">أسم العميل</label>
+                                    <label for="customer_name">{{ translate('customer name') }}</label>
                                     <input type="text" class="form-control" name="customer_name" value="{{ $order->customer_name }}">
                                     @error('customer_name')
                                         <div class="text-danger">{{ $message }}</div>
@@ -91,7 +91,7 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="customer_phone">رقم العميل</label>
+                                    <label for="customer_phone">{{ translate('customer phone') }}</label>
                                     <input type="number" class="form-control" name="customer_phone" value="{{ $order->customer_phone }}">
                                     @error('customer_phone')
                                         <div class="text-danger">{{ $message }}</div>
@@ -100,8 +100,8 @@
                             </div>
                             <div class="col-12">
                                 <div class="form-group">
-                                    <label for="name">المنتجات</label>
-                                    <select class="form-control select_products select2 select2-multiple"data-placeholder="أختر المنتجات" name="products_search[]" multiple>
+                                    <label for="products">{{ translate('products') }}</label>
+                                    <select class="form-control select_products select2 select2-multiple"data-placeholder="{{ translate('choose') }}" name="products_search[]" multiple>
                                         @foreach ($products as $product)
                                             <option value="{{ $product->id }}" @if(in_array($product->id,$order->order_details->pluck('product_id')->toArray())) selected @endif>{{ $product->name }}</option>
                                         @endforeach
@@ -113,7 +113,7 @@
                             </div>
                             <div class="col-12">
                                 <div class="form-group">
-                                    <label for="name">الملاحظات</label>
+                                    <label for="notes">{{ translate('notes') }}</label>
                                     <textarea id="textarea" class="form-control" name="notes" maxlength="225"
                                         rows="3">{{ $order->notes }}</textarea>
                                     @error('notes')
@@ -125,12 +125,12 @@
                                 <div class="table-responsive products_table">
                                     <table class="table variant_table">
                                         <thead>
-                                            <th>أسم المنتج</th>
-                                            <th>السعر</th>
-                                            <th>الكمية</th>
-                                            <th>السعر الكلى</th>
-                                            <th>الحجم</th>
-                                            <th>الأضافات</th>
+                                            <th>{{ translate('food name') }}</th>
+                                            <th>{{ translate('price') }}</th>
+                                            <th>{{ translate('quantity') }}</th>
+                                            <th>{{ translate('total price') }}</th>
+                                            <th>{{ translate('size') }}</th>
+                                            <th>{{ translate('extra') }}</th>
                                             <th></th>
                                             <th></th>
                                             <th></th>
@@ -167,13 +167,13 @@
                                                         </td>
                                                     @else
                                                         <td>
-                                                            لا يوجد سعر
+                                                            {{ translate('there is no price') }}
                                                         </td>
                                                         <td>
-                                                            لا يوجد كمية
+                                                            {{ translate('there is no quantity') }}
                                                         </td>
                                                         <td>
-                                                            لا يوجد سعر كلى
+                                                            {{ translate('there is no total price') }}
                                                         </td>
                                                     @endif
                                                     <td>
@@ -186,7 +186,7 @@
                                                                 @endforeach
                                                             </ul>
                                                         @else
-                                                        لا يوجد أحجام
+                                                        {{ translate('there is no sizes') }}
                                                         @endif
                                                     </td>
                                                     <td>
@@ -199,7 +199,7 @@
                                                                 @endforeach
                                                             </ul>
                                                         @else
-                                                        لا يوجد اضافات
+                                                        {{ translate('there is no extras') }}
                                                         @endif
                                                     </td>
                                                 </tr>
@@ -209,11 +209,11 @@
                                     @if(count($order->order_details->where('variant_type', '!=', null)->where('variant_type', 'size')) > 0)
                                         <table class="table size-table">
                                             <thead>
-                                                <th>أسم المنتج</th>
-                                                <th>الأحجام</th>
-                                                <th>السعر</th>
-                                                <th>الكمية</th>
-                                                <th>السعر الكلى</th>
+                                                <th>{{ translate('food name') }}</th>
+                                                <th>{{ translate('sizes') }}</th>
+                                                <th>{{ translate('price') }}</th>
+                                                <th>{{ translate('quantity') }}</th>
+                                                <th>{{ translate('total price') }}</th>
                                                 <th></th>
                                                 <th></th>
                                             </thead>
@@ -240,7 +240,7 @@
                                                             @php
                                                                 $variant = \App\Models\ProductVariant::where('product_id', $order_detail->product_id)->where('variant', $order_detail->variant)->first();
                                                             @endphp
-                                                            <input class="form-control amount" name="products[{{ $order_detail->product_id }}][variants][{{ $variant->id }}][amount]" type="number" placeholder="الكمية" value="{{ $order_detail->qty }}" min="1">
+                                                            <input class="form-control amount" name="products[{{ $order_detail->product_id }}][variants][{{ $variant->id }}][amount]" type="number" placeholder="{{ translate('quantity') }}" value="{{ $order_detail->qty }}" min="1">
                                                             @error("products.*.$order_detail->variant_type.amount")
                                                                 <div class="text-danger">{{ $message }}</div>
                                                             @enderror
@@ -257,11 +257,11 @@
                                     @if(count($order->order_details->where('variant_type', '!=', null)->where('variant_type', 'extra')) > 0)
                                         <table class="table extra-table">
                                             <thead>
-                                                <th>أسم المنتج</th>
-                                                <th>الأضافات</th>
-                                                <th>السعر</th>
-                                                <th>الكمية</th>
-                                                <th>السعر الكلى</th>
+                                                <th>{{ translate('food name') }}</th>
+                                                <th>{{ translate('extras') }}</th>
+                                                <th>{{ translate('price') }}</th>
+                                                <th>{{ translate('quantity') }}</th>
+                                                <th>{{ translate('total price') }}</th>
                                                 <th></th>
                                                 <th></th>
                                             </thead>
@@ -288,7 +288,7 @@
                                                             $variant = \App\Models\ProductVariant::where('product_id', $order_detail->product_id)->where('variant', $order_detail->variant)->first();
                                                         @endphp
                                                         <td>
-                                                            <input class="form-control amount" name="products[{{ $order_detail->product_id }}][variants][{{ $variant->id }}][amount]" type="number" placeholder="الكمية" value="{{ $order_detail->qty }}" min="1">
+                                                            <input class="form-control amount" name="products[{{ $order_detail->product_id }}][variants][{{ $variant->id }}][amount]" type="number" placeholder="{{ translate('quantity') }}" value="{{ $order_detail->qty }}" min="1">
                                                             @error("products.*.$order_detail->variant_type.amount")
                                                                 <div class="text-danger">{{ $message }}</div>
                                                             @enderror
@@ -306,28 +306,28 @@
                             </div>
                             <div class="w-100 d-block d-md-flex flex-row-reverse cart-of-total-container">
                                 <div class="cart-of-total">
-                                    <h5>الملخص</h5>
+                                    <h5>{{ translate('summary') }}</h5>
                                     <div class="responsive-table">
                                         <table class="table">
                                             <tbody>
                                                 <tr>
-                                                    <td>السعر الأجمالى</td>
+                                                    <td>{{ translate('total price') }}</td>
                                                     <td>
                                                         <div class="total_prices">{{ ($order->grand_total - $order->shipping) + $order->total_discount }}</div>
                                                     </td>
                                                 </tr>
                                                 @if($order->shipping)
                                                     <tr class="shipping_tr">
-                                                        <td>الشحن</td>
+                                                        <td>{{ translate('shipping') }}</td>
                                                         <td><div class="shipping">{{ $order->shipping }}</div></td>
                                                     </tr>
                                                 @endif
                                                 <tr>
-                                                    <td>الخصم</td>
-                                                    <td><input class="form-control total_discount" name="total_discount" type="number" placeholder="الخصم" min="0" value="{{ $order->total_discount }}"></td>
+                                                    <td>{{ translate('discount') }}</td>
+                                                    <td><input class="form-control total_discount" name="total_discount" type="number" placeholder="{{ translate('discount') }}" min="0" value="{{ $order->total_discount }}"></td>
                                                 </tr>
                                                 <tr>
-                                                    <td>السعر بعد الخصم</td>
+                                                    <td>{{ translate('price after discount') }}</td>
                                                     <td>
                                                         <div class="grand_total">{{ $order->grand_total - $order->total_discount }}</div>
                                                     </td>
@@ -340,8 +340,8 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <label for=""></label>
-                                    <input type="submit" value="تعديل" class="btn btn-success">
-                                    <a href="{{ route('orders.index') }}" class="btn btn-info">رجوع الى الطلبات</a>
+                                    <input type="submit" value="{{ translate('edit') }}" class="btn btn-success">
+                                    <a href="{{ route('orders.index') }}" class="btn btn-info">{{ translate('back to orders') }}</a>
                                 </div>
                             </div>
                         </div>
@@ -356,7 +356,7 @@
         let address_col = `
             <div class="col-12 col-md-6 address_col">
                 <div class="form-group">
-                    <label for="customer_address">عنوان العميل</label>
+                    <label for="customer_address">{{ translate('customer address') }}</label>
                     <input type="text" class="form-control" name="customer_address" value="{{ old('customer_address') }}">
                     @error('customer_address')
                         <div class="text-danger">{{ $message }}</div>
@@ -367,7 +367,7 @@
             country_col = `
             <div class="col-12 col-md-6 country_col">
                 <div class="form-group">
-                    <label for="country">البلد</label>
+                    <label for="country">{{ translate('country') }}</label>
                     <select class="form-control select_country" name="country_id"></select>
                 </div>
             </div>
@@ -375,7 +375,7 @@
             city_col = `
             <div class="col-12 col-md-6 city_col">
                 <div class="form-group">
-                    <label for="country">المدينة</label>
+                    <label for="city_id">{{ translate('city') }}</label>
                     <select class="form-control select_city" name="city_id"></select>
                     @error('city_id')
                         <div class="text-danger">{{ $message }}</div>
@@ -509,7 +509,7 @@
                     <div class="price">${obj.price_after_discount }</div>
                 </td>
                 <td>
-                    <input class="form-control amount" name="products[${product.id}][variants][${obj.id}][amount]" type="number" placeholder="الكمية" value="1">
+                    <input class="form-control amount" name="products[${product.id}][variants][${obj.id}][amount]" type="number" placeholder="{{ translate('quantity') }}" value="1">
                     @error("products.*.*.amount")
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
@@ -527,11 +527,11 @@
             return `
             <table class="table size-table">
                 <thead>
-                    <th>أسم المنتج</th>
-                    <th>الأحجام</th>
-                    <th>السعر</th>
-                    <th>الكمية</th>
-                    <th>السعر الكلى</th>
+                    <th>{{ translate('food name') }}</th>
+                    <th>{{ translate('sizes') }}</th>
+                    <th>{{ translate('price') }}</th>
+                    <th>{{ translate('quantity') }}</th>
+                    <th>{{ translate('total price') }}</th>
                     <th></th>
                     <th></th>
                 </thead>
@@ -543,11 +543,11 @@
             return `
             <table class="table extra-table">
                 <thead>
-                    <th>أسم المنتج</th>
-                    <th>الأضافات</th>
-                    <th>السعر</th>
-                    <th>الكمية</th>
-                    <th>السعر الكلى</th>
+                    <th>{{ translate('food name') }}</th>
+                    <th>{{ translate('extras') }}</th>
+                    <th>{{ translate('price') }}</th>
+                    <th>{{ translate('quantity') }}</th>
+                    <th>{{ translate('total price') }}</th>
                     <th></th>
                     <th></th>
                 </thead>
@@ -582,12 +582,12 @@
         return `
         <table class="table variant_table">
             <thead>
-                <th>أسم المنتج</th>
-                <th>السعر</th>
-                <th>الكمية</th>
-                <th>السعر الكلى</th>
-                <th>الحجم</th>
-                <th>الأضافات</th>
+                <th>{{ translate('food name') }}</th>
+                <th>{{ translate('price') }}</th>
+                <th>{{ translate('quantity') }}</th>
+                <th>{{ translate('total price') }}</th>
+                <th>{{ translate('size') }}</th>
+                <th>{{ translate('extra') }}</th>
             </thead>
             <tbody>
             </tbody>
@@ -633,9 +633,9 @@
                                 return obj.type == 'size';
                             });
                             if(sizeTypeArray.length !==0) {
-                                $(`.${product.id}`).append(`<td>لا يوجد سعر</td>`);
-                                $(`.${product.id}`).append(`<td>لا يوجد كمية</td>`);
-                                $(`.${product.id}`).append(`<td>لا يوجد سعر كلى</td>`);
+                                $(`.${product.id}`).append(`<td>{{ translate('there is no price') }}</td>`);
+                                $(`.${product.id}`).append(`<td>{{ translate('there is no quantity') }}</td>`);
+                                $(`.${product.id}`).append(`<td>{{ translate('there is no total price') }}</td>`);
                                 $(`.${product.id}`).append(`
                                     <td><ul class="select_variant size_select"></ul></td>
                                 `);
@@ -650,7 +650,7 @@
                                 $(`.${product.id}`).append(`<td><div class="price">${product.price_after_discount}</div></td>`);
                                 $(`.${product.id}`).append(`<td><input class="form-control amount" value="1" min="1" type="number" name="products[${product.id}][amount]"></td>`);
                                 $(`.${product.id}`).append(`<td><div class="total_price">${product.price_after_discount}</div></td>`);
-                                $(`.${product.id}`).append(`<td>لا يوجد احجام</td>`);
+                                $(`.${product.id}`).append(`<td>{{ translate('there is no sizes') }}</td>`);
                             }
                             if(extraTypeArray.length !==0) {
                                 $(`.${product.id}`).append(`
@@ -664,7 +664,7 @@
                                     `);
                                 });
                             } else {
-                                $(`.${product.id}`).append(`<td>لا يوجد اضافات</td>`);
+                                $(`.${product.id}`).append(`<td>{{ translate('there is no extras') }}</td>`);
                             }
 
                         } else {
@@ -675,8 +675,8 @@
                             $(`.${product.id}`).append(`<td><div class="price">${product.price_after_discount}</div></td>`);
                             $(`.${product.id}`).append(`<td><input class="form-control amount" value="1" min="1" type="number" name="products[${product.id}][amount]"></td>`);
                             $(`.${product.id}`).append(`<td><div class="total_price">${product.price_after_discount}</div></td>`);
-                            $(`.${product.id}`).append(`<td>لا يوجد احجام</td>`);
-                            $(`.${product.id}`).append(`<td>لا يوجد اضافات</td>`);
+                            $(`.${product.id}`).append(`<td>{{ translate('there is no sizes') }}</td>`);
+                            $(`.${product.id}`).append(`<td>{{ translate('there is no extras') }}</td>`);
                             getFullPrice();
                         }
                     });

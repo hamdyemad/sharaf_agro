@@ -9,4 +9,5 @@
     </div>
     <li class="@if(activeRoute('frontend.profile')) active_link @endif"><a href="{{ route('frontend.profile', Auth::user()) }}">حسابى</a></li>
     <li class="@if(activeRoute('frontend.orders')) active_link @endif"><a href="{{ route('frontend.orders') }}">الطلبات</a></li>
+    <li class="@if(activeRoute('frontend.payments')) active_link @endif"><a href="{{ route('frontend.payments') }}">المدفوعات</a></li>
 </ul>

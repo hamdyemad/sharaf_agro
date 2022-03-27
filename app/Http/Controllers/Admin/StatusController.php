@@ -19,7 +19,7 @@ class StatusController extends Controller
     public function index(Request $request)
     {
         $this->authorize('statuses.index');
-        Carbon::setLocale('ar');
+        Carbon::setLocale(app()->getLocale());
         $statuses = Status::latest();
         if($request->name) {
            $statuses->where('name', 'like', '%' . $request->name . '%');
@@ -64,16 +64,16 @@ class StatusController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|unique:statuses,name'
         ], [
-            'name.required' => 'الحالة مطلوبة',
-            'name.unique' => 'الأسم هذا موجود بالفعل',
+            'name.required' => translate('the name is required'),
+            'name.unique' => translate('the name is already exists'),
         ]);
         if($validator->fails()) {
             return redirect()->back()->withErrors($validator->errors())
             ->withInput($request->all())
-            ->with('error', 'يوجد خطأ ما');
+            ->with('error', translate('there is some thing error'));
         }
         Status::create($creation);
-        return redirect()->back()->with('success', 'تم انشاء الحالة بنجاح');
+        return redirect()->back()->with('success', translate('created successfully'));
 
     }
 
@@ -113,29 +113,29 @@ class StatusController extends Controller
         $creation = [
             'name' => $request->name
         ];
-        if($request->has('default_val')) {
-            if($request->default_val == 'on') {
-                $creation['default_val'] = 1;
-                $status = Status::where('default_val', 1)->first();
-                if($status) {
-                    $status->default_val = 0;
-                    $status->save();
-                }
-            }
-        }
         $validator = Validator::make($request->all(), [
             'name' => ['required', Rule::unique('statuses', 'name')->ignore($status->id)]
         ], [
-            'name.required' => 'الحالة مطلوبة',
-            'name.unique' => 'الأسم هذا موجود بالفعل'
+            'name.required' => translate('the name is required'),
+            'name.unique' => translate('the name is already exists'),
         ]);
         if($validator->fails()) {
             return redirect()->back()->withErrors($validator->errors())
             ->withInput($request->all())
-            ->with('error', 'يوجد خطأ ما');
+            ->with('error', translate('there is some thing error'));
+        }
+        if($request->has('default_val')) {
+            if($request->default_val == 'on') {
+                $creation['default_val'] = 1;
+                $status_finded = Status::where('default_val', 1)->first();
+                if($status_finded) {
+                    $status_finded->default_val = 0;
+                    $status_finded->save();
+                }
+            }
         }
         $status->update($creation);
-        return redirect()->back()->with('info', 'تم تعديل الحالة بنجاح');
+        return redirect()->back()->with('info', translate('updated successfully'));
     }
 
     /**
@@ -148,6 +148,6 @@ class StatusController extends Controller
     {
         $this->authorize('statuses.destroy');
         Status::destroy($status->id);
-        return redirect()->back()->with('success', 'تمت ازالة الحالة بنجاح');
+        return redirect()->back()->with('success', translate('deleted successfully'));
     }
 }

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') لوحة التحكم @endsection
+@section('title') {{translate('dashboard')}}  @endsection
 
 @section('content')
 
@@ -9,7 +9,7 @@
         <div class="row">
 
             @component('common-components.breadcrumb')
-                @slot('title') لوحة التحكم @endslot
+                @slot('title') {{translate('dashboard')}} @endslot
             @endcomponent
 
             {{-- @component('common-components.chart')
@@ -28,7 +28,7 @@
                 @component('common-components.widget')
                     @slot('route') {{ route('branches.index') }} @endslot
                     @slot('icons') mdi mdi-source-branch float-right @endslot
-                    @slot('title') الفروع @endslot
+                    @slot('title') {{translate('branches')}} @endslot
                     @slot('price') {{ $branchesCount }} @endslot
                     @slot('badgeClass') badge-warning @endslot
                 @endcomponent
@@ -37,7 +37,7 @@
                 @component('common-components.widget')
                     @slot('route') {{ route('categories.index') }} @endslot
                     @slot('icons') mdi mdi-inbox-multiple float-right @endslot
-                    @slot('title') الأصناف @endslot
+                    @slot('title') {{translate('categories')}} @endslot
                     @slot('price') {{ $categoriesCount }} @endslot
                     @slot('badgeClass') badge-danger @endslot
                 @endcomponent
@@ -46,7 +46,7 @@
                 @component('common-components.widget')
                     @slot('route') {{ route('products.index') }} @endslot
                     @slot('icons') mdi mdi-food float-right @endslot
-                    @slot('title') الأكلات @endslot
+                    @slot('title') {{translate('foods')}} @endslot
                     @slot('price') {{ $productsCount }} @endslot
                     @slot('badgeClass') badge-info @endslot
                 @endcomponent
@@ -55,7 +55,7 @@
                 @component('common-components.widget')
                     @slot('route') {{ route('products.index') }} @endslot
                     @slot('icons') mdi mdi-cart-outline float-right @endslot
-                    @slot('title') الطلبات @endslot
+                    @slot('title') {{translate('orders')}} @endslot
                     @slot('price') {{ $ordersCount }} @endslot
                     @slot('badgeClass') badge-info @endslot
                 @endcomponent
@@ -67,7 +67,7 @@
             <div class="col">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title">عدد طلبات الحالات</h4>
+                        <h4 class="card-title">{{translate('total orders of statuses')}}</h4>
                         <div id="morris-donut-example" class="morris-charts morris-charts-height" dir="ltr"></div>
                     </div>
                 </div>

@@ -1,0 +1,46 @@
+.all_orders {
+    th {
+        span {
+            display: block;
+            width: max-content;
+        }
+    }
+    .badge {
+        font-size: 16px;
+    }
+    .table select {
+        min-width: 200px !important;
+        max-width: 200px !important;
+    }
+    .product-variants {
+        &:not(:last-of-type) {
+            padding: 0 20px;
+            margin-inline-end: 20px;
+            border-left: 1px solid $gray-400;
+        }
+        .variants {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            li {
+                display: flex;
+                align-items: center;
+                width: max-content;
+                &:not(:last-of-type) {
+                    margin-bottom: 5px;
+                }
+                h6 {
+                    padding: 5px;
+                    background-color: var(--primary);
+                    color: #fff;
+                    margin: 0;
+                    margin-inline-end: 5px;
+                    border-radius: 5px;
+                }
+            }
+            &:not(:last-of-type) {
+                margin-inline-end: 30px;
+            }
+        }
+    }
+}

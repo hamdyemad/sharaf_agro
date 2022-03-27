@@ -11,14 +11,14 @@
     background-color: $header-bg;
     box-shadow: $box-shadow;
     @media (min-width: 991px) {
-        margin-right: $sidebar-width;
+        margin-inline-start: $sidebar-width;
     }
 }
 
 #page-topbar.collapsed {
-    margin-right: $sidebar-width;
+    margin-inline-start: $sidebar-width;
     @media (min-width: 991px) {
-        margin-right: $sidebar-collapsed-width;
+        margin-inline-start: $sidebar-collapsed-width;
     }
 }
 
@@ -151,6 +151,7 @@
     .badge {
         position: absolute;
         top: 12px;
+        right: 0;
     }
 }
 

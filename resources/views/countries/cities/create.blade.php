@@ -3,10 +3,10 @@
 @section('content')
     @component('common-components.breadcrumb')
         @slot('title') {{ $country->name }} @endslot
-        @slot('li1') لوحة التحكم @endslot
+        @slot('li1') {{ translate('dashboard') }} @endslot
         @slot('route1') {{ route('dashboard') }} @endslot
-        @slot('li2') البلاد @endslot
-        @slot('route2') {{ route('countries.index') }} @endslot
+        @slot('li2') {{ translate('cities') }} @endslot
+        @slot('route2') {{ route('countries.cities.index', $country) }} @endslot
         @slot('li3') {{ $country->name }} @endslot
     @endcomponent
     <div class="create">
@@ -14,7 +14,7 @@
             <div class="card">
                 <div class="card-header">
                     <h2>{{ $country->name }}</h2>
-                    انشاء مدينة جديدة
+                    {{ translate('create new city') }}
                 </div>
                 <div class="card-body">
                     <form action="{{ route('countries.cities.store', $country) }}" method="POST">
@@ -23,7 +23,7 @@
                         <div class="row">
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="name">أسم المدينة</label>
+                                    <label for="name">{{ translate('city name') }}</label>
                                     <input type="text" class="form-control" name="name" value="{{ old('name') }}">
                                     @error('name')
                                         <div class="text-danger">{{ $message }}</div>
@@ -32,7 +32,7 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="name">سعر الشحن</label>
+                                    <label for="name">{{ translate('shipping price') }}</label>
                                     <input type="text" class="form-control" name="price" value="{{ old('price') }}">
                                     @error('price')
                                         <div class="text-danger">{{ $message }}</div>
@@ -42,9 +42,8 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <label for=""></label>
-                                    <input type="submit" value="أنشاء" class="btn btn-success">
-                                    <a href="{{ route('countries.cities.index', $country) }}" class="btn btn-info">رجوع
-                                        الى المدن</a>
+                                    <input type="submit" value="{{ translate('create') }}" class="btn btn-success">
+                                    <a href="{{ route('countries.cities.index', $country) }}" class="btn btn-info">{{ translate('back to cities') }}</a>
                                 </div>
                             </div>
                         </div>

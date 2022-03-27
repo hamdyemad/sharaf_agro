@@ -10,12 +10,12 @@
                             <div class="images">
                                 @if($product->photos)
                                     <div class="selected">
-                                        <img class="roundedd" src="{{ asset(json_decode($product->photos)[0]) }}" alt="">
+                                        <img class="rounded" src="{{ asset(json_decode($product->photos)[0]) }}" alt="">
                                     </div>
-                                    <div class="owl-carousel product-carousel owl-theme">
+                                    <div class="owl-carousel product-carousel owl-theme mt-2">
                                         @foreach (json_decode($product->photos) as $photo)
                                             <div class="item">
-                                                <img class="roundedd" src="{{ asset($photo) }}" alt="">
+                                                <img class="rounded" src="{{ asset($photo) }}" alt="">
                                             </div>
                                         @endforeach
                                     </div>
@@ -47,7 +47,7 @@
                                                     <ul class="select_variant size_select">
                                                         @foreach ($product->variants->groupBy('type')['size'] as $size)
                                                             <li class="variant" data-id="{{ $size->id }}" data-value="{{ $size }}">
-                                                                {{ $size->variant . ' ( ' . $size->price_after_discount . ' ) ' }}
+                                                                {{ $size->variant . ' ( ' . price($size->price_after_discount) . ' ) ' }}
                                                             </li>
                                                         @endforeach
                                                     </ul>
@@ -55,8 +55,8 @@
                                             </div>
                                         @else
                                             <h4 class="prices mt-2 mb-3">
-                                                <del class="d-block mb-2"><span>السعر قبل الخصم : </span> <span>{{ $product->price }}</span></del>
-                                                <div><span>السعر بعد الخصم : </span> <span class="price_after_discount"> {{ $product->price_after_discount }}</span></div>
+                                                <del class="d-block mb-2"><span>السعر قبل الخصم : </span> <span>{{ price($product->price) }}</span></del>
+                                                <div><span>السعر بعد الخصم : </span> <span class="price_after_discount"> {{ price($product->price_after_discount) }}</span></div>
                                             </h4>
                                             <div class="not_variant">
                                                 <input class="form-control amount" type="number" name="amount" min="0" value="1">
@@ -74,7 +74,7 @@
                                                     <ul class="select_variant extra_select">
                                                         @foreach ($product->variants->groupBy('type')['extra'] as $extra)
                                                             <li class="variant" data-id="{{ $extra->id }}" data-value="{{ $extra }}">
-                                                                {{ $extra->variant . ' ( ' . $extra->price_after_discount . ' ) ' }}
+                                                                {{ $extra->variant . ' ( ' . price($extra->price_after_discount) . ' ) ' }}
                                                             </li>
                                                         @endforeach
                                                     </ul>
@@ -85,7 +85,7 @@
                                             <span>السعر الكلى : </span>
                                             <span class="grand_total">
                                                 @if($product->price_after_discount)
-                                                    {{ $product->price_after_discount }}
+                                                    {{ price($product->price_after_discount) }}
                                                 @else
                                                     0
                                                 @endif

@@ -20,7 +20,7 @@ class CityController extends Controller
     public function index(Request $request, Country $country)
     {
         $this->authorize('countries.index');
-        Carbon::setLocale('ar');
+        Carbon::setLocale(app()->getLocale());
         $cities = City::where('country_id', $country->id)->latest();
         if($request->name) {
             $cities = $cities->where('name', 'like', '%'. $request->name . '%');
@@ -63,20 +63,20 @@ class CityController extends Controller
             'country_id' => 'required|exists:countries,id'
         ];
         $messages = [
-            'name.required' => 'الأسم مطلوب',
-            'name.unique' => 'يجب أن تختار أسم غير موجود بالفعل',
-            'price.required' => 'السعر مطلوب',
-            'name.regex' => 'السعر يجب أن يكون رقم',
-            'country_id.required' => 'البلد مطلوب',
-            'country_id.exists' => 'البلد يجب أن تكون موجودة',
+            'name.required' => translate('the name is required'),
+            'name.unique' => translate('you should choose a name is not already exists'),
+            'price.required' => translate('the price is required'),
+            'name.regex' => translate('the price should be a number'),
+            'country_id.required' => translate('the country is required'),
+            'country_id.exists' => translate('the name is required'),
 
         ];
         $validator = Validator::make($request->all(), $rules, $messages);
         if($validator->fails()) {
-            return redirect()->back()->withErrors($validator->errors())->with('error', 'يوجد مشكلة ما')->withInput($request->all());
+            return redirect()->back()->withErrors($validator->errors())->with('error', translate('there is something error'))->withInput($request->all());
         }
         City::create($creation);
-        return redirect()->back()->with('success', 'تم انشاء المدينة بنجاح');
+        return redirect()->back()->with('success', translate('created successfully'));
     }
 
     /**
@@ -123,20 +123,20 @@ class CityController extends Controller
             'country_id' => 'required|exists:countries,id'
         ];
         $messages = [
-            'name.required' => 'الأسم مطلوب',
-            'name.unique' => 'يجب أن تختار أسم غير موجود بالفعل',
-            'price.required' => 'السعر مطلوب',
-            'name.regex' => 'السعر يجب أن يكون رقم',
-            'country_id.required' => 'البلد مطلوب',
-            'country_id.exists' => 'البلد يجب أن تكون موجودة',
+            'name.required' => translate('the name is required'),
+            'name.unique' => translate('you should choose a name is not already exists'),
+            'price.required' => translate('the price is required'),
+            'name.regex' => translate('the price should be a number'),
+            'country_id.required' => translate('the country is required'),
+            'country_id.exists' => translate('you should choose an exists country'),
 
         ];
         $validator = Validator::make($request->all(), $rules, $messages);
         if($validator->fails()) {
-            return redirect()->back()->withErrors($validator->errors())->with('error', 'يوجد مشكلة ما')->withInput($request->all());
+            return redirect()->back()->withErrors($validator->errors())->with('error', translate('there is something error'))->withInput($request->all());
         }
         $city->update($creation);
-        return redirect()->back()->with('info', 'تم تعديل المدينة بنجاح');
+        return redirect()->back()->with('info', translate('updated successfully'));
     }
 
     /**
@@ -150,6 +150,6 @@ class CityController extends Controller
 
         $this->authorize('countries.destroy');
         City::destroy($city->id);
-        return redirect()->back()->with('error', 'تم ازالة ' . $city->name . ' بنجاح');
+        return redirect()->back()->with('error', translate('deleted successfully'));
     }
 }

@@ -1,13 +1,13 @@
 @extends('layouts.master')
 
 @section('title')
-تعديل الحساب
+{{ translate('edit profile') }}
 @endsection
 
 @section('content')
     @component('common-components.breadcrumb')
         @slot('title') {{ $user->name }} @endslot
-        @slot('li1') لوحة التحكم @endslot
+        @slot('li1') {{ translate('dashboard') }} @endslot
         @slot('route1') {{ route('dashboard') }} @endslot
         @slot('li3') {{ $user->name }} @endslot
     @endcomponent
@@ -15,7 +15,7 @@
         <div class="container">
             <div class="card">
                 <div class="card-header">
-                    تعديل الحساب
+                    {{ translate('edit profile') }}
                 </div>
                 <div class="card-body">
                     <form class="form-horizontal mt-4" method="POST" action="{{ route('users.update', $user) }}"
@@ -26,9 +26,9 @@
                         <div class="row">
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="name">الأسم</label>
+                                    <label for="name">{{ translate('name') }}</label>
                                     <input type="text" name="name" value="{{ $user->name }}"
-                                        class="form-control" placeholder="ادخل الأسم">
+                                        class="form-control">
                                     @error('name')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -36,9 +36,9 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="useremail">البريد الألكترونى</label>
+                                    <label for="useremail">{{ translate('email') }}</label>
                                     <input type="email" name="email" class="form-control" name="email"
-                                        value="{{ $user->email }}" id="useremail" placeholder="أدخل البريد الألكترونى"
+                                        value="{{ $user->email }}" id="useremail"
                                         autocomplete="email">
                                     @error('email')
                                         <div class="text-danger">{{ $message }}</div>
@@ -47,7 +47,7 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="name">الصورة الشخصية</label>
+                                    <label for="name">{{ translate('profile picture') }}</label>
                                     <input type="file" class="form-control input_files" accept="image/*" hidden
                                         name="avatar" value="{{ old('avatar') }}">
                                     <button type="button" class="btn btn-primary form-control files">
@@ -64,23 +64,23 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="username">الهاتف</label>
+                                    <label for="username">{{ translate('phone') }}</label>
                                     <input type="text" name="phone" value="{{ $user->phone }}" autocomplete="phone"
-                                        class="form-control" autofocus id="name" placeholder="أدخل الهاتف">
+                                        class="form-control" autofocus id="name">
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="username">العنوان</label>
+                                    <label for="username">{{ translate('address') }}</label>
                                     <input type="text" name="address" value="{{ $user->address }}" autocomplete="address"
-                                        class="form-control" autofocus id="name" placeholder="أدخل العنوان">
+                                        class="form-control" autofocus id="name">
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="userpassword">الرقم السرى</label>
+                                    <label for="userpassword">{{ translate('password') }}</label>
                                     <input type="password" class="form-control" name="password"
-                                        autocomplete="new-password" id="userpassword" placeholder="ادخل الرقم السرى">
+                                        autocomplete="new-password" id="userpassword">
                                     @error('password')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -88,10 +88,8 @@
                             </div>
                             <div class="col">
                                 <div class="form-group">
-                                    <button class="btn btn-primary w-md waves-effect waves-light" type="submit">تعديل
-                                        الحساب</button>
-                                    <a href="{{ route('dashboard') }}" class="btn btn-info">الرجوع الى
-                                        لوحة التحكم</a>
+                                    <button class="btn btn-primary w-md waves-effect waves-light" type="submit">{{ translate('edit profile') }}</button>
+                                    <a href="{{ route('dashboard') }}" class="btn btn-info">{{ translate('back to dashboard') }}</a>
                                 </div>
                             </div>
                         </div>

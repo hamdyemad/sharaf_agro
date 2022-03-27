@@ -29,7 +29,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $this->authorize('products.index');
-        Carbon::setLocale('ar');
+        Carbon::setLocale(app()->getLocale());
         if(Auth::user()->type == 'admin') {
             $categories = Category::latest()->get();
             $products = Product::latest();
@@ -90,7 +90,7 @@ class ProductController extends Controller
         if(count($branches) > 0) {
             return view('categories.products.create', compact('branches'));
         } else {
-            return redirect()->back()->with('error', 'يجب أنشاء فروع أولا');
+            return redirect()->back()->with('error', translate('you should create branch first'));
         }
     }
 
@@ -112,24 +112,24 @@ class ProductController extends Controller
             'viewed_number' => 'integer',
         ];
         $validator_array_msgs = [
-            'name.required' => 'الأسم مطلوب',
-            'branch_id.required' => 'الفرع مطلوب',
-            'branch_id.exists' => 'الفرع يجب ان يكون موجود',
-            'category_id.required' => 'الصنف مطلوب',
-            'category_id.exists' => 'يجب أن يكون الصنف موجود بالفعل',
-            'price.required' => 'السعر مطلوب',
-            'price.regex' => 'السعر يجب أن يكون رقم',
-            'discount.regex' => 'الخصم يجب أن يكون رقم',
-            'viewed_number.integer' => 'رقم الظهور يجب أن يكون رقم',
+            'name.required' => translate('the name is required'),
+            'branch_id.required' => translate('the branch is required'),
+            'branch_id.exists' => translate('the branch should be exists'),
+            'category_id.required' => translate('the category is required'),
+            'category_id.exists' => translate('the category should be exists'),
+            'price.required' => translate('the price is required'),
+            'price.regex' => translate('the price should be a number'),
+            'discount.regex' => translate('the discount should be a number'),
+            'viewed_number.integer' => translate('the viewed number should be a number'),
         ];
         if(isset($request->extras_type)) {
             if($request->extras) {
                 $validator_array['extras.*.variant'] = 'required';
                 $validator_array['extras.*.price'] = 'required';
                 $validator_array['extras.*.price'] = 'regex:/^\d+(\.\d{1,2})?$/';
-                $validator_array_msgs['extras.*.variant.required'] = 'الأضافة مطلوبة ';
-                $validator_array_msgs['extras.*.price.required'] = 'السعر مطلوب ';
-                $validator_array_msgs['extras.*.price.regex'] = 'السعر يجب ان يكون رقم';
+                $validator_array_msgs['extras.*.variant.required'] = translate('the extra is required');
+                $validator_array_msgs['extras.*.price.required'] = translate('the price is required');
+                $validator_array_msgs['extras.*.price.regex'] = translate('the price should be a number');
             }
             if($request->sizes) {
                 unset($validator_array['price']);
@@ -138,10 +138,10 @@ class ProductController extends Controller
                 $validator_array['sizes.*.price'] = 'required';
                 $validator_array['sizes.*.price'] = 'regex:/^\d+(\.\d{1,2})?$/';
                 $validator_array['sizes.*.discount'] = 'regex:/^\d+(\.\d{1,2})?$/';
-                $validator_array_msgs['sizes.*.variant.required'] = 'المقاس مطلوب ';
-                $validator_array_msgs['sizes.*.price.required'] = 'السعر مطلوب ';
-                $validator_array_msgs['sizes.*.price.regex'] = 'السعر يجب ان يكون رقم';
-                $validator_array_msgs['sizes.*.discount.regex'] = 'الخصم يجب ان يكون رقم';
+                $validator_array_msgs['sizes.*.variant.required'] = translate('the size is required');
+                $validator_array_msgs['sizes.*.price.required'] = translate('the price is required');
+                $validator_array_msgs['sizes.*.price.regex'] = translate('the price should be a number');
+                $validator_array_msgs['sizes.*.discount.regex'] = translate('the discount should be a number');
             }
         }
         $validator = Validator::make($request->all(), $validator_array, $validator_array_msgs);
@@ -163,7 +163,7 @@ class ProductController extends Controller
         if($validator->fails()) {
             return redirect()->back()->withErrors($validator->errors())
             ->withInput($request->all())
-            ->with('error', 'يوجد خطأ ما');
+            ->with('error', translate('there is something error'));
         }
         if($request->has('photos')) {
             foreach ($request->file('photos') as $photo) {
@@ -200,7 +200,7 @@ class ProductController extends Controller
                 ]);
             }
         }
-        return redirect()->back()->with('success', 'تم انشاء المنتج بنجاح');
+        return redirect()->back()->with('success', translate('created successfully'));
     }
 
     /**
@@ -228,7 +228,7 @@ class ProductController extends Controller
         if(count($branches) > 0) {
             return view('categories.products.edit', compact('product', 'branches'));
         } else {
-            return redirect()->back()->with('error', 'يجب أنشاء فروع أولا');
+            return redirect()->back()->with('error', translate('you should create branch first'));
         }
     }
 
@@ -260,24 +260,24 @@ class ProductController extends Controller
             'viewed_number' => 'integer',
         ];
         $validator_array_msgs = [
-            'name.required' => 'الأسم مطلوب',
-            'branch_id.required' => 'الفرع مطلوب',
-            'branch_id.exists' => 'الفرع يجب ان يكون موجود',
-            'category_id.required' => 'الصنف مطلوب',
-            'category_id.exists' => 'يجب أن يكون الصنف موجود بالفعل',
-            'price.required' => 'السعر مطلوب',
-            'price.regex' => 'السعر يجب أن يكون رقم',
-            'discount.regex' => 'الخصم يجب أن يكون رقم',
-            'viewed_number.integer' => 'رقم الظهور يجب أن يكون رقم',
+            'name.required' => translate('the name is required'),
+            'branch_id.required' => translate('the branch is required'),
+            'branch_id.exists' => translate('the branch should be exists'),
+            'category_id.required' => translate('the category is required'),
+            'category_id.exists' => translate('the category should be exists'),
+            'price.required' => translate('the price is required'),
+            'price.regex' => translate('the price should be a number'),
+            'discount.regex' => translate('the discount should be a number'),
+            'viewed_number.integer' => translate('the viewed number should be a number'),
         ];
         if(isset($request->extras_type)) {
             if($request->extras) {
                 $validator_array['extras.*.variant'] = 'required';
                 $validator_array['extras.*.price'] = 'required';
                 $validator_array['extras.*.price'] = 'regex:/^\d+(\.\d{1,2})?$/';
-                $validator_array_msgs['extras.*.variant.required'] = 'الأضافة مطلوبة ';
-                $validator_array_msgs['extras.*.price.required'] = 'السعر مطلوب ';
-                $validator_array_msgs['extras.*.price.regex'] = 'السعر يجب ان يكون رقم';
+                $validator_array_msgs['extras.*.variant.required'] = translate('the branch is required');
+                $validator_array_msgs['extras.*.price.required'] = translate('the price is required');
+                $validator_array_msgs['extras.*.price.regex'] = translate('the price should be a number');
             }
             if($request->sizes) {
                 unset($validator_array['price']);
@@ -288,10 +288,10 @@ class ProductController extends Controller
                 $validator_array['sizes.*.price'] = 'required';
                 $validator_array['sizes.*.price'] = 'regex:/^\d+(\.\d{1,2})?$/';
                 $validator_array['sizes.*.discount'] = 'regex:/^\d+(\.\d{1,2})?$/';
-                $validator_array_msgs['sizes.*.variant.required'] = 'المقاس مطلوب ';
-                $validator_array_msgs['sizes.*.price.required'] = 'السعر مطلوب ';
-                $validator_array_msgs['sizes.*.price.regex'] = 'السعر يجب ان يكون رقم';
-                $validator_array_msgs['sizes.*.discount.regex'] = 'الخصم يجب ان يكون رقم';
+                $validator_array_msgs['sizes.*.variant.required'] = translate('the size is required');
+                $validator_array_msgs['sizes.*.price.required'] = translate('the price is required');
+                $validator_array_msgs['sizes.*.price.regex'] = translate('the price should be a number');
+                $validator_array_msgs['sizes.*.discount.regex'] = translate('the discount should be a number');
             }
         }
         $validator = Validator::make($request->all(), $validator_array, $validator_array_msgs);
@@ -305,7 +305,7 @@ class ProductController extends Controller
         if($validator->fails()) {
             return redirect()->back()->withErrors($validator->errors())
             ->withInput($request->all())
-            ->with('error', 'يوجد خطأ ما');
+            ->with('error', translate('there is something error'));
         }
         if($request->has('photos')) {
             // Remove Current Photo
@@ -342,13 +342,15 @@ class ProductController extends Controller
                 ]);
             }
         }
-        return redirect()->back()->with('info', 'تم تعديل المنتج بنجاح');
+        return redirect()->back()->with('info', translate('updated successfully'));
     }
 
     public function removePhotos(Product $product) {
-        foreach (json_decode($product->photos) as $photo) {
-            if(file_exists($photo)) {
-                unlink($photo);
+        if($product->photos) {
+            foreach (json_decode($product->photos) as $photo) {
+                if(file_exists($photo)) {
+                    unlink($photo);
+                }
             }
         }
     }
@@ -365,7 +367,7 @@ class ProductController extends Controller
         if(count($products) > 0) {
             return $this->sendRes('', true, $products);
         } else {
-            return $this->sendRes('لا يوجد أكلات حاليا فى الفرع', false);
+            return $this->sendRes(translate('there is no foods in the branch yet'), false);
         }
     }
 
@@ -382,6 +384,6 @@ class ProductController extends Controller
             $this->removePhotos($product);
         }
         Product::destroy($product->id);
-        return redirect()->back()->with('error', 'تم ازالة' . $product->name . ' بنجاح');
+        return redirect()->back()->with('error', translate('deleted successfully'));
     }
 }

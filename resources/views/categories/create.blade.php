@@ -1,22 +1,22 @@
 @extends('layouts.master')
 
 @section('title')
-انشاء صنف جديد
+{{ translate('create new category') }}
 @endsection
 @section('content')
     @component('common-components.breadcrumb')
-        @slot('title') الأصناف @endslot
-        @slot('li1') لوحة التحكم @endslot
-        @slot('li2') الأصناف @endslot
+        @slot('title') {{ translate('categories') }} @endslot
+        @slot('li1') {{ translate('dashboard') }} @endslot
+        @slot('li2') {{ translate('categories') }} @endslot
         @slot('route1') {{ route('dashboard') }} @endslot
         @slot('route2') {{ route('categories.index') }} @endslot
-        @slot('li3') انشاء صنف جديد @endslot
+        @slot('li3') {{ translate('create new category') }} @endslot
     @endcomponent
     <div class="create_category">
         <div class="container">
             <div class="card">
                 <div class="card-header">
-                    انشاء صنف جديد
+                    {{ translate('create new category') }}
                 </div>
                 <div class="card-body">
                     <form action="{{ route('categories.store') }}" method="POST" enctype="multipart/form-data">
@@ -24,7 +24,7 @@
                         <div class="row">
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="name">أسم الصنف</label>
+                                    <label for="name">{{ translate('category name') }}</label>
                                     <input type="text" class="form-control" name="name" value="{{ old('name') }}">
                                     @error('name')
                                         <div class="text-danger">{{ $message }}</div>
@@ -33,7 +33,7 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="name">صورة الصنف</label>
+                                    <label for="name">{{ translate('category image') }}</label>
                                     <input type="file" class="form-control input_files" accept="image/*" hidden name="photo"
                                         value="{{ old('photo') }}">
                                     <button type="button" class="btn btn-primary form-control files">
@@ -45,9 +45,9 @@
                             @if(Auth::user()->type == 'admin')
                                 <div class="col-12 col-md-6">
                                     <div class="form-group">
-                                        <label for="category">الفرع</label>
+                                        <label for="category">{{ translate('the branch') }}</label>
                                         <select class="form-control select2" name="branch_id">
-                                            <option value="">أختر الفرع</option>
+                                            <option value="">{{ translate('choose') }}</option>
                                             @foreach ($branches as $branch)
                                                 <option value="{{ $branch->id }}" @if (old('branch_id') == $branch->id) selected @endif>{{ $branch->name }}</option>
                                             @endforeach
@@ -62,7 +62,7 @@
                             @endif
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="name">رقم الظهور</label>
+                                    <label for="name">{{ translate('appearance number') }}</label>
                                     <input type="integer" class="form-control" name="viewed_number" value="{{ old('viewed_number') }}">
                                     @error('viewed_number')
                                         <div class="text-danger">{{ $message }}</div>
@@ -70,17 +70,17 @@
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
-                                <label for="مرئى">مرئى</label>
+                                <label for="{{ translate('available') }}">{{ translate('available') }}</label>
                                 <div class="form-group">
                                     <input type="checkbox" name="active" id="switch4" switch="bool" checked />
-                                    <label for="switch4" data-on-label="Yes" data-off-label="No"></label>
+                                    <label for="switch4" data-on-label="{{ translate('yes') }}" data-off-label="{{ translate('no') }}"></label>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="form-group">
                                     <label for=""></label>
-                                    <input type="submit" value="أنشاء" class="btn btn-success">
-                                    <a href="{{ route('categories.index') }}" class="btn btn-info">رجوع الى الأصناف</a>
+                                    <input type="submit" value="{{ translate('create') }}" class="btn btn-success">
+                                    <a href="{{ route('categories.index') }}" class="btn btn-info">{{ translate('back to categories') }}</a>
                                 </div>
                             </div>
                         </div>

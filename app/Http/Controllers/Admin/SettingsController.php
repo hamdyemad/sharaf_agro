@@ -110,7 +110,7 @@ class SettingsController extends Controller
                     ]);
                 }
             }
-            return redirect()->back()->with('info', 'تم التعديل بنجاح');
+            return redirect()->back()->with('info', translate('updated successfully'));
 
         }
     }

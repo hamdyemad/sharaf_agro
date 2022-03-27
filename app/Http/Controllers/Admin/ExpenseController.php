@@ -33,7 +33,7 @@ class ExpenseController extends Controller
         $this->authorize('expenses.index');
         if($request->has('type')) {
 
-            Carbon::setLocale('ar');
+            Carbon::setLocale(app()->getLocale());
             $business = Business::where('id', $request->type)->first();
             $expenses = Expense::latest();
             $expenses->where('type', $request->type);
@@ -52,7 +52,7 @@ class ExpenseController extends Controller
             $expenses = $expenses->paginate(10);
             return view('business.expenses.index', compact('expenses', 'business'));
         } else {
-            return redirect()->back()->with('error', 'يوجد خطأ ما');
+            return redirect()->back()->with('error', translate('there is something error'));
         }
     }
 
@@ -68,7 +68,7 @@ class ExpenseController extends Controller
             $business = Business::where('id', $request->type)->first();
             return view('business.expenses.create', compact('business'));
         } else {
-            return redirect()->back()->with('error', 'يوجد خطأ ما');
+            return redirect()->back()->with('error', translate('there is something error'));
         }
     }
 
@@ -84,9 +84,9 @@ class ExpenseController extends Controller
         if($request->has('type')) {
             $business = Business::where('id', $request->type)->first();
             Expense::create($this->values($request));
-            return redirect()->back()->with('success', 'تم انشاء ' . $business->name . ' بنجاح');
+            return redirect()->back()->with('success', translate('created successfully'));
         } else {
-            return redirect()->back()->with('error', 'يوجد خطأ ما');
+            return redirect()->back()->with('error', translate('there is something error'));
         }
     }
 
@@ -115,7 +115,7 @@ class ExpenseController extends Controller
             return view('business.expenses.edit', compact('expense', 'business'));
         }
         else {
-            return redirect()->back()->with('error', 'يوجد خطأ ما');
+            return redirect()->back()->with('error', translate('there is something error'));
         }
     }
 
@@ -132,9 +132,9 @@ class ExpenseController extends Controller
         if($request->has('type')) {
             $business = Business::where('id', $request->type)->first();
             $expense->update($this->values($request));
-            return redirect()->back()->with('info', 'تم تعديل ' . $business->name . ' بنجاح');
+            return redirect()->back()->with('info', translate('updated successfully'));
         } else {
-            return redirect()->back()->with('error', 'يوجد خطأ ما');
+            return redirect()->back()->with('error', translate('there is something error'));
         }
     }
 
@@ -148,6 +148,6 @@ class ExpenseController extends Controller
     {
         $this->authorize('expenses.destroy');
         Expense::destroy($expense->id);
-        return redirect()->back()->with('success', 'تمت الأزالة بنجاح');
+        return redirect()->back()->with('success', translate('deleted successfully'));
     }
 }

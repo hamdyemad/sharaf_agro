@@ -6,6 +6,7 @@
         }
     }
     .products {
+        @import "./inc/dots_and_nav";
         .item {
             text-align: center;
             img {

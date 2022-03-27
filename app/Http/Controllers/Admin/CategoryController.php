@@ -23,7 +23,7 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         $this->authorize('categories.index');
-        Carbon::setLocale('ar');
+        Carbon::setLocale(app()->getLocale());
         if(Auth::user()->type == 'admin') {
             $categories = Category::latest();
         } else {
@@ -52,7 +52,7 @@ class CategoryController extends Controller
         if(count($branches) > 0) {
             return view('categories.create', compact('branches'));
         } else {
-            return redirect()->back()->with('error', 'يجب أنشاء فروع أولا');
+            return redirect()->back()->with('error', translate('you should create category first'));
 
         }
     }
@@ -70,13 +70,13 @@ class CategoryController extends Controller
             'name' => 'required',
             'branch_id' => 'required|exists:branches,id'
         ], [
-            'name.required' => 'الأسم مطلوب',
-            'branch_id.required' => 'الفرع مطلوب',
-            'branch_id.exists' => 'الفرع يجب ان يكون موجود'
+            'name.required' => translate('the name is required'),
+            'branch_id.required' => translate('the branch is required'),
+            'branch_id.exists' => translate('the branch should be exists')
 
         ]);
         if($validator->fails()) {
-            return redirect()->back()->withErrors($validator->errors())->withInput($request->all())->with('error', 'يوجد خطأ ما');
+            return redirect()->back()->withErrors($validator->errors())->withInput($request->all())->with('error', translate('there is something error'));
         }
         $creation = [
             'name' => $request->name,
@@ -92,7 +92,7 @@ class CategoryController extends Controller
             $creation['photo'] = $this->uploadFile($request, $this->categoriesPath, 'photo');
         }
         Category::create($creation);
-        return redirect()->back()->with('success', 'تم انشاء الصنف بنجاح');
+        return redirect()->back()->with('success', translate('created successfully'));
     }
 
     /**
@@ -135,9 +135,9 @@ class CategoryController extends Controller
             'name' => ['required'],
             'branch_id' => 'required|exists:branches,id'
         ], [
-            'name.required' => 'الأسم مطلوب',
-            'branch_id.required' => 'الفرع مطلوب',
-            'branch_id.exists' => 'الفرع يجب ان يكون موجود'
+            'name.required' => translate('the name is required'),
+            'branch_id.required' => translate('the branch is required'),
+            'branch_id.exists' => translate('the branch should be exists')
         ]);
         $updateTable = [
             'name' => $request->name,
@@ -150,7 +150,7 @@ class CategoryController extends Controller
             $updateTable['active'] = 0;
         }
         if($validator->fails()) {
-            return redirect()->back()->withErrors($validator->errors())->withInput($request->all())->with('error', 'يوجد خطأ ما');
+            return redirect()->back()->withErrors($validator->errors())->withInput($request->all())->with('error', translate('there is something error'));
         }
         if($request->has('photo')) {
             $updateTable['photo'] = $this->uploadFile($request, $this->categoriesPath, 'photo');
@@ -162,7 +162,7 @@ class CategoryController extends Controller
             }
         }
         $category->update($updateTable);
-        return redirect()->back()->with('info', 'تم تعديل الصنف بنجاح');
+        return redirect()->back()->with('info', translate('updated successfully'));
     }
 
 
@@ -190,6 +190,6 @@ class CategoryController extends Controller
             }
         }
         Category::destroy($category->id);
-        return redirect()->back()->with('success', 'تمت ازالة ' . $category->name . ' بنجاح');
+        return redirect()->back()->with('success', translate('deleted successfully'));
     }
 }

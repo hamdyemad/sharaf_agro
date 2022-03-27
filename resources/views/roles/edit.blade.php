@@ -1,14 +1,14 @@
 @extends('layouts.master')
 
 @section('title')
-تعديل الصلاحية
+{{ translate('edit permession') }}
 @endsection
 @section('content')
     @component('common-components.breadcrumb')
         @slot('title') {{ $role->name }} @endslot
-        @slot('li1') لوحة التحكم @endslot
+        @slot('li1') {{ translate('dashboard') }} @endslot
         @slot('route1') {{ route('dashboard') }} @endslot
-        @slot('li2') الصلاحيات @endslot
+        @slot('li2') {{ translate('permessions') }} @endslot
         @slot('route2') {{ route('roles.index') }} @endslot
         @slot('li3') {{ $role->name }} @endslot
     @endcomponent
@@ -16,7 +16,7 @@
         <div class="container">
             <div class="card">
                 <div class="card-header">
-                    تعديل الصلاحية
+                    {{ translate('edit permession') }}
                 </div>
                 <div class="card-body">
                     <form action="{{ route('roles.update', $role) }}" method="POST">
@@ -25,7 +25,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-group">
-                                    <label for="name">أسم الصلاحية</label>
+                                    <label for="name">{{ translate('permession name') }}</label>
                                     <input type="text" class="form-control" name="name" value="{{ $role->name }}">
                                     @error('name')
                                         <div class="text-danger">{{ $message }}</div>
@@ -34,7 +34,7 @@
                             </div>
                             <div class="col-12">
                                 <div class="form-group">
-                                    <h2 class="alert alert-primary">الصلاحيات</h2>
+                                    <h2 class="alert alert-primary">{{ translate('permessions') }}</h2>
                                     @error('permessions')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -53,8 +53,8 @@
                                                     checked
                                         @endif
                                         />
-                                        <label for="switch{{ $permession->id }}" data-on-label="Yes"
-                                            data-off-label="No"></label>
+                                        <label for="switch{{ $permession->id }}" data-on-label="{{ translate('yes') }}"
+                                            data-off-label="{{ translate('no') }}"></label>
                                 </div>
                             </div>
                             @endforeach
@@ -64,8 +64,8 @@
                 <div class="col-12">
                     <div class="form-group">
                         <label for=""></label>
-                        <input type="submit" value="تعديل" class="btn btn-success">
-                        <a href="{{ route('roles.index') }}" class="btn btn-info">رجوع الى الصلاحيات</a>
+                        <input type="submit" value="{{ translate('edit') }}" class="btn btn-success">
+                        <a href="{{ route('roles.index') }}" class="btn btn-info">{{ translate('back to permessions') }}</a>
                     </div>
                 </div>
             </div>

@@ -1,23 +1,23 @@
 @extends('layouts.master')
 
 @section('title')
-انشاء أكلة جديد
+{{ translate('create new food') }}
 @endsection
 
 @section('content')
     @component('common-components.breadcrumb')
-        @slot('title') الأكلات @endslot
-        @slot('li1') لوحة التحكم @endslot
-        @slot('li2') الأكلات @endslot
+        @slot('title') {{ translate('foods') }} @endslot
+        @slot('li1') {{ translate('dashboard') }} @endslot
+        @slot('li2') {{ translate('foods') }} @endslot
         @slot('route1') {{ route('dashboard') }} @endslot
         @slot('route2') {{ route('products.index') }} @endslot
-        @slot('li3') انشاء أكلة جديد @endslot
+        @slot('li3') {{ translate('create new food') }} @endslot
     @endcomponent
     <div class="create_product">
         <div class="container">
             <div class="card">
                 <div class="card-header">
-                    انشاء أكلة جديد
+                    {{ translate('create new food') }}
                 </div>
                 <div class="card-body">
                     <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
@@ -25,7 +25,7 @@
                         <div class="row">
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="name">أسم الأكلة</label>
+                                    <label for="name">{{ translate('food name') }}</label>
                                     <input type="text" class="form-control @error('name')is-invalid @enderror" name="name"
                                         value="{{ old('name') }}">
                                     @error('name')
@@ -36,9 +36,9 @@
                             @if(Auth::user()->type == 'admin')
                                 <div class="col-6 branch_col">
                                     <div class="form-group">
-                                        <label for="branch">الفرع</label>
+                                        <label for="branch">{{ translate('the branch') }}</label>
                                         <select class="form-control select2 branch_select" name="branch_id">
-                                            <option value="">أختر الفرع</option>
+                                            <option value="">{{ translate('choose') }}</option>
                                             @foreach ($branches as $branch)
                                                 <option value="{{ $branch->id }}" @if (old('branch_id') == $branch->id) selected @endif>{{ $branch->name }}</option>
                                             @endforeach
@@ -50,9 +50,9 @@
                                 </div>
                                 <div class="col-12 col-md-6 categories_col @if(old('branch_id')) @else d-none @endif">
                                     <div class="form-group">
-                                        <label for="category">أسم الصنف</label>
+                                        <label for="category">{{ translate('category name') }}</label>
                                         <select class="form-control select2 categories_select" name="category_id">
-                                            <option value="">أختر الصنف</option>
+                                            <option value="">{{ translate('choose') }}</option>
                                         </select>
                                         @error('category_id')
                                             <div class="text-danger">{{ $message }}</div>
@@ -63,9 +63,9 @@
                                 <input type="hidden" name="branch_id" value="{{ Auth::user()->branch_id }}">
                                 <div class="col-12 col-md-6 categories_col">
                                     <div class="form-group">
-                                        <label for="category">أسم الصنف</label>
+                                        <label for="category">{{ translate('category name') }}</label>
                                         <select class="form-control select2 categories_select" name="category_id">
-                                            <option value="">أختر الصنف</option>
+                                            <option value="">{{ translate('choose') }}</option>
                                         </select>
                                         @error('category_id')
                                             <div class="text-danger">{{ $message }}</div>
@@ -75,19 +75,19 @@
                             @endif
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="name">صور الأكلة</label>
+                                    <label for="name">{{ translate('food images') }}</label>
                                     <input type="file" class="form-control input_files" accept="image/*" multiple hidden
                                         name="photos[]">
                                     <button type="button" class="btn btn-primary form-control files">
                                         <span class="mdi mdi-plus btn-lg"></span>
                                     </button>
-                                    <div class="text-danger file_error" hidden>يجب أختيار أقصى عدد للصور 5</div>
+                                    <div class="text-danger file_error" hidden>{{ translate('you should choose maximum 5 images') }}</div>
                                     <div class="imgs mt-2 d-flex"></div>
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="name">وصف الأكلة</label>
+                                    <label for="name">{{ translate('description') }}</label>
                                     <textarea id="textarea" class="form-control" name="description" maxlength="225"
                                         rows="3">{{ old('description') }}</textarea>
                                 </div>
@@ -95,7 +95,7 @@
                             @if(!old('sizes'))
                                 <div class="col-12 col-md-6 on_extra">
                                     <div class="form-group">
-                                        <label for="name">السعر</label>
+                                        <label for="price">{{ translate('price') }}</label>
                                         <input type="text" class="form-control" name="price" value="{{ old('price') }}">
                                         @error('price')
                                             <div class="text-danger">{{ $message }}</div>
@@ -104,7 +104,7 @@
                                 </div>
                                 <div class="col-12 col-md-6 on_extra">
                                     <div class="form-group">
-                                        <label for="name">الخصم</label>
+                                        <label for="discount">{{ translate('discount') }}</label>
                                         <input type="text" class="form-control" value="0" name="discount"
                                             value="{{ old('discount') }}">
                                         @error('discount')
@@ -115,7 +115,7 @@
                             @endif
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="name">رقم الظهور</label>
+                                    <label for="viewed_number">{{ translate('appearance number') }}</label>
                                     <input type="number" class="form-control" value="1" name="viewed_number"
                                         value="{{ old('viewed_number') }}">
                                     @error('viewed_number')
@@ -125,11 +125,11 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="extras">اضافات</label>
+                                    <label for="extras">{{ translate('extras') }}</label>
                                     <select name="extras_type[]" class="form-control extras select2 select2-multiple"
-                                        data-placeholder="أختر الأضافة" multiple>
-                                        <option value="extra" @if(is_array(old('extras_type')) && in_array('extra', old('extras_type'))) selected @endif>اضافات على الأكل</option>
-                                        <option value="size" @if(is_array(old('extras_type')) && in_array('size', old('extras_type'))) selected @endif>مقاسات</option>
+                                        data-placeholder="{{ translate('choose') }}" multiple>
+                                        <option value="extra" @if(is_array(old('extras_type')) && in_array('extra', old('extras_type'))) selected @endif>{{ translate('extras') }}</option>
+                                        <option value="size" @if(is_array(old('extras_type')) && in_array('size', old('extras_type'))) selected @endif>{{ translate('sizes') }}</option>
                                     </select>
                                 </div>
                             </div>
@@ -137,17 +137,17 @@
                                 @if(old('extras'))
                                     <table class="table extra-table">
                                         <thead>
-                                            <th>الأضافة</th>
-                                            <th>السعر</th>
+                                            <th>{{ translate('extra') }}</th>
+                                            <th>{{ translate('price') }}</th>
                                             <th>
-                                                <button type="button" class="btn btn-success add-extra">اضافة</button>
+                                                <button type="button" class="btn btn-success add-extra">{{ translate('add') }}</button>
                                             </th>
                                         </thead>
                                         <tbody>
                                             @foreach (old('extras') as $key => $value)
                                                 <tr>
                                                     <td>
-                                                        <input class="form-control" name="extras[{{ $key }}][variant]" value="{{ $value['variant'] }}" placeholder="الأضافة" type="text">
+                                                        <input class="form-control" name="extras[{{ $key }}][variant]" value="{{ $value['variant'] }}" placeholder="{{ translate('extra') }}" type="text">
                                                         @error("extras.$key.variant")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
@@ -161,7 +161,7 @@
                                                     @if(count(old('extras')) > 1 && $key !== 0)
                                                     <td>
                                                         <button type="button" class="btn btn-danger remove-extra">
-                                                            <span>ازالة</span>
+                                                            <span>{{ translate('remove') }}</span>
                                                             <i class="mdi mdi-trash-can-outline"></i>
                                                         </button>
                                                     </td>
@@ -174,31 +174,31 @@
                                 @if(old('sizes'))
                                     <table class="table size-table">
                                         <thead>
-                                            <th>المقاس</th>
-                                            <th>السعر</th>
-                                            <th>الخصم</th>
-                                            <th>السعر بعد الخصم</th>
+                                            <th>{{ translate('size') }}</th>
+                                            <th>{{ translate('price') }}</th>
+                                            <th>{{ translate('discount') }}</th>
+                                            <th>{{ translate('price after discount') }}</th>
                                             <th>
-                                                <button type="button" class="btn btn-success add-size">اضافة</button>
+                                                <button type="button" class="btn btn-success add-size">{{ translate('add') }}</button>
                                             </th>
                                         </thead>
                                         <tbody>
                                             @foreach (old('sizes') as $key => $value)
                                                 <tr>
                                                     <td>
-                                                        <input class="form-control" name="sizes[{{ $key }}][variant]" value="{{ $value['variant'] }}" placeholder="المقاس" type="text">
+                                                        <input class="form-control" name="sizes[{{ $key }}][variant]" value="{{ $value['variant'] }}" placeholder="{{ translate('size') }}" type="text">
                                                         @error("sizes.$key.variant")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
                                                     </td>
                                                     <td>
-                                                        <input class="form-control price-input" name="sizes[{{ $key }}][price]" value="{{ $value['price'] }}" onkeyup="getFullPrice(this)" placeholder="السعر" type="text">
+                                                        <input class="form-control price-input" name="sizes[{{ $key }}][price]" value="{{ $value['price'] }}" onkeyup="getFullPrice(this)" placeholder="{{ translate('price') }}" type="text">
                                                         @error("sizes.$key.price")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
                                                     </td>
                                                     <td>
-                                                        <input class="form-control discount-input" name="sizes[{{ $key }}][discount]"  value="{{ $value['discount'] }}" onkeyup="getFullPrice(this)"  placeholder="الخصم" type="text">
+                                                        <input class="form-control discount-input" name="sizes[{{ $key }}][discount]"  value="{{ $value['discount'] }}" onkeyup="getFullPrice(this)"  placeholder="{{ translate('discount') }}" type="text">
                                                         @error("sizes.$key.discount")
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
@@ -213,7 +213,7 @@
                                                     @if(count(old('sizes')) > 1 && $key !== 0)
                                                     <td>
                                                         <button type="button" class="btn btn-danger remove-size">
-                                                            <span>ازالة</span>
+                                                            <span>{{ translate('remove') }}</span>
                                                             <i class="mdi mdi-trash-can-outline"></i>
                                                         </button>
                                                     </td>
@@ -225,17 +225,17 @@
                                 @endif
                             </div>
                             <div class="col-12 col-md-6">
-                                <label for="مرئى">مرئى</label>
+                                <label for="{{ translate('available') }}">{{ translate('available') }}</label>
                                 <div class="form-group">
                                     <input type="checkbox" name="active" id="switch4" switch="bool" checked />
-                                    <label for="switch4" data-on-label="Yes" data-off-label="No"></label>
+                                    <label for="switch4" data-on-label="{{ translate('yes') }}" data-off-label="{{ translate('no') }}"></label>
                                 </div>
                             </div>
                             <div class="col-12">
                                 <div class="form-group">
                                     <label for=""></label>
-                                    <input type="submit" value="أنشاء" class="btn btn-success">
-                                    <a href="{{ route('products.index') }}" class="btn btn-info">رجوع الى الأكلات</a>
+                                    <input type="submit" value="{{ translate('create') }}" class="btn btn-success">
+                                    <a href="{{ route('products.index') }}" class="btn btn-info">{{ translate('back to foods') }}</a>
                                 </div>
                             </div>
                         </div>
@@ -253,7 +253,7 @@
         let price = `
         <div class="col-12 col-md-6 on_extra">
             <div class="form-group">
-                <label for="name">السعر</label>
+                <label for="name">{{ translate('price') }}</label>
                 <input type="text" class="form-control" name="price" value="{{ old('price') }}">
                 @error('price')
                     <div class="text-danger">{{ $message }}</div>
@@ -264,7 +264,7 @@
         let discount = `
         <div class="col-12 col-md-6 on_extra">
             <div class="form-group">
-                <label for="name">الخصم</label>
+                <label for="name">{{ translate('discount') }}</label>
                 <input type="text" class="form-control" name="discount"
                     value="{{ old('discount') }}">
                 @error('discount')
@@ -276,22 +276,22 @@
         let extras = `
         <table class="table extra-table">
             <thead>
-                <th>الأضافة</th>
-                <th>السعر</th>
+                <th>{{ translate('extra') }}</th>
+                <th>{{ translate('price') }}</th>
                 <th>
-                    <button type="button" class="btn btn-success add-extra">اضافة</button>
+                    <button type="button" class="btn btn-success add-extra">{{ translate('add') }}</button>
                 </th>
             </thead>
             <tbody>
                 <tr>
                     <td>
-                        <input class="form-control" name="extras[0][variant]" placeholder="الأضافة" type="text">
+                        <input class="form-control" name="extras[0][variant]" placeholder="{{ translate('extra') }}" type="text">
                         @error('extras')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </td>
                     <td>
-                        <input class="form-control" name="extras[0][price]" placeholder="السعر" type="text">
+                        <input class="form-control" name="extras[0][price]" placeholder="{{ translate('price') }}" type="text">
                     </td>
                 </tr>
             </tbody>
@@ -300,12 +300,12 @@
         let sizes = `
         <table class="table size-table">
             <thead>
-                <th>المقاس</th>
-                <th>السعر</th>
-                <th>الخصم</th>
-                <th>السعر بعد الخصم</th>
+                <th>{{ translate('size') }}</th>
+                <th>{{ translate('price') }}</th>
+                <th>{{ translate('discount') }}</th>
+                <th>{{ translate('price after discount') }}</th>
                 <th>
-                    <button type="button" class="btn btn-success add-size">اضافة</button>
+                    <button type="button" class="btn btn-success add-size">{{ translate('add') }}</button>
                 </th>
             </thead>
             <tbody>
@@ -331,11 +331,11 @@
                                 text: obj.name
                             }
                         });
-                        data.unshift({id: '', text: 'أختر الصنف'})
+                        data.unshift({id: '', text: "{{ translate('choose') }}"})
                         $(".categories_col").removeClass('d-none');
                         $(".categories_select").html('').select2({data: data});
                     } else {
-                        toastr.error('يوجد خطأ ما');
+                        toastr.error("{{ translate('there is something error') }}");
                     }
                 },
                 error: function(err) {
@@ -363,7 +363,7 @@
                 variant = 'المقاس';
                 sizeTD = `
                     <td>
-                        <input class="form-control discount-input" name="${name}[${index}][discount]" value="0" onkeyup="getFullPrice(this)"  placeholder="الخصم" type="text">
+                        <input class="form-control discount-input" name="${name}[${index}][discount]" value="0" onkeyup="getFullPrice(this)"  placeholder="{{ translate('discount') }}" type="text">
                     </td>
                     <td>
                         <h6 class="price_after_disount"></h6>
@@ -374,7 +374,7 @@
                 removeTd = `
                     <td>
                         <button type="button" class="btn btn-danger remove-${type}">
-                            <span>ازالة</span>
+                            <span>{{ translate('remove') }}</span>
                             <i class="mdi mdi-trash-can-outline"></i>
                         </button>
                     </td>
@@ -388,7 +388,7 @@
                     <input class="form-control" name="${name}[${index}][variant]" placeholder="${variant}" type="text">
                 </td>
                 <td>
-                    <input class="form-control price-input" name="${name}[${index}][price]" onkeyup="getFullPrice(this)" placeholder="السعر" type="text">
+                    <input class="form-control price-input" name="${name}[${index}][price]" onkeyup="getFullPrice(this)" placeholder="{{ translate('price') }}" type="text">
                 </td>
                 ${sizeTD}
                 ${removeTd}

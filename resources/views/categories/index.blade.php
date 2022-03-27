@@ -2,24 +2,24 @@
 
 
 @section('title')
-الأصناف
+{{ translate('categories') }}
 @endsection
 
 @section('content')
     @component('common-components.breadcrumb')
-        @slot('title') الأصناف @endslot
-        @slot('li1') لوحة التحكم @endslot
+        @slot('title') {{ translate('categories') }} @endslot
+        @slot('li1') {{ translate('dashboard') }} @endslot
         @slot('route1') {{ route('dashboard') }} @endslot
-        @slot('li3') كل الأصناف @endslot
+        @slot('li3') كل {{ translate('categories') }} @endslot
     @endcomponent
     <div class="all_categories">
         <div class="card">
             <div class="card-header">
                 <div class="d-flex flex-column flex-md-row text-center text-md-right justify-content-between">
-                    <h2>الأصناف</h2>
+                    <h2>{{ translate('categories') }}</h2>
                     @can('categories.create')
                         <div>
-                            <a href="{{ route('categories.create') }}" class="btn btn-primary mb-2">أنشاء صنف جديد</a>
+                            <a href="{{ route('categories.create') }}" class="btn btn-primary mb-2">{{ translate('create new category') }}</a>
                         </div>
                     @endcan
                 </div>
@@ -27,16 +27,16 @@
                     <div class="row">
                         <div class="col-6">
                             <div class="form-group">
-                                <label for="name">أسم الصنف</label>
+                                <label for="name">{{ translate('category name') }}</label>
                                 <input class="form-control" name="name" type="text" value="{{ request('name') }}">
                             </div>
                         </div>
                         @if(Auth::user()->type == 'admin')
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="category">الفرع</label>
+                                    <label for="category">{{ translate('branches') }}</label>
                                     <select class="form-control select2" name="branch_id">
-                                        <option value="">أختر الفرع</option>
+                                        <option value="">{{ translate('choose') }}</option>
                                         @foreach ($branches as $branch)
                                             <option value="{{ $branch->id }}" @if (request('branch_id') == $branch->id) selected @endif>{{ $branch->name }}</option>
                                         @endforeach
@@ -47,7 +47,7 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="name"></label>
-                                <input type="submit" value="بحث" class="form-control btn btn-primary mt-1">
+                                <input type="submit" value="{{ translate('search') }}" class="form-control btn btn-primary mt-1">
                             </div>
                         </div>
                     </div>
@@ -60,14 +60,14 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>أسم الصنف</th>
-                                <th>الفرع</th>
-                                <th>عدد المنتجات</th>
-                                <th>مرئى</th>
-                                <th>رقم الظهور</th>
-                                <th>وقت الأنشاء</th>
-                                <th>وقت أخر تعديل</th>
-                                <th>الأعدادات</th>
+                                <th>{{ translate('category name') }}</th>
+                                <th>{{ translate('the branch') }}</th>
+                                <th>{{ translate('products count') }}</th>
+                                <th>{{ translate('available') }}</th>
+                                <th>{{ translate('appearance number') }}</th>
+                                <th>{{ translate('creation date') }}</th>
+                                <th>{{ translate('last update date') }}</th>
+                                <th>{{ translate('settings') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -92,9 +92,9 @@
                                     </td>
                                     <td>
                                         @if($category->active)
-                                            <div class="badge badge-success font-size-14 p-2">مرئى</div>
+                                            <div class="badge badge-success font-size-14 p-2">{{ translate('available') }}</div>
                                         @else
-                                        <div class="badge badge-danger">غير مرئى</div>
+                                        <div class="badge badge-danger font-size-14 p-2">{{ translate('not available') }}</div>
                                         @endif
                                     </td>
                                     <td>{{ $category->viewed_number }}</td>
@@ -105,21 +105,21 @@
                                             @can('categories.show')
                                                 <a class="btn btn-success mr-1"
                                                     href="{{ route('categories.show', $category) }}">
-                                                    <span>اظهار</span>
+                                                    <span>{{ translate('show') }}</span>
                                                     <span class="mdi mdi-eye"></span>
                                                 </a>
                                             @endcan
                                             @can('categories.edit')
                                                 <a class="btn btn-info mr-1"
                                                     href="{{ route('categories.edit', $category) }}">
-                                                    <span>تعديل</span>
+                                                    <span>{{ translate('edit') }}</span>
                                                     <span class="mdi mdi-circle-edit-outline"></span>
                                                 </a>
                                             @endcan
                                             @can('categories.destroy')
                                                 <button class="btn btn-danger" data-toggle="modal"
                                                     data-target="#modal_{{ $category->id }}">
-                                                    <span>ازالة</span>
+                                                    <span>{{ translate('delete') }}</span>
                                                     <span class="mdi mdi-delete-outline"></span>
                                                 </button>
                                                 <!-- Modal -->

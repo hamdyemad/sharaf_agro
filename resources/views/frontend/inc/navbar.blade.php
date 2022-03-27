@@ -18,15 +18,17 @@
             <li class="nav-item @if(activeRoute('frontend.home')) active_link @endif">
                 <a class="nav-link" href="{{ route('frontend.home') }}">الرئيسية</a>
             </li>
-            {{-- <li class="nav-item">
-                <a class="nav-link" href="#">الشروط والأحكام</a>
-            </li> --}}
-
             @auth
                 <li class="nav-item @if(activeRoute('frontend.profile')) active_link @endif">
                     <a class="nav-link" href="{{ route('frontend.profile', Auth::id()) }}">
                         <span>حسابى</span>
                         <span class="mdi mdi-account-outline"></span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#search_modal">
+                        <span>البحث</span>
+                        <span class="mdi mdi-file-document-box-search-outline"></span>
                     </a>
                 </li>
                 @php
@@ -90,14 +92,18 @@
                                                     <img class="rounded" src="{{ asset('/images/product_avatar.png') }}" alt="">
                                                 @endif
                                                 <h5 class="ml-1">
+                                                    @if(strlen($product->name) > 13)
+                                                    {{ mb_substr($product->name, 0, 13) . '...' }}
+                                                    @else
                                                     {{ $product->name }}
+                                                    @endif
                                                 </h5>
                                             </div>
                                             <div class="about">
                                                 @if(isset($cart['amount']))
                                                     <div class="d-flex align-items-center  mt-2">
                                                         <span class="h4">السعر : </span>
-                                                        <span class="badge badge-primary d-block ml-1">{{ $product->price_after_discount }}</span>
+                                                        <span class="badge badge-primary d-block ml-1">{{ price($product->price_after_discount) }}</span>
                                                     </div>
                                                     <div class="amount d-flex align-items-center  mt-2">
                                                         <span class="h4">الكمية : </span>
@@ -118,7 +124,7 @@
                                                                     <tr>
                                                                         <td>{{ $size['size_name'] }}</td>
                                                                         <td>{{$size['size_amount'] }}</td>
-                                                                        <td class="total_size">{{ $product->variants->find($size['size_id'])->price_after_discount * $size['size_amount'] }}</td>
+                                                                        <td class="total_size">{{ price($product->variants->find($size['size_id'])->price_after_discount * $size['size_amount']) }}</td>
                                                                     </tr>
                                                                 @endforeach
                                                             </tbody>
@@ -139,7 +145,7 @@
                                                                     <tr>
                                                                         <td>{{ $extra['extra_name'] }}</td>
                                                                         <td>{{$extra['extra_amount'] }}</td>
-                                                                        <td class="total_extra">{{ $product->variants->find($extra['extra_id'])->price_after_discount * $extra['extra_amount'] }}</td>
+                                                                        <td class="total_extra">{{ price($product->variants->find($extra['extra_id'])->price_after_discount * $extra['extra_amount']) }}</td>
                                                                     </tr>
                                                                 @endforeach
                                                             </tbody>
@@ -151,7 +157,7 @@
                                             <ul>
                                                 <li class=" d-flex align-items-center justify-content-between">
                                                     <span>السعر الكلى</span>
-                                                    <span class="total_price">{{ $cart['total_price'] }}</span>
+                                                    <span class="total_price">{{ price($cart['total_price']) }}</span>
                                                 </li>
                                             </ul>
                                         </div>
@@ -166,9 +172,9 @@
                         <ul class="last_price_ul">
                             <li class="d-flex align-items-center justify-content-between">
                                 <span>السعر النهائى</span>
-                                <span class="total_prices">{{  array_reduce(array_map(function($obj) {
+                                <span class="total_prices">{{ price(array_reduce(array_map(function($obj) {
                                     return $obj['total_price'];
-                                }, Session::get('carts')), function($acc, $curr) {return $acc + $curr;}) }}</span>
+                                }, Session::get('carts')), function($acc, $curr) {return $acc + $curr;})) }}</span>
                             </li>
                         </ul>
                         <div class="buttons mt-2 justify-content-center d-flex align-items-center">

@@ -19,6 +19,7 @@ class CreateOrdersTable extends Migration
             $table->unsignedBigInteger('status_id');
             $table->unsignedBigInteger('city_id')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
+            $table->boolean('paid')->default(0);
             $table->enum('type', ['inhouse', 'online']);
             $table->string('customer_name')->nullable();
             $table->string('customer_phone')->nullable();

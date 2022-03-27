@@ -12,8 +12,7 @@
             <div class="d-flex justify-content-between">
                 <h2>{{ $business->name . ' - ' . $business->branch->name}}</h2>
                 @can('expenses.create')
-                    <a href="{{ route('expenses.create', ['type' => request('type')]) }}" class="btn btn-primary mb-2">انشاء
-                        {{ $business->name }}</a>
+                    <a href="{{ route('expenses.create', ['type' => request('type')]) }}" class="btn btn-primary mb-2">{{ translate('create') }}</a>
                 @endcan
             </div>
             <form action="{{ route('expenses.index') }}" method="GET">
@@ -22,9 +21,9 @@
                     <div class="col-6">
                         <div class="form-group">
                             @if ($business->type == 'income')
-                                <label for="name">أسم الأيراد</label>
+                                <label for="name">{{ translate('income name') }}</label>
                             @else
-                                <label for="name">أسم المصروف</label>
+                                <label for="name">{{ translate('expenses name') }}</label>
                             @endif
                             <input class="form-control" name="name" type="text" value="{{ request('name') }}">
                         </div>
@@ -32,9 +31,9 @@
                     <div class="col-6">
                         <div class="form-group">
                             @if ($business->type == 'income')
-                                <label for="name">أسم صاحب الأيراد</label>
+                                <label for="name">{{ translate("incomes owner's name") }}</label>
                             @else
-                                <label for="name">أسم صاحب المصروف</label>
+                                <label for="name">{{ translate("expenses owner's name") }}</label>
                             @endif
                             <input class="form-control" name="expense_for" type="text"
                                 value="{{ request('expense_for') }}">
@@ -42,20 +41,20 @@
                     </div>
                     <div class="col-6">
                         <div class="form-group">
-                            <label for="name">الهاتف</label>
+                            <label for="name">{{ translate("phone") }}</label>
                             <input class="form-control" name="phone" type="text" value="{{ request('phone') }}">
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="form-group">
-                            <label for="name">المبلغ</label>
+                            <label for="name">{{ translate('the amount') }}</label>
                             <input class="form-control" name="price" type="text" value="{{ request('price') }}">
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="form-group">
                             <label for="name"></label>
-                            <input type="submit" value="بحث" class="form-control btn btn-primary mt-1">
+                            <input type="submit" value="{{ translate('search') }}" class="form-control btn btn-primary mt-1">
                         </div>
                     </div>
                 </div>
@@ -69,18 +68,18 @@
                         <tr>
                             <th>#</th>
                             @if ($business->type == 'income')
-                                <th>أسم الأيراد</th>
-                                <th>أسم صاحب الأيراد</th>
+                                <th>{{ translate('income name') }}</th>
+                                <th>{{ translate("incomes owner's name") }}</th>
                             @else
-                                <th>أسم المصروف</th>
-                                <th>أسم صاحب المصروف</th>
+                                <th>{{ translate('expense name') }}</th>
+                                <th>{{ translate("expenses owner's name") }}</th>
                             @endif
-                            <th>الهاتف</th>
-                            <th>المبلغ</th>
-                            <th>الملاحظات</th>
-                            <th>وقت الأنشاء</th>
-                            <th>وقت أخر تعديل</th>
-                            <th>الأعدادات</th>
+                            <th>{{ translate('the phone') }}</th>
+                            <th>{{ translate('the amount') }}</th>
+                            <th>{{ translate('the notes') }}</th>
+                            <th>{{ translate('creation date') }}</th>
+                            <th>{{ translate('last update date') }}</th>
+                            <th>{{ translate('settings') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -103,14 +102,14 @@
                                         @can('expenses.edit')
                                             <a class="btn btn-info mr-1"
                                                 href="{{ route('expenses.edit', $expense) . '?type=' . request('type') }}">
-                                                <span>تعديل</span>
+                                                <span>{{ translate('edit') }}</span>
                                                 <span class="mdi mdi-circle-edit-outline"></span>
                                             </a>
                                         @endcan
                                         @can('expenses.destroy')
                                             <button class="btn btn-danger" data-toggle="modal"
                                                 data-target="#modal_{{ $expense->id }}">
-                                                <span>ازالة</span>
+                                                <span>{{ translate('delete') }}</span>
                                                 <span class="mdi mdi-delete-outline"></span>
                                             </button>
                                             <!-- Modal -->

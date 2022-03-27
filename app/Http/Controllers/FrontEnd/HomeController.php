@@ -6,14 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Models\Branch;
 use App\Models\Country;
 use App\Models\Product;
+use App\Traits\Res;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
+use Nexmo\Laravel\Facade\Nexmo;
 
 class HomeController extends Controller
 {
+    use Res;
     /**
      * Display a listing of the resource.
      *
@@ -109,6 +113,17 @@ class HomeController extends Controller
         } else {
             return redirect(route('frontend.receive'))->with('error', 'يجب أن تحدد طريفة الأستلام أولا');
         }
+    }
+
+    public function productsByName(Request $request) {
+        if($request->branch_id) {
+            $products = Product::whereHas('category', function($query) use($request) {
+                return $query->where('branch_id', $request->branch_id);
+            })->where('name', 'like', '%' . $request->name . '%')->with('category')->get();
+        } else {
+            $products = Product::where('name', 'like', '%' . $request->name . '%')->with('category')->get();
+        }
+        return $this->sendRes('', true, $products);
     }
 
     /**

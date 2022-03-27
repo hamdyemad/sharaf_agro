@@ -51,10 +51,10 @@ class CartController extends Controller
             $request['total_price'] = $total_price;
             if($request->session()->has('carts')) {
                 $oldCarts = $request->session()->get('carts');
-                $current_branch = Product::find($oldCarts[0]['product_id'])->category->branch;
-                $new_branch = Product::find($request['product_id'])->category->branch;
-                if($current_branch == $new_branch) {
-                    if(is_array($oldCarts) && count($oldCarts) > 0) {
+                if(is_array($oldCarts) && count($oldCarts) > 0) {
+                    $current_branch = Product::find($oldCarts[array_key_first($oldCarts)]['product_id'])->category->branch;
+                    $new_branch = Product::find($request['product_id'])->category->branch;
+                    if($current_branch == $new_branch) {
                         foreach ($oldCarts as $index =>  $oldCart) {
                             if($oldCart['product_id'] == $request['product_id']) {
                                 $oldCart['total_price'] += $total_price;
@@ -161,17 +161,17 @@ class CartController extends Controller
                             $request->session()->push('carts', $request->all());
                         }
                     } else {
-                        if( $request['amount'] == '0' && !$request['extra_id'] && !$request['size_id'] ||
-                            $request['amount'] == '0' && $request['extra_id'] ||
-                            !$request['extra_id'] && !$request['size_id'] && !$request['amount'] ||
-                            $request['extra_id'] && !$request['amount'] && !$request['size_id']
-                        ) {
-                            return redirect()->back()->with('error', 'يجب أن تضيف الأكلة أولا');
-                        }
-                        $this->newProd($request);
+                        return redirect()->back()->with('error', 'يجب أن يتم الشراء من فرع واحد');
                     }
                 } else {
-                    return redirect()->back()->with('error', 'يجب أن يتم الشراء من فرع واحد');
+                    if( $request['amount'] == '0' && !$request['extra_id'] && !$request['size_id'] ||
+                        $request['amount'] == '0' && $request['extra_id'] ||
+                        !$request['extra_id'] && !$request['size_id'] && !$request['amount'] ||
+                        $request['extra_id'] && !$request['amount'] && !$request['size_id']
+                    ) {
+                        return redirect()->back()->with('error', 'يجب أن تضيف الأكلة أولا');
+                    }
+                    $this->newProd($request);
                 }
             } else {
                 if( $request['amount'] == '0' && !$request['extra_id'] && !$request['size_id'] ||

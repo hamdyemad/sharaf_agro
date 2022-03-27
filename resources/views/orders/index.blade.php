@@ -1,24 +1,24 @@
 @extends('layouts.master')
 
 @section('title')
-الطلبات
+{{ translate('orders') }}
 @endsection
 
 @section('content')
     @component('common-components.breadcrumb')
-        @slot('title') الطلبات @endslot
-        @slot('li1') لوحة التحكم @endslot
+        @slot('title') {{ translate('orders') }} @endslot
+        @slot('li1') {{ translate('dashboard') }} @endslot
         @slot('route1') {{ route('dashboard') }} @endslot
-        @slot('li3') الطلبات @endslot
+        @slot('li3') {{ translate('orders') }} @endslot
     @endcomponent
     <div class="all_orders">
         <div class="card">
             <div class="card-header">
                 <div class="d-flex flex-column flex-md-row text-center text-md-right justify-content-between">
-                    <h2>الطلبات</h2>
+                    <h2>{{ translate('orders') }}</h2>
                     @can('orders.create')
                         <div>
-                            <a href="{{ route('orders.create') }}" class="btn btn-primary mb-2">أنشاء طلب جديد</a>
+                            <a href="{{ route('orders.create') }}" class="btn btn-primary mb-2">{{ translate('create') }}</a>
                         </div>
                     @endcan
                 </div>
@@ -26,27 +26,27 @@
                     <div class="row">
                         <div class="col-6">
                             <div class="form-group">
-                                <label for="customer_name">أسم العميل</label>
+                                <label for="customer_name">{{ translate('customer name') }}</label>
                                 <input class="form-control" name="customer_name" type="text" value="{{ request('customer_name') }}">
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="form-group">
-                                <label for="customer_phone">رقم العميل</label>
+                                <label for="customer_phone">{{ translate('customer phone') }}</label>
                                 <input class="form-control" name="customer_phone" type="text" value="{{ request('customer_phone') }}">
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="form-group">
-                                <label for="customer_address">عنوان العميل</label>
+                                <label for="customer_address">{{ translate('customer address') }}</label>
                                 <input class="form-control" name="customer_address" type="text" value="{{ request('customer_address') }}">
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="form-group">
-                                <label for="name">حالة الطلب</label>
+                                <label for="name">{{ translate('order status') }}</label>
                                 <select class="form-control select2" name="status_id">
-                                    <option value="">أختر الحالة</option>
+                                    <option value="">{{ translate('choose') }}</option>
                                     @foreach ($statuses as $status)
                                         <option value="{{ $status->id }}" @if ($status->id == request('status_id')) selected @endif>
                                             {{ $status->name }}</option>
@@ -57,19 +57,19 @@
                         @if(Auth::user()->type == 'admin')
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label for="name">نوع الطلب</label>
+                                    <label for="name">{{ translate('order type') }}</label>
                                     <select class="form-control select2" name="type">
-                                        <option value="">أختر النوع</option>
-                                        <option value="inhouse" @if ('inhouse' == request('type')) selected @endif>طلب أستلام من الفرع</option>
-                                        <option value="online" @if ('online' == request('type')) selected @endif>طلب أونلاين</option>
+                                        <option value="">{{ translate('choose') }}</option>
+                                        <option value="inhouse" @if ('inhouse' == request('type')) selected @endif>{{ translate('receipt request from the branch') }}</option>
+                                        <option value="online" @if ('online' == request('type')) selected @endif>{{ translate('online order') }}</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-group">
-                                    <label for="name">الفرع</label>
+                                    <label for="name">{{ translate('the branch') }}</label>
                                     <select class="form-control select2" name="branch_id">
-                                        <option value="">أختر الفرع</option>
+                                        <option value="">{{ translate('choose') }}</option>
                                         @foreach ($branches as $branch)
                                             <option value="{{ $branch->id }}" @if ($branch->id == request('branch_id')) selected @endif>
                                                 {{ $branch->name }}</option>
@@ -81,7 +81,7 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="name"></label>
-                                <input type="submit" value="بحث" class="form-control btn btn-primary mt-1">
+                                <input type="submit" value="{{ translate('search') }}" class="form-control btn btn-primary mt-1">
                             </div>
                         </div>
                     </div>
@@ -93,16 +93,17 @@
 
                         <thead>
                             <tr>
-                                <th><span>رقم الطلب</span></th>
-                                <th>أسم العميل</th>
-                                <th>عنوان العميل</th>
-                                <th>المدينة</th>
-                                <th>رقم العميل</th>
-                                <th><span>حالة الطلب</span></th>
-                                <th><span>فرع الطلب</span></th>
-                                <th><span>وقت الأنشاء</span></th>
-                                <th><span>وقت أخر تعديل</span></th>
-                                <th>الأعدادات</th>
+                                <th><span>{{ translate('order number') }}</span></th>
+                                <th>{{ translate('customer name') }}</th>
+                                <th>{{ translate('customer address') }}</th>
+                                <th>{{ translate('city') }}</th>
+                                <th>{{ translate('customer phone') }}</th>
+                                <th><span>{{ translate('order status') }}</span></th>
+                                <th><span>{{ translate('paid') }}</span></th>
+                                <th><span>{{ translate('order branch') }}</span></th>
+                                <th><span>{{ translate('creation date') }}</span></th>
+                                <th><span>{{ translate('last update date') }}</span></th>
+                                <th>{{ translate('settings') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -112,36 +113,43 @@
                                     @if($order->customer_name)
                                         <td>{{ $order->customer_name }}</td>
                                     @else
-                                        <td><div class="badge badge-secondary">لا يوجد أسم</div></td>
+                                        <td><div class="badge badge-secondary">{{ translate('there is no name') }}</div></td>
                                     @endif
                                     @if($order->customer_address)
                                         <td>{{ $order->customer_address }}</td>
                                     @else
-                                        <td><div class="badge badge-secondary">لا يوجد عنوان</div></td>
+                                        <td><div class="badge badge-secondary">{{ translate('there is no address') }}</div></td>
                                     @endif
                                     @if($order->city)
                                         <td>
                                             {{ $order->city->name }}
                                         </td>
                                     @else
-                                    <td><div class="badge badge-secondary">لا يوجد مدينة</div></td>
+                                    <td><div class="badge badge-secondary">{{ translate('there is no city') }}</div></td>
                                     @endif
                                     @if($order->customer_phone)
                                         <td>{{ $order->customer_phone }}</td>
                                     @else
-                                        <td><div class="badge badge-secondary">لا يوجد هاتف</div></td>
+                                        <td><div class="badge badge-secondary">ل{{ translate('there is no phone') }}</div></td>
                                     @endif
                                     <td>
-                                        <select class="form-control status select2" name="" id="">
+                                        <select class="form-control status select2">
                                             @foreach ($statuses as $status)
                                                 <option value="{{ $status->id }}" @if($order->status_id == $status->id) selected @endif>{{ $status->name }}</option>
                                             @endforeach
                                         </select>
                                     </td>
                                     <td>
+                                        @if($order->paid)
+                                        <span class="badge badge-success">{{ translate('yes') }}</span>
+                                        @else
+                                        <span class="badge badge-danger">{{ translate('no') }}</span>
+                                        @endif
+                                    </td>
+                                    <td>
                                         <div class="badge badge-primary p-2">({{ $order->branch->name }})</div>
                                         @if($order->type == 'online')
-                                            <div class="badge badge-primary mt-2">طلب أونلاين</div>
+                                            <div class="badge badge-primary mt-2">{{ translate('online order') }}</div>
                                         @endif
                                     </td>
                                     <td>
@@ -154,13 +162,13 @@
                                         <div class="options d-flex">
                                             @can('orders.show')
                                                 <a class="btn btn-success mr-1" href="{{ route('orders.show', $order) }}">
-                                                    <span>اظهار</span>
+                                                    <span>{{ translate('show') }}</span>
                                                     <span class="mdi mdi-eye"></span>
                                                 </a>
                                             @endcan
                                             @can('orders.edit')
                                                 <a class="btn btn-info mr-1" href="{{ route('orders.edit', $order) }}">
-                                                    <span>تعديل</span>
+                                                    <span>{{ translate('edit') }}</span>
                                                     <span class="mdi mdi-circle-edit-outline"></span>
                                                 </a>
 
@@ -168,7 +176,7 @@
                                             @can('orders.destroy')
                                                 <button class="btn btn-danger" data-toggle="modal"
                                                     data-target="#modal_{{ $order->id }}">
-                                                    <span>ازالة</span>
+                                                    <span>{{ translate('delete') }}</span>
                                                     <span class="mdi mdi-delete-outline"></span>
                                                 </button>
                                                 <!-- Modal -->
@@ -187,34 +195,34 @@
                                                     @if(isset($orderProduct->groupBy('variant_type')['']))
                                                         @foreach ($orderProduct->groupBy('variant_type')[''] as $variant)
                                                             <ul class="variants">
-                                                                <li><h6>الأسم : </h6><div class="badge badge-info rounded">{{ $variant->product->name }}</div></li>
-                                                                <li><h6>السعر :</h6> <div class="badge badge-info rounded">{{ $variant->price }}</div></li>
-                                                                <li><h6>الكمية : </h6><div class="badge badge-info rounded">{{ $variant->qty }}</div></li>
-                                                                <li><h6>السعر الكلى : </h6><div class="badge badge-info rounded">{{ $variant->total_price }}</div></li>
+                                                                <li><h6>{{ translate('name') }} : </h6><div class="badge badge-info rounded">{{ $variant->product->name }}</div></li>
+                                                                <li><h6>{{ translate('price') }} :</h6> <div class="badge badge-info rounded">{{ $variant->price }}</div></li>
+                                                                <li><h6>{{ translate('quantity') }} : </h6><div class="badge badge-info rounded">{{ $variant->qty }}</div></li>
+                                                                <li><h6>{{ translate('total price') }} : </h6><div class="badge badge-info rounded">{{ $variant->total_price }}</div></li>
                                                             </ul>
                                                         @endforeach
                                                     @else
                                                         <ul class="variants">
-                                                            <li><h6>الأسم : </h6><div class="badge badge-info rounded">{{ \App\Models\Product::find($key)->name }}</div></li>
+                                                            <li><h6>{{ translate('name') }} : </h6><div class="badge badge-info rounded">{{ \App\Models\Product::find($key)->name }}</div></li>
                                                         </ul>
                                                     @endif
                                                     @if(isset($orderProduct->groupBy('variant_type')['size']))
                                                         @foreach ($orderProduct->groupBy('variant_type')['size'] as $variant)
                                                             <ul class="variants">
-                                                                <li><h6>الحجم : </h6><div class="badge badge-info rounded">{{ $variant->variant }}</div></li>
-                                                                <li><h6>السعر :</h6> <div class="badge badge-info rounded">{{ $variant->price }}</div></li>
-                                                                <li><h6>الكمية : </h6><div class="badge badge-info rounded">{{ $variant->qty }}</div></li>
-                                                                <li><h6>السعر الكلى : </h6><div class="badge badge-info rounded">{{ $variant->total_price }}</div></li>
+                                                                <li><h6>{{ translate('size') }} : </h6><div class="badge badge-info rounded">{{ $variant->variant }}</div></li>
+                                                                <li><h6>{{ translate('price') }} :</h6> <div class="badge badge-info rounded">{{ $variant->price }}</div></li>
+                                                                <li><h6>{{ translate('quantity') }} : </h6><div class="badge badge-info rounded">{{ $variant->qty }}</div></li>
+                                                                <li><h6>{{ translate('total price') }} : </h6><div class="badge badge-info rounded">{{ $variant->total_price }}</div></li>
                                                             </ul>
                                                         @endforeach
                                                     @endif
                                                     @if(isset($orderProduct->groupBy('variant_type')['extra']))
                                                         @foreach ($orderProduct->groupBy('variant_type')['extra'] as $variant)
                                                             <ul class="variants">
-                                                                <li><h6>الأضافة : </h6><div class="badge badge-info rounded">{{ $variant->variant }}</div></li>
-                                                                <li><h6>السعر :</h6> <div class="badge badge-info rounded">{{ $variant->price }}</div></li>
-                                                                <li><h6>الكمية : </h6><div class="badge badge-info rounded">{{ $variant->qty }}</div></li>
-                                                                <li><h6>السعر الكلى : </h6><div class="badge badge-info rounded">{{ $variant->total_price }}</div></li>
+                                                                <li><h6>{{ translate('extra') }} : </h6><div class="badge badge-info rounded">{{ $variant->variant }}</div></li>
+                                                                <li><h6>{{ translate('price') }} :</h6> <div class="badge badge-info rounded">{{ $variant->price }}</div></li>
+                                                                <li><h6>{{ translate('quantity') }} : </h6><div class="badge badge-info rounded">{{ $variant->qty }}</div></li>
+                                                                <li><h6>{{ translate('total price') }} : </h6><div class="badge badge-info rounded">{{ $variant->total_price }}</div></li>
                                                             </ul>
                                                         @endforeach
                                                     @endif
@@ -222,14 +230,14 @@
                                             </div>
                                             <div class="product-variants d-flex">
                                                 <ul class="variants">
-                                                        <li><h6>السعر الكلى : </h6><div class="badge badge-info rounded">{{ ($order->grand_total - $order->shipping )+ $order->total_discount }}</div></li>
+                                                        <li><h6>{{ translate('total price') }} : </h6><div class="badge badge-info rounded">{{ ($order->grand_total - $order->shipping )+ $order->total_discount }}</div></li>
                                                         @if($order->shipping)
-                                                            <li><h6>الشحن: </h6><div class="badge badge-info rounded">{{ $order->shipping }}</div></li>
+                                                            <li><h6>{{ translate('shipping') }}: </h6><div class="badge badge-info rounded">{{ $order->shipping }}</div></li>
                                                         @endif
                                                         @if($order->total_discount)
-                                                            <li><h6>الخصم: </h6><div class="badge badge-info rounded">{{ $order->total_discount }}</div></li>
+                                                            <li><h6>{{ translate('discount') }}: </h6><div class="badge badge-info rounded">{{ $order->total_discount }}</div></li>
                                                         @endif
-                                                        <li><h6>السعر النهائى : </h6><div class="badge badge-info rounded">{{ $order->grand_total }}</div></li>
+                                                        <li><h6>{{ translate('final price') }} : </h6><div class="badge badge-info rounded">{{ $order->grand_total }}</div></li>
                                                 </ul>
                                             </div>
                                         </div>

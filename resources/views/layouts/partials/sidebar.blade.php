@@ -13,7 +13,7 @@
          <!--- Sidemenu -->
          <div id="sidebar-menu">
              <div class="logo text-center">
-                 <a href="">
+                 <a href="{{route('dashboard')}}">
                      @if (get_setting('logo'))
                          <img src="{{ asset(get_setting('logo')) }}" alt="">
                      @else
@@ -24,18 +24,18 @@
              </div>
              <!-- Left Menu Start -->
              <ul class="metismenu list-unstyled" id="side-menu">
-                 <li class="menu-title">الرئيسية</li>
+                 <li class="menu-title">{{translate("the main")}}</li>
                  <li>
                      <a href="{{ route('dashboard') }}" class="waves-effect">
                          <i class="mdi mdi-view-dashboard"></i>
-                         <span>لوحة التحكم</span>
+                         <span>{{ translate('dashboard') }}</span>
                      </a>
                  </li>
                  @can('settings.edit')
                      <li>
                          <a href="{{ route('settings.edit') }}" class="waves-effect">
                              <i class="mdi mdi-settings"></i>
-                             <span>الأعدادات العامة</span>
+                             <span>{{ translate('general settings') }}</span>
                          </a>
                      </li>
                  @endcan
@@ -43,21 +43,28 @@
                      <li>
                          <a href="javascript: void(0);" class="has-arrow waves-effect">
                              <i class="mdi mdi-credit-card"></i>
-                             <span>المعاملات المالية</span>
+                             <span>{{ translate('financial transactions') }}</span>
                          </a>
                          <ul class="sub-menu" aria-expanded="false">
-                             <li>
-                                 <a href="{{ route('business.index') }}" class="waves-effect">
-                                     <span>كل المعاملات المالية</span>
-                                 </a>
-                             </li>
+                            @can('currencies.index')
+                                <li>
+                                    <a href="{{ route('currencies.index') }}" class="waves-effect">
+                                        <span>{{ translate('currencies') }}</span>
+                                    </a>
+                                </li>
+                            @endcan
                              @can('business.all')
                                  <li>
                                      <a href="{{ route('business.all') }}" class="waves-effect">
-                                         <span>الأيرادات والمصروفات</span>
+                                         <span>{{ translate('revenues and expenses') }}</span>
                                      </a>
                                  </li>
                              @endcan
+                             <li>
+                                <a href="{{ route('business.index') }}" class="waves-effect">
+                                    <span>{{ translate('all financial transactions') }}</span>
+                                </a>
+                            </li>
                          </ul>
                      </li>
                  @endcan
@@ -65,12 +72,12 @@
                      <li>
                          <a href="javascript: void(0);" class="has-arrow waves-effect">
                              <i class="mdi mdi-source-branch"></i>
-                             <span>الفروع</span>
+                             <span>{{ translate('branches') }}</span>
                          </a>
                          <ul class="sub-menu" aria-expanded="false">
-                             <li><a href="{{ route('branches.index') }}">كل الفروع</a></li>
+                             <li><a href="{{ route('branches.index') }}">{{ translate('all branches') }}</a></li>
                              @can('branches.create')
-                                 <li><a href="{{ route('branches.create') }}">انشاء فرع</a></li>
+                                 <li><a href="{{ route('branches.create') }}">{{ translate('create branch') }}</a></li>
                              @endcan
                          </ul>
                      </li>
@@ -81,20 +88,20 @@
                          @if($orders_count !== 0)
                             <span class="badge badge-pill badge-primary float-right">{{ $orders_count }}</span>
                          @endif
-                         <span>الطلبات</span>
+                         <span>{{ translate('orders') }}</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
                              @can('orders.index')
-                                <li><a href="{{ route('orders.index') }}">كل الطلبات</a></li>
+                                <li><a href="{{ route('orders.index') }}">{{ translate('all orders') }}</a></li>
                              @endcan
                              @can('orders.create')
-                                 <li><a href="{{ route('orders.create') }}">اضف طلب</a></li>
+                                 <li><a href="{{ route('orders.create') }}">{{ translate('create order') }}</a></li>
                              @endcan
                              @can('statuses.index')
-                             <li><a href="{{ route('statuses.index') }}">حالات الطلبات</a></li>
+                             <li><a href="{{ route('statuses.index') }}">{{ translate('orders statuses') }}</a></li>
                              @endcan
                              @can('statuses.create')
-                                <li><a href="{{ route('statuses.create') }}">أضف حالة طلبات</a></li>
+                                <li><a href="{{ route('statuses.create') }}">{{ translate('create orders statuses') }}</a></li>
                              @endcan
                          </ul>
                 </li>
@@ -104,12 +111,12 @@
                          <a href="javascript: void(0);" class="has-arrow waves-effect">
                              <i class="mdi mdi-inbox-multiple"></i>
 
-                             <span>الأصناف</span>
+                             <span>{{ translate('categories') }}</span>
                          </a>
                          <ul class="sub-menu" aria-expanded="false">
-                             <li><a href="{{ route('categories.index') }}">كل الأصناف</a></li>
+                             <li><a href="{{ route('categories.index') }}">{{ translate('all categories') }}</a></li>
                              @can('categories.create')
-                                 <li><a href="{{ route('categories.create') }}">انشاء صنف</a></li>
+                                 <li><a href="{{ route('categories.create') }}">{{ translate('create category') }}</a></li>
                              @endcan
                          </ul>
                      </li>
@@ -119,12 +126,12 @@
                          <a href="javascript: void(0);" class="has-arrow waves-effect">
                              <i class="mdi mdi-food"></i>
 
-                             <span>الأكلات</span>
+                             <span>{{ translate('foods') }}</span>
                          </a>
                          <ul class="sub-menu" aria-expanded="false">
-                             <li><a href="{{ route('products.index') }}">كل الأكلات</a></li>
+                             <li><a href="{{ route('products.index') }}">{{ translate('all foods') }}</a></li>
                              @can('products.create')
-                                 <li><a href="{{ route('products.create') }}">اضافة اكلة</a></li>
+                                 <li><a href="{{ route('products.create') }}">{{ translate('create food') }}</a></li>
                              @endcan
                          </ul>
                      </li>
@@ -133,12 +140,12 @@
                      <li>
                          <a href="javascript: void(0);" class="has-arrow waves-effect">
                              <i class="mdi mdi-airplane"></i>
-                             <span>الشحن والدول</span>
+                             <span>{{ translate('shipping and countries') }}</span>
                          </a>
                          <ul class="sub-menu" aria-expanded="false">
-                             <li><a href="{{ route('countries.index') }}">كل الدول</a></li>
+                             <li><a href="{{ route('countries.index') }}">{{ translate('all countries') }}</a></li>
                              @can('countries.create')
-                                 <li><a href="{{ route('countries.create') }}">اضافة دولة</a></li>
+                                 <li><a href="{{ route('countries.create') }}">{{ translate('create country') }}</a></li>
                              @endcan
                          </ul>
                      </li>
@@ -148,11 +155,11 @@
                          <a href="javascript: void(0);" class="has-arrow waves-effect">
                              <i class="mdi mdi-account-supervisor-outline"></i>
 
-                             <span>الموظفين والمستخدمين</span>
+                             <span>{{ translate('staff and users') }}</span>
                          </a>
                          <ul class="sub-menu" aria-expanded="false">
-                             <li><a href="{{ route('users.index') }}">كل الموظفين</a></li>
-                             <li><a href="{{ route('users.index') . '?type=user' }}">كل المستخدمين</a></li>
+                             <li><a href="{{ route('users.index') }}">{{ translate('all staff') }}</a></li>
+                             <li><a href="{{ route('users.index') . '?type=user' }}">{{ translate('all users') }}</a></li>
                          </ul>
                      </li>
                  @endcan
@@ -160,15 +167,23 @@
                      <li>
                          <a href="javascript: void(0);" class="has-arrow waves-effect">
                              <i class="mdi mdi-account-lock-outline"></i>
-                             <span>الصلاحيات</span>
+                             <span>{{ translate('permessions') }}</span>
                          </a>
                          <ul class="sub-menu" aria-expanded="false">
-                             <li><a href="{{ route('roles.index') }}">كل الصلاحيات</a></li>
+                             <li><a href="{{ route('roles.index') }}">{{ translate('all permessions') }}</a></li>
                              @can('roles.create')
-                                 <li><a href="{{ route('roles.create') }}">انشاء صلاحية</a></li>
+                                 <li><a href="{{ route('roles.create') }}">{{ translate('create permession') }}</a></li>
                              @endcan
                          </ul>
                      </li>
+                 @endcan
+                 @can('languages.index')
+                    <li>
+                        <a href="{{ route('languages.index') }}" class="waves-effect">
+                            <i class="mdi mdi-translate"></i>
+                            <span>{{ translate('langs ​​and translation') }}</span>
+                        </a>
+                    </li>
                  @endcan
                  {{-- <li>
                      <a href="/calendar/calendar" class=" waves-effect">

@@ -12,6 +12,37 @@
                     <i class="mdi mdi-fullscreen font-size-24"></i>
                 </button>
             </div>
+            @php
+            $languages = App\Models\Language::all();
+            @endphp
+            <div class="dropdown d-inline-block ml-1">
+                <button type="button" class="btn header-item noti-icon waves-effect"
+                    id="page-header-notifications-dropdown" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                    <span class="mdi mdi-google-translate"></span>
+                    <span>{{ app()->getLocale() }}</span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right p-0"
+                    aria-labelledby="page-header-notifications-dropdown">
+                    <div class="p-3">
+                    <div data-simplebar style="max-height: 230px;">
+                        @foreach($languages as $language)
+                            <a href="{{ LaravelLocalization::getLocalizedURL($language->code, null, [], true) }}" class="text-reset notification-item">
+                                <div class="media align-items-center">
+                                    <div class="avatar-xs mr-3">
+                                        <span class="avatar-title @if(app()->getLocale() == $language->code) border-success @else border-info @endif rounded-circle">
+                                            <span class="mdi mdi-google-translate"></span>
+                                        </span>
+                                    </div>
+                                    <div class="media-body">
+                                        {{ $language->name }}
+                                    </div>
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
 
             {{-- Start Noteifications --}}
             @php
@@ -34,7 +65,7 @@
                     <div class="p-3">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h5 class="m-0"> الطلبات ({{ count($orders) }}) </h5>
+                                <h5 class="m-0"> {{ translate('orders') }} ({{ count($orders) }}) </h5>
                             </div>
                         </div>
                     </div>
@@ -95,11 +126,11 @@
                                         </span>
                                     </div>
                                     <div class="media-body">
-                                        <h6 class="mt-0 mb-1">رقم الطلب : ({{ $order->id }})</h6>
-                                        <h6 class="mt-0 mb-1">طلب جديد</h6>
-                                        <h6 class="mt-0 mb-1">الحالة : ({{ $order->status->name }})</h6>
+                                        <h6 class="mt-0 mb-1">{{ translate('order number') }} : ({{ $order->id }})</h6>
+                                        <h6 class="mt-0 mb-1">{{ translate('new order') }}</h6>
+                                        <h6 class="mt-0 mb-1">{{ translate('status') }} : ({{ $order->status->name }})</h6>
                                         <div class="text-muted">
-                                            <p class="mb-1">عدد الأكلات : ({{ $order->order_details->groupBy('product_id')->count() }})</p>
+                                            <p class="mb-1">{{ translate('foods count') }} : ({{ $order->order_details->groupBy('product_id')->count() }})</p>
                                         </div>
                                     </div>
                                 </div>
@@ -124,7 +155,7 @@
                     </div>
                     <div class="p-2 border-top">
                         <a class="btn btn-sm btn-link font-size-14 btn-block text-center" href="{{ route('orders.index') . '?status_id='. $status->id }}">
-                            عرض الطلبات
+                            {{ translate('show orders') }}
                         </a>
                     </div>
                 </div>
@@ -148,12 +179,12 @@
                 <div class="dropdown-menu dropdown-menu-right">
                     <!-- item-->
                     <a class="dropdown-item" href="{{ route('users.profile',  Auth::user()) }}"><i
-                            class="mdi mdi-account-circle font-size-17 text-muted align-middle mr-1"></i> Profile</a>
+                            class="mdi mdi-account-circle font-size-17 text-muted align-middle mr-1"></i>{{ translate('profile') }}</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item text-danger" href="javascript:void();"
                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
                             class="mdi mdi-power font-size-17 text-muted align-middle mr-1 text-danger"></i>
-                        {{ __('Logout') }}</a>
+                            {{ translate('logout') }}</a>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                         @csrf
                     </form>

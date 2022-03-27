@@ -29,7 +29,7 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         $this->authorize('orders.index');
-        Carbon::setLocale('ar');
+        Carbon::setLocale(app()->getLocale());
         $orders = Order::latest();
         $statuses = Status::all();
         $branches = Branch::all();
@@ -80,7 +80,7 @@ class OrderController extends Controller
             return view('orders.create', compact('products', 'branches', 'countries'));
 
         } else {
-            return redirect()->back()->with('error', 'يجب تعيين حالة افتراضية');
+            return redirect()->back()->with('error', translate('a default status must be set'));
         }
     }
 
@@ -91,34 +91,34 @@ class OrderController extends Controller
             'products_search' => 'required'
         ];
         $mesages = [
-            'type.required' => 'نوع الطلب مطلوب',
-            'branch_id.required' => 'الفرع مطلوب مطلوب',
-            'branch_id.exists' => 'الفرع يجب ان يكون موجود بالفعل',
-            'type.in' => 'يجب أختيار نوع من الموجودين بالفعل',
-            'products_search.required' => 'يجب أختيار منتج واحد على الأقل',
+            'type.required' => translate('the type is required'),
+            'branch_id.required' => translate('the branch is required'),
+            'branch_id.exists' => translate('the branch should be exists'),
+            'type.in' => translate('you should choose a type from the stock'),
+            'products_search.required' => translate('you should choose a minmum 1 product'),
         ];
         if($request->type == 'online') {
             $rules['customer_name'] = 'required';
             $rules['customer_address'] = 'required';
             $rules['customer_phone'] = 'required';
             $rules['city_id'] = 'required';
-            $mesages['customer_name.required'] = 'الأسم مطلوب';
-            $mesages['customer_address.required'] = 'العنوان مطلوب';
-            $mesages['customer_phone.required'] = 'الهاتف مطلوب';
-            $mesages['city_id.required'] = 'المدينة مطلوبة';
+            $mesages['customer_name.required'] = translate('the name is required');
+            $mesages['customer_address.required'] = translate('the address is required');
+            $mesages['customer_phone.required'] =translate('the phone is required');
+            $mesages['city_id.required'] = translate('the city is required');
         }
         if($request->products) {
             foreach ($request->products as $productId => $productObj) {
                 if(isset($productObj['amount'])) {
                     $rules["products.$productId.amount"] = ['required','integer','min:1'];
-                    $mesages["products.$productId.amount.required"] = 'الكمية مطلوبة';
-                    $mesages["products.$productId.amount.min"] = 'الكمية يجب ان تكون اكثر من 1';
+                    $mesages["products.$productId.amount.required"] = translate('the amount is required');
+                    $mesages["products.$productId.amount.min"] = translate('the amount should be at least 1');
                 }
                 if(isset($productObj['variants'])) {
                     foreach ($productObj['variants'] as $variantId => $variant) {
                         $rules["products.$productId.variants.$variantId.amount"] = ['required', 'integer','min:1'];
-                        $mesages["products.$productId.variants.$variantId.amount.required"] = 'الكمية مطلوبة';
-                        $mesages["products.$productId.variants.$variantId.amount.min"] = 'الكمية يجب ان تكون اكثر من 1';
+                        $mesages["products.$productId.variants.$variantId.amount.required"] = translate('the amount is required');
+                        $mesages["products.$productId.variants.$variantId.amount.min"] = translate('the amount should be at least 1');
                     }
                 }
             }
@@ -127,7 +127,7 @@ class OrderController extends Controller
         if($validator->fails()) {
             return redirect()->back()->withErrors($validator->errors())
             ->withInput($request->all())
-            ->with('error', 'يوجد خطأ ما');
+            ->with('error', translate('there is something error'));
         }
     }
 
@@ -210,9 +210,9 @@ class OrderController extends Controller
                 'products_count' => $order->order_details->groupBy('product_id')->count(),
                 'status' => $order->status
             ]));
-            return redirect()->back()->with('success', 'تم انشاء الطلب بنجاح');
+            return redirect()->back()->with('success', translate('created successfully'));
         } else {
-            return redirect()->back()->with('error', 'يجب تعيين حالة افتراضية');
+            return redirect()->back()->with('error', translate('you should choose a default status'));
         }
 
 
@@ -227,7 +227,7 @@ class OrderController extends Controller
     public function show(Order $order)
     {
         $order->update(['viewed' => true]);
-        Carbon::setLocale('ar');
+        Carbon::setLocale(app()->getLocale());
         $statuses_history = StatusHistory::where('order_id', $order->id)->latest()->get();
         return view('orders.show', compact('order', 'statuses_history'));
     }
@@ -254,7 +254,7 @@ class OrderController extends Controller
         return view('orders.edit', compact('order', 'branches', 'products', 'countries', 'cities'));
 
         } else {
-            return redirect()->back()->with('error', 'يجب تعيين حالة افتراضية');
+            return redirect()->back()->with('error', translate('you should choose a default status'));
         }
     }
 
@@ -328,9 +328,9 @@ class OrderController extends Controller
             function($acc, $current) {return $acc + $current;});
             $order->grand_total = ($grand_total + $request->shipping) - $creation['total_discount'];
             $order->save();
-            return redirect()->back()->with('info', 'تم تعديل الطلب بنجاح');
+            return redirect()->back()->with('info', translate('updated successfully'));
         } else {
-            return redirect()->back()->with('error', 'يجب تعيين حالة افتراضية');
+            return redirect()->back()->with('error', translate('you should choose a default status'));
         }
     }
 
@@ -352,7 +352,7 @@ class OrderController extends Controller
                 'order' => $order,
                 'status_name' => $order->status->name
             ]));
-            return response()->json(['msg' => 'تم تعديل الحالة بنجاح', 'status' => true]);
+            return response()->json(['msg' => translate('updated successfully'), 'status' => true]);
         }
     }
 
@@ -366,6 +366,6 @@ class OrderController extends Controller
     {
         $this->authorize('orders.destroy');
         Order::destroy($order->id);
-        return redirect()->back()->with('success', 'تمت ازالة الطلب بنجاح');
+        return redirect()->back()->with('success', translate('deleted successfully'));
     }
 }

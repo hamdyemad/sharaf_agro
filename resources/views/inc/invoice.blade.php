@@ -2,7 +2,12 @@
     <div class="row">
         <div class="col-12">
             <div class="invoice-title d-flex justify-content-between">
-                <h4 class="font-size-16"><strong>رقم الطلب ({{ $order->id }})</strong></h4>
+                <h4 class="font-size-16">
+                    <strong>{{ translate('order number') }} ({{ $order->id }})</strong>
+                    @if($order->paid)
+                        <div class="badge badge-success d-block mt-1 p-2 font-size-16">{{ translate('paid') }}</div>
+                    @endif
+                </h4>
                 <h4 class="font-size-16">
                     <strong>({{ $order->created_at }})</strong>
                     <strong class="d-block text-center mt-1">({{ $order->created_at->diffForHumans() }})</strong>
@@ -12,30 +17,30 @@
             <div class="row">
                 @if($order->customer_name)
                     <div class="col first">
-                        <strong class="d-block mb-2">معلومات الطلب</strong>
+                        <strong class="d-block mb-2">{{ translate('order details') }}</strong>
                         <div class="d-flex align-items-center mt-2">
-                            <strong class="d-block mr-2">الأسم : </strong>
+                            <strong class="d-block mr-2">{{ translate('customer name') }} : </strong>
                             <span class="badge badge-primary">{{ $order->customer_name }}</span>
                         </div>
                         @if($order->customer_phone)
                             <div class="d-flex align-items-center mt-2">
-                                <strong class="d-block mr-2">الهاتف : </strong>
+                                <strong class="d-block mr-2">{{ translate('customer phone') }} : </strong>
                                 <span class="badge badge-primary">{{ $order->customer_phone }}</span>
                             </div>
                         @endif
                         @if($order->customer_address)
                             <div class="d-flex align-items-center mt-2">
-                                <strong class="d-block mr-2">العنوان : </strong>
+                                <strong class="d-block mr-2">{{ translate('customer address') }} : </strong>
                                 <span class="badge badge-primary">{{ $order->customer_address }}</span>
                             </div>
                         @endif
                         @if($order->city)
                             <div class="d-flex align-items-center mt-2">
-                                <strong class="d-block mr-2">المدينة : </strong>
+                                <strong class="d-block mr-2">{{ translate('city') }} : </strong>
                                 <span class="badge badge-primary">{{ $order->city->name }}</span>
                             </div>
                             <div class="d-flex align-items-center mt-2">
-                                <strong class="d-block mr-2">البلد : </strong>
+                                <strong class="d-block mr-2">{{ translate('country') }} : </strong>
                                 <span class="badge badge-primary">{{ $order->city->country->name }}</span>
                             </div>
                         @endif
@@ -49,13 +54,13 @@
                     @endif
                     @if($order->type == 'inhouse')
                         <div class="d-flex align-items-center">
-                            <strong class="d-block mr-2">فرع الطلب : </strong>
+                            <strong class="d-block mr-2">{{ translate('order branch') }} : </strong>
                             <span class="badge badge-primary">{{ $order->branch->name }}</span>
                         </div>
                     @endif
                     @if($order->notes)
                         <div class="d-flex align-items-center mt-2">
-                            <strong class="d-block mr-2">الملاحظات : </strong>
+                            <strong class="d-block mr-2">{{ translate('notes') }} : </strong>
                             <span class="badge badge-primary">{{ $order->notes }}</span>
                         </div>
                     @endif
@@ -67,17 +72,17 @@
         <div class="col-12">
             <div>
                 <div class="p-2">
-                    <h3 class="font-size-16"><strong>ملخص الطلب</strong></h3>
+                    <h3 class="font-size-16"><strong>{{ translate('order summary') }}</strong></h3>
                 </div>
                 <div class="">
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <td><strong>أسم الأكلة</strong></td>
-                                    <td><strong>السعر</strong></td>
-                                    <td><strong>العدد</strong></td>
-                                    <td><strong>السعر الكلى </strong></td>
+                                    <td><strong>{{ translate('food name') }}</strong></td>
+                                    <td><strong>{{ translate('price') }}</strong></td>
+                                    <td><strong>{{ translate('count') }}</strong></td>
+                                    <td><strong>{{ translate('total price') }} </strong></td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -93,20 +98,20 @@
                                                             @foreach ($val as $extra)
                                                                 <div class="mb-2 d-flex align-items-center">
                                                                     <div class="line">
-                                                                        <strong>الأضافة :</strong>
+                                                                        <strong>{{ translate('extra') }} :</strong>
                                                                         <span class="badge badge-secondary">{{ $extra->variant  }}</span>
                                                                     </div>
                                                                     <div class="line">
-                                                                        <strong>السعر :</strong>
+                                                                        <strong>{{ translate('price') }} :</strong>
                                                                         <span class="badge badge-secondary">{{ $extra->price  }}</span>
                                                                     </div>
                                                                     <div class="line">
-                                                                        <strong>الكمية :</strong>
+                                                                        <strong>{{ translate('order quantity') }} :</strong>
                                                                         <span class="badge badge-secondary">{{ $extra->qty  }}</span>
                                                                     </div>
                                                                     @if($extra->qty > 1)
                                                                         <div class="line">
-                                                                            <strong>السعر الكلى :</strong>
+                                                                            <strong>{{ translate('total price') }} :</strong>
                                                                             <span class="badge badge-secondary">{{ $extra->total_price  }}</span>
                                                                         </div>
                                                                     @endif
@@ -131,20 +136,20 @@
                                                 @foreach ($value as $variant)
                                                     <div class="mb-2 d-flex align-items-center">
                                                         <div class="line">
-                                                            <strong>الحجم :</strong>
+                                                            <strong>{{ translate('size') }} :</strong>
                                                             <span class="badge badge-secondary">{{ $variant->variant  }}</span>
                                                         </div>
                                                         <div class="line">
-                                                            <strong>السعر :</strong>
+                                                            <strong>{{ translate('price') }} :</strong>
                                                             <span class="badge badge-secondary">{{ $variant->price  }}</span>
                                                         </div>
                                                         <div class="line">
-                                                            <strong>العدد :</strong>
+                                                            <strong>{{ translate('quantity') }} :</strong>
                                                             <span class="badge badge-secondary">{{ $variant->qty  }}</span>
                                                         </div>
                                                         @if($variant->qty > 1)
                                                             <div class="line">
-                                                                <strong>السعر الكلى :</strong>
+                                                                <strong>{{ translate('total price') }} :</strong>
                                                                 <span class="badge badge-secondary">{{ $variant->total_price  }}</span>
                                                             </div>
                                                         @endif
@@ -156,20 +161,20 @@
                                                             @foreach ($val as $variant)
                                                                 <div class="mb-2 d-flex align-items-center">
                                                                     <div class="line">
-                                                                        <strong>الأضافة :</strong>
+                                                                        <strong>{{ translate('extra') }} :</strong>
                                                                         <span class="badge badge-secondary">{{ $variant->variant  }}</span>
                                                                     </div>
                                                                     <div class="line">
-                                                                        <strong>السعر :</strong>
+                                                                        <strong>{{ translate('price') }} :</strong>
                                                                         <span class="badge badge-secondary">{{ $variant->price  }}</span>
                                                                     </div>
                                                                     <div class="line">
-                                                                        <strong>الكمية :</strong>
+                                                                        <strong>{{ translate('quantity') }} :</strong>
                                                                         <span class="badge badge-secondary">{{ $variant->qty  }}</span>
                                                                     </div>
                                                                     @if($variant->qty > 1)
                                                                         <div class="line">
-                                                                            <strong>السعر الكلى :</strong>
+                                                                            <strong>{{ translate('total price') }} :</strong>
                                                                             <span class="badge badge-secondary">{{ $variant->total_price  }}</span>
                                                                         </div>
                                                                     @endif
@@ -188,7 +193,7 @@
                                     <td class="thick-line"></td>
                                     <td class="thick-line"></td>
                                     <td class="thick-line text-center">
-                                        <strong>السعر الكلى بدون اضافات</strong></td>
+                                        <strong>{{ translate('total price withoud extras') }}</strong></td>
                                     @if(isset($order->order_details->groupBy('variant_type')['extra']))
                                     <td class="thick-line"><strong>{{  ($order->grand_total  - $order->shipping -  $order->order_details->groupBy('variant_type')['extra']->pluck('total_price')->sum()) + $order->total_discount }}</strong></td>
                                     @else
@@ -199,7 +204,7 @@
                                     <tr>
                                         <td class="thick-line"></td>
                                         <td class="thick-line"></td>
-                                        <td class="thick-line text-center"> <strong>السعر الكلى للأضافات</strong></td>
+                                        <td class="thick-line text-center"> <strong>{{ translate('total price of extras') }}</strong></td>
                                         <td class="thick-line"><strong>{{ $order->order_details->groupBy('variant_type')['extra']->pluck('total_price')->sum() }}</strong></td>
                                     </tr>
                                 @endif
@@ -208,7 +213,7 @@
                                         <td class="no-line"></td>
                                         <td class="no-line"></td>
                                         <td class="no-line text-center">
-                                            <strong>الشحن</strong></td>
+                                            <strong>{{ translate('shipping') }}</strong></td>
                                         <td class="no-line"><strong>{{ $order->shipping }}</strong></td>
                                     </tr>
                                 @endif
@@ -217,7 +222,7 @@
                                         <td class="no-line"></td>
                                         <td class="no-line"></td>
                                         <td class="no-line text-center">
-                                            <strong>الخصم</strong></td>
+                                            <strong>{{ translate('discount') }}</strong></td>
                                         <td class="no-line"><strong>{{ $order->total_discount }}</strong></td>
                                     </tr>
                                 @endif
@@ -225,7 +230,7 @@
                                     <td class="no-line"></td>
                                     <td class="no-line"></td>
                                     <td class="no-line text-center">
-                                        <strong>السعر النهائى</strong></td>
+                                        <strong>{{ translate('final price') }}</strong></td>
                                     <td class="no-line">
                                         <h4 class="m-0"><strong>{{ $order->grand_total }}</strong></h4></td>
                                 </tr>

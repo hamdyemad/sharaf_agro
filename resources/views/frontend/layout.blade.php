@@ -55,7 +55,14 @@
         <!-- App Css-->
         <link href="{{ URL::asset('/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
         {{-- RTL Bootstrap --}}
-        <link href="{{ URL::asset('/css/app-rtl.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
+        @php
+        $language = App\Models\Language::where('code', App::getLocale())->first();
+        @endphp
+        @if($language)
+            @if($language->rtl)
+                <link href="{{ URL::asset('/css/app-rtl.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
+            @endif
+        @endif
         <!-- Responsive Table css -->
         <link href="{{ URL::asset('/libs/rwd-table/rwd-table.min.css') }}" rel="stylesheet" type="text/css" />
         <!-- Bootstrap Css -->

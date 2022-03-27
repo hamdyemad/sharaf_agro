@@ -32,9 +32,9 @@ class ExpenseRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'الأسم مطلوب',
-            'price.required' => 'المبلغ مطلوب',
-            'price.regex' => 'المبلغ يجب أن يكون رقم',
+            'name.required' => translate("the name is required"),
+            'price.required' => translate("the price is required"),
+            'price.regex' => translate("the price should be a number"),
         ];
     }
 }

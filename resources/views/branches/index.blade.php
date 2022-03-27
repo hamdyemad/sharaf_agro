@@ -1,22 +1,22 @@
 @extends('layouts.master')
 
 @section('title')
-الفروع
+{{ translate('branches') }}
 @endsection
 @section('content')
     @component('common-components.breadcrumb')
-        @slot('title') الفروع @endslot
-        @slot('li1') لوحة التحكم @endslot
+        @slot('title') {{ translate('branches') }} @endslot
+        @slot('li1') {{ translate('dashboard') }} @endslot
         @slot('route1') {{ route('dashboard') }} @endslot
-        @slot('li3') الفروع @endslot
+        @slot('li3') {{ translate('branches') }} @endslot
     @endcomponent
     <div class="card">
         <div class="card-header">
             <div class="d-flex flex-column flex-md-row text-center text-md-right justify-content-between">
-                <h2>الفروع</h2>
+                <h2>{{ translate('branches') }}</h2>
                 @can('branches.create')
                     <div>
-                        <a href="{{ route('branches.create') }}" class="btn btn-primary mb-2">أنشاء فرع جديد</a>
+                        <a href="{{ route('branches.create') }}" class="btn btn-primary mb-2">{{ translate('create') }}</a>
                     </div>
                 @endcan
             </div>
@@ -24,26 +24,26 @@
                 <div class="row">
                     <div class="col-6">
                         <div class="form-group">
-                            <label for="name">أسم الفرع</label>
+                            <label for="name">{{ translate('branch name') }}</label>
                             <input class="form-control" name="name" type="text" value="{{ request('name') }}">
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="form-group">
-                            <label for="name">رقم الفرع</label>
+                            <label for="name">{{ translate('branch phone') }}</label>
                             <input class="form-control" name="phone" type="text" value="{{ request('phone') }}">
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="form-group">
-                            <label for="name">عنوان الفرع</label>
+                            <label for="name">{{ translate('branch address') }}</label>
                             <input class="form-control" name="address" type="text" value="{{ request('address') }}">
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="form-group">
                             <label for="name"></label>
-                            <input type="submit" value="بحث" class="form-control btn btn-primary mt-1">
+                            <input type="submit" value="{{ translate('search') }}" class="form-control btn btn-primary mt-1">
                         </div>
                     </div>
                 </div>
@@ -56,12 +56,12 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>أسم الفرع</th>
-                            <th>عنوان الفرع</th>
-                            <th>رقم الفرع</th>
-                            <th>وقت الأنشاء</th>
-                            <th>وقت أخر تعديل</th>
-                            <th>الأعدادات</th>
+                            <th>{{ translate('branch name') }}</th>
+                            <th>{{ translate('branch address') }}</th>
+                            <th>{{ translate('branch phone') }}</th>
+                            <th>{{ translate('creation date') }}</th>
+                            <th>{{ translate('last update date') }}</th>
+                            <th>{{ translate('settings') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -81,7 +81,7 @@
                                     <div class="options d-flex">
                                         @can('branches.edit')
                                             <a class="btn btn-info mr-1" href="{{ route('branches.edit', $branch) }}">
-                                                <span>تعديل</span>
+                                                <span>{{ translate('edit') }}</span>
                                                 <span class="mdi mdi-circle-edit-outline"></span>
                                             </a>
 
@@ -89,7 +89,7 @@
                                         @can('branches.destroy')
                                             <button class="btn btn-danger" data-toggle="modal"
                                                 data-target="#modal_{{ $branch->id }}">
-                                                <span>ازالة</span>
+                                                <span>{{ translate('delete') }}</span>
                                                 <span class="mdi mdi-delete-outline"></span>
                                             </button>
                                             <!-- Modal -->

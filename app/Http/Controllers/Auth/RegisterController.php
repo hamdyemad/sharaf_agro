@@ -54,17 +54,17 @@ class RegisterController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ], [
-            'name.required' => 'الأسم مطلوب',
-            'name.string' => 'الأسم يجب أن يكون حروفا',
-            'name.max' => 'يجب ادخال حروف اقل من 255',
-            'email.required' => 'البريد الألكترونى مطلوب',
-            'email.string' => 'البريد الألكترونى يجب أن يكون حروفا',
-            'email.max' => 'يجب ادخال حروف اقل من 255',
-            'email.unique' => 'البريد الألكترونى هذا موجود بالفعل',
-            'password.required' =>'الرقم السرى مطلوب',
-            'password.string' =>'الرقم السرى يجب أن يكون حروفا',
-            'password.min' =>'ادخل حروف اكثر من 8',
-            'password.confirmed' => 'يجب أن تكمل عملية اتمام الرقم السرى'
+            'name.required' => translate('the name is required'),
+            'name.string' => translate('the name should be a letters'),
+            'name.max' => translate('you should enter a letters at least 255'),
+            'email.required' => translate('the email is required'),
+            'email.string' => translate('the email should be a letters'),
+            'email.max' => translate('you should enter a letters at least 255'),
+            'email.unique' => translate('the email is already exists'),
+            'password.required' =>translate('the password is required'),
+            'password.string' => translate('the password should be a letters'),
+            'password.min' =>translate('you should enter a password bigger than 8 letters'),
+            'password.confirmed' => translate('the password should be matches')
         ]);
     }
 

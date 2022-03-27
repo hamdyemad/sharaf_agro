@@ -107,43 +107,6 @@ class ProfileController extends Controller
     }
 
 
-    public function orders(Request $request) {
-        Carbon::setLocale('ar');
-        $orders = Order::where('user_id', Auth::id())->latest();
-        $statuses = Status::all();
-        $branches = Branch::all();
-        if($request->customer_name) {
-            $orders = $orders->where('customer_name', 'like', '%' . $request->customer_name .'%');
-        }
-        if($request->customer_phone) {
-            $orders = $orders->where('customer_phone', 'like', '%' . $request->customer_phone .'%');
-        }
-        if($request->type) {
-            $orders = $orders->where('type', 'like', '%' . $request->type .'%');
-        }
-        if($request->branch_id) {
-            $orders = $orders->where('branch_id', 'like', '%' . $request->type .'%');
-        }
-        if($request->status_id) {
-            $orders = $orders->where('status_id', 'like', '%' . $request->status_id .'%');
-        }
-        $orders = $orders->paginate(10);
-        foreach($orders as $order) {
-            $order->update([
-                'client_viewed' => true,
-                'client_status_viewed' => true,
-            ]);
-        }
-        return view('frontend.user.orders', compact('orders', 'statuses', 'branches'));
-    }
-
-    public function orders_show(Request $request, Order $order) {
-        $order->update([
-            'client_viewed' => true,
-            'client_status_viewed' => true,
-        ]);
-        return view('frontend.user.order_show', compact('order'));
-    }
     /**
      * Show the form for editing the specified resource.
      *

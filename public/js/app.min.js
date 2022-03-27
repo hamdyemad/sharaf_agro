@@ -342,12 +342,4 @@ File: Main Js File
         "height",
         `calc(100vh - ${$(".frontend .navbar").height()}px)`
     );
-
-    // $("video").trigger("play");
 })(jQuery);
-window.onload = function() {
-    var video = document.querySelector("video");
-    video.muted = true;
-    video.controls = false;
-    video.play();
-};

@@ -45,7 +45,7 @@
                                                                 </div>
                                                                 <div class="d-flex align-items-center ml-2">
                                                                     <span class="h4">السعر : </span>
-                                                                    <span class="badge badge-primary d-block ml-1 price">{{ $product->price_after_discount * $cart['amount']  }}</span>
+                                                                    <span class="badge badge-primary d-block ml-1 price">{{ price($product->price_after_discount * $cart['amount'])  }}</span>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -67,7 +67,7 @@
                                                                     </div>
                                                                     <div class="d-flex align-items-center ml-1">
                                                                         <span class="h4">السعر : </span>
-                                                                        <span class="badge badge-primary d-block ml-1 price">{{ $product->variants->find($size['size_id'])->price_after_discount * $size['size_amount'] }}</span>
+                                                                        <span class="badge badge-primary d-block ml-1 price">{{ price($product->variants->find($size['size_id'])->price_after_discount * $size['size_amount']) }}</span>
                                                                     </div>
                                                                 </div>
                                                             @endforeach
@@ -91,7 +91,7 @@
                                                                     </div>
                                                                     <div class="d-flex align-items-center ml-1">
                                                                         <span class="h4">السعر : </span>
-                                                                        <span class="badge badge-primary d-block ml-1 price">{{ $product->variants->find($extra['extra_id'])->price_after_discount * $extra['extra_amount'] }}</span>
+                                                                        <span class="badge badge-primary d-block ml-1 price">{{ price($product->variants->find($extra['extra_id'])->price_after_discount * $extra['extra_amount']) }}</span>
                                                                     </div>
                                                                 </div>
                                                             @endforeach
@@ -110,9 +110,9 @@
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <span class="mr-1">السعر النهائى : </span>
-                                                <span class="badge badge-primary d-block total_price">{{  array_reduce(array_map(function($obj) {
+                                                <span class="badge badge-primary d-block total_price">{{ price(array_reduce(array_map(function($obj) {
                                                     return $obj['total_price'];
-                                                }, Session::get('carts')), function($acc, $curr) {return $acc + $curr;}) }}</span>
+                                                }, Session::get('carts')), function($acc, $curr) {return $acc + $curr;})) }}</span>
                                             </div>
                                         </td>
                                     </tr>

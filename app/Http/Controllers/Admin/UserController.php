@@ -27,7 +27,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $this->authorize('users.index');
-        Carbon::setLocale('ar');
+        Carbon::setLocale(app()->getLocale());
         $users = User::where('type', '!=', 'admin')->where('id', '!=', Auth::id());
         $branches = Branch::orderBy('name')->get();
         $roles = Role::latest()->get();
@@ -116,29 +116,29 @@ class UserController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ];
         $messages = [
-            'name.required' => 'الأسم مطلوب',
-            'type.required' => 'نوع المستخدم مطلوب',
-            'name.string' => 'الأسم يجب أن يكون حروفا',
-            'name.max' => 'يجب ادخال حروف اقل من 255',
-            'email.required' => 'البريد الألكترونى مطلوب',
-            'email.string' => 'البريد الألكترونى يجب أن يكون حروفا',
-            'email.max' => 'يجب ادخال حروف اقل من 255',
-            'email.unique' => 'البريد الألكترونى هذا موجود بالفعل',
-            'password.required' =>'الرقم السرى مطلوب',
-            'password.string' =>'الرقم السرى يجب أن يكون حروفا',
-            'password.min' =>'ادخل حروف اكثر من 8',
-            'password.confirmed' => 'يجب على الرقم السرى أن يكون مطابق',
-            'branch_id.exists' => 'يجب اختيار فرع',
+            'name.required' => translate('the name is required'),
+            'type.required' => translate('the type is required'),
+            'name.string' => translate('the name should be letters'),
+            'name.max' => translate('you should enter a letters at least 255'),
+            'email.required' => translate('the email is required'),
+            'email.string' => translate('the email sould be letters'),
+            'email.max' => translate('you should enter a letters at least 255'),
+            'email.unique' => translate('the email is already exists'),
+            'password.required' =>translate('the password is required'),
+            'password.string' =>translate('the password sould be letters'),
+            'password.min' =>translate('you should enter a password bigger than 8 letters'),
+            'password.confirmed' => translate('the password should be matches'),
+            'branch_id.exists' => translate('you should choose branch'),
         ];
 
         if($request->type == 'sub-admin') {
             $rules['roles'] = 'required|exists:roles,id';
-            $messages['roles.required'] = 'الصلاحيات مطلوبة';
-            $messages['roles.exists'] = 'الصلاحية غير موجودة بالبيانات';
+            $messages['roles.required'] = translate('the permessions is required');
+            $messages['roles.exists'] = translate('the permessions is not in the infos');
         }
         $validator = Validator::make($request->all(), $rules, $messages);
         if($validator->fails()) {
-            return redirect()->back()->withErrors($validator->errors())->with('error', 'يوجد مشكلة ما فى التسجيل')->withInput($request->all());
+            return redirect()->back()->withErrors($validator->errors())->with('error', translate('there is something error'))->withInput($request->all());
         }
         if($request->has('avatar')) {
             $creation['avatar'] = $this->uploadFile($request, $this->usersPath, 'avatar');
@@ -149,7 +149,7 @@ class UserController extends Controller
                 $user->roles()->attach($role);
             }
         }
-        return redirect()->back()->with('success', 'تم انشاء الحساب بنجاح');
+        return redirect()->back()->with('success', translate('created successfully'));
     }
 
     /**
@@ -204,16 +204,16 @@ class UserController extends Controller
             'branch_id' => 'nullable|exists:branches,id',
         ];
         $messages = [
-            'name.required' => 'الأسم مطلوب',
-            'name.string' => 'الأسم يجب أن يكون حروفا',
-            'name.max' => 'يجب ادخال حروف اقل من 255',
-            'email.required' => 'البريد الألكترونى مطلوب',
-            'email.string' => 'البريد الألكترونى يجب أن يكون حروفا',
-            'email.max' => 'يجب ادخال حروف اقل من 255',
-            'email.unique' => 'البريد الألكترونى هذا موجود بالفعل',
-            'branch_id.exists' => 'يجب اختيار فرع',
-            'roles.required' => 'الصلاحيات مطلوبة',
-            'roles.exists' => 'الصلاحية غير موجودة بالبيانات'
+            'name.required' => translate('updated successfully'),
+            'name.string' => translate('the name should be letters'),
+            'name.max' => translate('you should enter a letters at least 255'),
+            'email.required' => translate('the email is required'),
+            'email.string' => translate('the email sould be letters'),
+            'email.max' => translate('you should enter a letters at least 255'),
+            'email.unique' => translate('the email is already exists'),
+            'branch_id.exists' => translate('you should choose branch'),
+            'roles.required' => translate('the permessions is required'),
+            'roles.exists' => translate('the permessions is not in the infos')
         ];
         if($request->profile) {
             unset($rules['roles']);
@@ -223,7 +223,7 @@ class UserController extends Controller
         if($request->type) {
             $updateArray['type'] = $request->type;
             $rules['type'] = 'required';
-            $messages['type.required'] = 'نوع المستخدم مطلوب';
+            $messages['type.required'] = translate('the type is required');
         }
         if($request->password !== null) {
             $updateArray['password'] = Hash::make($request->password);
@@ -235,7 +235,7 @@ class UserController extends Controller
         }
         $validator = Validator::make($request->all(), $rules, $messages);
         if($validator->fails()) {
-            return redirect()->back()->withErrors($validator->errors())->with('error', 'يوجد مشكلة ما فى التسجيل')->withInput($request->all());
+            return redirect()->back()->withErrors($validator->errors())->with('error', translate('there is something error'))->withInput($request->all());
         }
         if($request->has('avatar')) {
             $updateArray['avatar'] = $this->uploadFile($request, $this->usersPath, 'avatar');
@@ -257,16 +257,16 @@ class UserController extends Controller
                 $user->roles()->attach($role);
             }
         }
-        return redirect()->back()->with('info', 'تم تعديل الحساب بنجاح');
+        return redirect()->back()->with('info', translate('updated successfully'));
     }
 
     public function banned(Request $request, User $user) {
         if($request->active == 'on') {
             $user->update(['banned' => 1]);
-            return redirect()->back()->with('success', 'تم حذر ' . $user->name . ' بنجاح');
+            return redirect()->back()->with('success', translate('banned successfully'));
         } else {
             $user->update(['banned' => 0]);
-            return redirect()->back()->with('success', 'تم فك حذر ' . $user->name . ' بنجاح');
+            return redirect()->back()->with('success', translate('unbanned successfully'));
         }
     }
 
@@ -286,7 +286,7 @@ class UserController extends Controller
             }
         }
         User::destroy($user->id);
-        return redirect()->back()->with('success', 'تمت ازالة ' . $user->name . ' بنجاح');
+        return redirect()->back()->with('success', translate('deleted successfully'));
 
     }
 }

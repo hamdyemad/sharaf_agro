@@ -1,19 +1,19 @@
 @if(Auth::check())
-  <!-- Modal -->
-  <div class="modal fade side_nav" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+    <!-- Modal -->
+    <div class="modal fade side_nav" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                @include('frontend.inc.user_computer_nav')
+            </div>
         </div>
-        <div class="modal-body">
-            @include('frontend.inc.user_computer_nav')
         </div>
-      </div>
     </div>
-  </div>
     <div class="footer_fixed d-block d-lg-none">
         <div class="row">
             <div class="col-4">
@@ -79,3 +79,24 @@
         </div>
     </div>
 @endif
+{{-- Search Modal --}}
+<div class="modal products_search fade" id="search_modal" tabindex="-1" aria-labelledby="search_modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                البحث عن الأكلات
+            </div>
+            <div class="modal-body">
+                <form action="">
+                    <input class="form-control" type="text" placeholder="بحث بأسم الأكلة">
+                    <div class="card">
+                        <div class="card-body">
+                            <ul class="products">
+                            </ul>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
