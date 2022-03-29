@@ -62,7 +62,7 @@
                             <button hidden>hello</button>
                         </tbody>
                     </table>
-                    {{ $translations->links() }}
+                    {{ $translations->appends(['lang_key' => request('lang_key')])->links() }}
                 </form>
             </div>
         </div>

@@ -112,19 +112,16 @@
                     <table class="table mb-0">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>{{ translate('food name') }}</th>
-                                <th>{{ translate('category') }}</th>
-                                <th>{{ translate('branch') }}</th>
-                                <th>{{ translate('description') }}</th>
-                                <th>{{ translate('price') }}</th>
-                                <th>{{ translate('discount') }}</th>
-                                <th>{{ translate('price after discount') }}</th>
-                                <th>{{ translate('available') }}</th>
-                                <th>{{ translate('appearance number') }}</th>
-                                <th>{{ translate('creation date') }}</th>
-                                <th>{{ translate('last update date') }}</th>
-                                <th>{{ translate('settings') }}</th>
+                                <th><span>{{ translate('order number') }}</span></th>
+                                <th><span>{{ translate('food name') }}</span></th>
+                                <th><span>{{ translate('category') }}</span></th>
+                                <th><span>{{ translate('branch') }}</span></th>
+                                <th><span>{{ translate('description') }}</span></th>
+                                <th><span>{{ translate('available') }}</span></th>
+                                <th><span>{{ translate('appearance number') }}</span></th>
+                                <th><span>{{ translate('creation date') }}</span></th>
+                                <th><span>{{ translate('last update date') }}</span></th>
+                                <th><span>{{ translate('settings') }}</span></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -167,15 +164,6 @@
                                     @else
                                         {{ $product->description }}
                                     @endif
-                                </td>
-                                <td>
-                                    {{ $product->price }}
-                                </td>
-                                <td>
-                                    {{ $product->discount }}
-                                </td>
-                                <td>
-                                    {{ $product->price - $product->discount }}
                                 </td>
                                 <td>
                                     @if ($product->active)
@@ -222,68 +210,64 @@
                                         @endcan
                                 </td>
                             </tr>
+                            @if(count($product->prices) > 0)
+                                <tr>
+                                    <td>{{ translate('currency') }}</td>
+                                    <td>{{ translate('price') }}</td>
+                                    <td>{{ translate('discount') }}</td>
+                                    <td>{{ translate('price after discount') }}</td>
+                                    </td>
+                                </tr>
+                                @foreach ($product->prices as $price)
+                                    <tr>
+                                        <td>{{ $price->currency->code }}</td>
+                                        <td>{{ $price->price }}</td>
+                                        <td>{{ $price->discount }}</td>
+                                        <td>{{ $price->price_after_discount }}</td>
+                                    </tr>
+                                @endforeach
+                            @endif
                             @if($product->variants)
                                 @if(isset($product->variants->groupBy('type')['size']))
+
                                     <tr>
                                         <td>{{ translate('size') }}</td>
-                                        <td>{{ translate('price') }}</td>
-                                        <td>{{ translate('discount') }}</td>
-                                        <td>{{ translate('price after discount') }}</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        @foreach($currencies as $currency)
+                                            <th>{{ $currency['code'] }}</th>
+                                        @endforeach
                                     </tr>
                                     @foreach ($product->variants->groupBy('type')['size'] as $variant)
                                         <tr>
                                             <td>{{ $variant->variant }}</td>
-                                            <td>{{ $variant->price }}</td>
-                                            <td>{{ $variant->discount }}</td>
-                                            <td>{{ $variant->price_after_discount }}</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            @foreach ($variant->prices as $price)
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <span>{{ translate('price') . ':' }}</span> <span class="badge badge-primary">{{ $price->price }}</span>
+                                                    </div>
+                                                    <div class="d-flex align-items-center">
+                                                        <span>{{ translate('discount') . ':' }}</span><span class="badge badge-primary">{{ $price->discount }}</span>
+                                                    </div>
+                                                    <div class="d-flex align-items-center">
+                                                        <span>{{ translate('price after discount') . ':' }}</span><span class="badge badge-primary">{{ $price->price_after_discount }}</span>
+                                                    </div>
+                                                </td>
+                                            @endforeach
                                         </tr>
                                     @endforeach
                                 @endif
                                 @if(isset($product->variants->groupBy('type')['extra']))
                                     <tr>
                                         <td>{{ translate('extra') }}</td>
-                                        <td>{{ translate('price') }}</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                        @foreach($currencies as $currency)
+                                            <th>{{ $currency['code'] }}</th>
+                                        @endforeach
                                     </tr>
                                     @foreach ($product->variants->groupBy('type')['extra'] as $variant)
                                         <tr>
                                             <td>{{ $variant->variant }}</td>
-                                            <td>{{ $variant->price_after_discount }}</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            @foreach ($variant->prices as $price)
+                                                <td>{{ $price->price_after_discount }}</td>
+                                            @endforeach
                                         </tr>
                                     @endforeach
                                 @endif

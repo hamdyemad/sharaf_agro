@@ -1,4 +1,11 @@
 .all_products {
+    text-transform: capitalize;
+    th {
+        span {
+            display: block;
+            width: max-content;
+        }
+    }
     h4 {
         width: max-content;
     }

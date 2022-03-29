@@ -18,9 +18,9 @@ class CreateStatusesHistroyTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('order_id');
             $table->unsignedBigInteger('status_id');
-            $table->foreign('user_id')->on('users')->references('id');
-            $table->foreign('status_id')->on('statuses')->references('id');
-            $table->foreign('order_id')->on('orders')->references('id');
+            $table->foreign('user_id')->on('users')->references('id')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('status_id')->on('statuses')->references('id')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('order_id')->on('orders')->references('id')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

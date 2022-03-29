@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProductsVariationsTable extends Migration
+class CreateProductsVariationsPricesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,17 @@ class CreateProductsVariationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('products_variations', function (Blueprint $table) {
+        Schema::create('products_variations_prices', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('product_id');
-            $table->enum('type', ['extra', 'size']);
-            $table->string('variant');
+            $table->unsignedBigInteger('variant_id');
+            $table->unsignedBigInteger('currency_id');
             $table->double('price');
             $table->double('discount')->nullable();
             $table->double('price_after_discount');
             $table->foreign('product_id')->on('products')->references('id')->onDelete('cascade')->onUpdate('cascade');
-            $table->unique(['product_id', 'variant']);
+            $table->foreign('currency_id')->on('currencies')->references('id')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('variant_id')->on('products_variations')->references('id')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }
@@ -34,6 +35,6 @@ class CreateProductsVariationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products_variations');
+        Schema::dropIfExists('products_variations_prices');
     }
 }

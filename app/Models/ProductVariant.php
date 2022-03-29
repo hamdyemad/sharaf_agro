@@ -7,5 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class ProductVariant extends Model
 {
     protected $table = 'products_variations';
-    protected $fillable = ['type', 'variant', 'price', 'product_id', 'discount', 'price_after_discount'];
+    protected $fillable = ['type', 'variant', 'product_id'];
+
+    public function prices() {
+        return $this->hasMany(ProductVariantPrice::class, 'variant_id');
+    }
 }

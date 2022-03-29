@@ -10,6 +10,7 @@ use App\Models\City;
 use App\Models\Country;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\Payment;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\Status;

@@ -19,9 +19,6 @@ class CreateProductsTable extends Migration
             $table->string('name');
             $table->text('photos')->nullable();
             $table->text('description')->nullable();
-            $table->double('price');
-            $table->double('discount')->nullable();
-            $table->double('price_after_discount');
             $table->boolean('active')->default(1);
             $table->integer('viewed_number')->nullable();
             $table->foreign('category_id')->on('categories')->references('id')->onDelete('cascade')->onUpdate('cascade');

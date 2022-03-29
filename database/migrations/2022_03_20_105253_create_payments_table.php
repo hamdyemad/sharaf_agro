@@ -19,8 +19,8 @@ class CreatePaymentsTable extends Migration
             $table->unsignedBigInteger('order_id');
             $table->text('transaction_id');
             $table->double('amount');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade')->onUpdate('cascade');
             $table->unique(['user_id', 'order_id']);
             $table->timestamps();
         });

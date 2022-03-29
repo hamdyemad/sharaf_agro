@@ -94,16 +94,16 @@
                         <thead>
                             <tr>
                                 <th><span>{{ translate('order number') }}</span></th>
-                                <th>{{ translate('customer name') }}</th>
-                                <th>{{ translate('customer address') }}</th>
-                                <th>{{ translate('city') }}</th>
-                                <th>{{ translate('customer phone') }}</th>
+                                <th><span>{{ translate('customer name') }}</span></th>
+                                <th><span>{{ translate('customer address') }}</span></th>
+                                <th><span>{{ translate('city') }}</span></th>
+                                <th><span>{{ translate('customer phone') }}</span></th>
                                 <th><span>{{ translate('order status') }}</span></th>
                                 <th><span>{{ translate('paid') }}</span></th>
                                 <th><span>{{ translate('order branch') }}</span></th>
                                 <th><span>{{ translate('creation date') }}</span></th>
                                 <th><span>{{ translate('last update date') }}</span></th>
-                                <th>{{ translate('settings') }}</th>
+                                <th><span>{{ translate('settings') }}</span></th>
                             </tr>
                         </thead>
                         <tbody>
