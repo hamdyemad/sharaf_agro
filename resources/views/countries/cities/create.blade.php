@@ -21,7 +21,7 @@
                         <input type="hidden" name="country_id" value="{{ $country->id }}">
                         @csrf
                         <div class="row">
-                            <div class="col-12 col-md-6">
+                            <div class="col-12">
                                 <div class="form-group">
                                     <label for="name">{{ translate('city name') }}</label>
                                     <input type="text" class="form-control" name="name" value="{{ old('name') }}">
@@ -30,18 +30,20 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6">
-                                <div class="form-group">
-                                    <label for="name">{{ translate('shipping price') }}</label>
-                                    <input type="text" class="form-control" name="price" value="{{ old('price') }}">
-                                    @error('price')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
+                            @foreach ($currencies as $currency)
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="name">{{ $currency->code }}</label>
+                                        <input type="hidden" class="form-control" name="prices[{{ $loop->index }}][currency_id]" value="{{ $currency->id }}">
+                                        <input type="text" class="form-control" name="prices[{{ $loop->index }}][price]" placeholder="{{ translate('shipping price') }}" @if(old('prices'))  value="{{ old('prices')[$loop->index]['price'] }}" @endif>
+                                        @error("prices.$loop->index.price")
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                 </div>
-                            </div>
+                            @endforeach
                             <div class="col-12">
                                 <div class="form-group">
-                                    <label for=""></label>
                                     <input type="submit" value="{{ translate('create') }}" class="btn btn-success">
                                     <a href="{{ route('countries.cities.index', $country) }}" class="btn btn-info">{{ translate('back to cities') }}</a>
                                 </div>

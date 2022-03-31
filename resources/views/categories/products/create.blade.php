@@ -108,13 +108,13 @@
                                                         <input name="product_prices[{{ $loop->index }}][currency_id]" value="{{ $currency->id }}" type="hidden">
                                                         <td>{{ $currency->code }}</td>
                                                         <td>
-                                                            <input class="form-control price-input" value="@if(old('product_prices')) {{ old('product_prices')[$loop->index]['price'] }} @endif" onkeyup="getFullPrice(this)" name="product_prices[{{ $loop->index }}][price]" type="text" placeholder="السعر">
+                                                            <input class="form-control price-input" value="@if(old('product_prices')) {{ old('product_prices')[$loop->index]['price'] }} @endif" onkeyup="getFullPrice(this)" name="product_prices[{{ $loop->index }}][price]" type="text" placeholder="{{ translate('price') }}">
                                                             @error("product_prices.$loop->index.price")
                                                                 <div class="text-danger">{{ $message }}</div>
                                                             @enderror
                                                         </td>
                                                         <td>
-                                                            <input class="form-control discount-input"value="@if(old('product_prices')) {{ old('product_prices')[$loop->index]['discount'] }} @endif" onkeyup="getFullPrice(this)" name="product_prices[{{ $loop->index }}][discount]" type="text" placeholder="الخصم">
+                                                            <input class="form-control discount-input"value="@if(old('product_prices')) {{ old('product_prices')[$loop->index]['discount'] }} @else 0 @endif" onkeyup="getFullPrice(this)" name="product_prices[{{ $loop->index }}][discount]" value="0" type="text" placeholder="{{ translate('discount') }}">
                                                             @error("product_prices.$loop->index.discount")
                                                                 <div class="text-danger">{{ $message }}</div>
                                                             @enderror
@@ -523,14 +523,16 @@
                     addRow('size');
                 }
             } else {
-                $(".description").parent().parent().after(prices_table);
+                if($(".description").parent().parent().parent().find('.prices_table').length == 0) {
+                    $(".description").parent().parent().after(prices_table);
+                }
                 $(".size-table").remove();
             }
         });
         function addRow(type) {
             $(`.add-${type}`).on('click', function() {
                 let index = $($(`.${type}-table`).find('tbody')[0]).children().length;
-                $($(`.${type}-table`).find('tbody')[0]).append(tr(index, type));
+                $($(`.${type}-table`).find('tbody')[0]).prepend(tr(index, type));
                 removeRow(type);
             });
         }

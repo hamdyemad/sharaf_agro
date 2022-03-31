@@ -13,6 +13,9 @@ class Product extends Model
     public function prices() {
         return $this->hasMany(ProductPrice::class, 'product_id');
     }
+    public function currenctPrice() {
+        return $this->hasOne(ProductPrice::class, 'product_id');
+    }
 
     public function category() {
         return $this->belongsTo(Category::class, 'category_id');

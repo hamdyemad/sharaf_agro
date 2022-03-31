@@ -73,6 +73,7 @@ Route::group([
                 Route::get('/create', 'OrderController@create')->name('create');
                 Route::get('/edit/{order}', 'OrderController@edit')->name('edit');
                 Route::get('/{order}', 'OrderController@show')->name('show');
+                Route::get('/{order}/pdf', 'OrderController@pdf')->name('pdf');
                 Route::patch('/{order}', 'OrderController@update')->name('update');
                 Route::delete('/{order}', 'OrderController@destroy')->name('destroy');
             });

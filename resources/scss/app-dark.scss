@@ -96,38 +96,43 @@ body {
 // Admin
 /*  Back End   */
 
-// Categories
-@import "./admin/categories/create";
-@import "./admin/categories/edit";
-@import "./admin/categories/index";
-@import "./admin/categories/show";
+.admin {
+    // Cities
+    @import "./admin/cities/index";
 
-// Products
-@import "./admin/categories/products/create";
-@import "./admin/categories/products/index";
-@import "./admin/categories/products/show";
+    // Categories
+    @import "./admin/categories/create";
+    @import "./admin/categories/edit";
+    @import "./admin/categories/index";
+    @import "./admin/categories/show";
 
-// Orders
-@import "./admin/orders/create";
-@import "./admin/orders/show";
-@import "./admin/orders/index";
+    // Products
+    @import "./admin/categories/products/create";
+    @import "./admin/categories/products/index";
+    @import "./admin/categories/products/show";
 
-// Settings
-@import "./admin/settings/edit";
+    // Orders
+    @import "./admin/orders/create";
+    @import "./admin/orders/show";
+    @import "./admin/orders/index";
 
-// Users
-@import "./admin/users/index";
-@import "./admin/users/create";
+    // Settings
+    @import "./admin/settings/edit";
 
-// Roles
-@import "./admin/roles/index";
-@import "./admin/roles/create";
+    // Users
+    @import "./admin/users/index";
+    @import "./admin/users/create";
 
-// Languages
-@import "./admin/languages/create";
+    // Roles
+    @import "./admin/roles/index";
+    @import "./admin/roles/create";
 
-/* INC */
-@import "./inc/invoice";
+    // Languages
+    @import "./admin/languages/create";
+
+    /* INC */
+    @import "./inc/invoice";
+}
 
 .order_tracker {
     padding: 55px 0;

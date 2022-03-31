@@ -291,17 +291,15 @@ class ProductController extends Controller
             'name' => $request->name,
             'category_id' => $request->category_id,
             'description' => $request->description,
-            'price' => $request->price,
-            'discount' => $request->discount,
             'viewed_number' => $request->viewed_number,
-            'price_after_discount' => ($request->price - $request->discount)
         ];
         $validator_array = [
             'name' => ['required'],
             'branch_id' => 'required|exists:branches,id',
-            'category_id' => ['required', 'exists:categories,id'],
-            'price' => 'required|regex:/^\d+(\.\d{1,2})?$/',
-            'discount' => 'regex:/^\d+(\.\d{1,2})?$/',
+            'category_id' => ['required','exists:categories,id'],
+            'product_prices.*.currency_id' => ['required', Rule::in(Currency::pluck('id'))],
+            'product_prices.*.price' => 'required|regex:/^\d+(\.\d{1,2})?$/',
+            'product_prices.*.discount' => 'regex:/^\d+(\.\d{1,2})?$/',
             'viewed_number' => 'integer',
         ];
         $validator_array_msgs = [
@@ -310,35 +308,41 @@ class ProductController extends Controller
             'branch_id.exists' => translate('the branch should be exists'),
             'category_id.required' => translate('the category is required'),
             'category_id.exists' => translate('the category should be exists'),
-            'price.required' => translate('the price is required'),
-            'price.regex' => translate('the price should be a number'),
-            'discount.regex' => translate('the discount should be a number'),
+            'product_prices.*.price.required' => translate('the price is required'),
+            'product_prices.*.price.regex' => translate('the price should be a number'),
+            'product_prices.*.discount.regex' => translate('the discount should be a number'),
             'viewed_number.integer' => translate('the viewed number should be a number'),
         ];
         if(isset($request->extras_type)) {
             if($request->extras) {
                 $validator_array['extras.*.variant'] = 'required';
-                $validator_array['extras.*.price'] = 'required';
-                $validator_array['extras.*.price'] = 'regex:/^\d+(\.\d{1,2})?$/';
-                $validator_array_msgs['extras.*.variant.required'] = translate('the branch is required');
-                $validator_array_msgs['extras.*.price.required'] = translate('the price is required');
-                $validator_array_msgs['extras.*.price.regex'] = translate('the price should be a number');
+                $validator_array['extras.*.prices.*.currency_id'] = 'required';
+                $validator_array['extras.*.prices.*.currency_id'] = Rule::in(Currency::pluck('id'));
+                $validator_array['extras.*.prices.*.price'] = 'required';
+                $validator_array['extras.*.prices.*.price'] = 'regex:/^\d+(\.\d{1,2})?$/';
+                $validator_array_msgs['extras.*.variant.required'] = translate('the extra is required');
+                $validator_array_msgs['extras.*.prices.*.currency_id.required'] = translate('currency required');
+                $validator_array_msgs['extras.*.prices.*.currency_id.required'] = translate('currency should be in the currencies');
+                $validator_array_msgs['extras.*.prices.*.price.required'] = translate('the price is required');
+                $validator_array_msgs['extras.*.prices.*.price.regex'] = translate('the price should be a number');
             }
             if($request->sizes) {
-                unset($validator_array['price']);
-                unset($validator_array['discount']);
-                $updateArray['price'] = 0;
-                $updateArray['discount'] = 0;
+                unset($validator_array['product_prices.*.currency_id']);
+                unset($validator_array['product_prices.*.price']);
+                unset($validator_array['product_prices.*.discount']);
                 $validator_array['sizes.*.variant'] = 'required';
-                $validator_array['sizes.*.price'] = 'required';
-                $validator_array['sizes.*.price'] = 'regex:/^\d+(\.\d{1,2})?$/';
-                $validator_array['sizes.*.discount'] = 'regex:/^\d+(\.\d{1,2})?$/';
+                $validator_array['sizes.*.prices.*.currency_id'] = 'required';
+                $validator_array['sizes.*.prices.*.price'] = 'required';
+                $validator_array['sizes.*.prices.*.price'] = 'regex:/^\d+(\.\d{1,2})?$/';
+                $validator_array['sizes.*.prices.*.discount'] = 'regex:/^\d+(\.\d{1,2})?$/';
                 $validator_array_msgs['sizes.*.variant.required'] = translate('the size is required');
-                $validator_array_msgs['sizes.*.price.required'] = translate('the price is required');
-                $validator_array_msgs['sizes.*.price.regex'] = translate('the price should be a number');
-                $validator_array_msgs['sizes.*.discount.regex'] = translate('the discount should be a number');
+                $validator_array_msgs['sizes.*.prices.*.currency_id.required'] = translate('currency required');
+                $validator_array_msgs['sizes.*.prices.*.price.required'] = translate('the price is required');;
+                $validator_array_msgs['sizes.*.prices.*.price.regex'] = translate('the price should be a number');
+                $validator_array_msgs['sizes.*.prices.*.discount.regex'] = translate('the discount should be a number');
             }
         }
+
         $validator = Validator::make($request->all(), $validator_array, $validator_array_msgs);
 
         if($request->has('active') && $request->active == 'on') {
@@ -362,29 +366,63 @@ class ProductController extends Controller
             $updateArray['photos'] = json_encode($photos);
         }
         $product->update($updateArray);
+        ProductPrice::where('product_id', $product->id)->delete();
         ProductVariant::where('product_id', $product->id)->where('type', 'extra')->delete();
         ProductVariant::where('product_id', $product->id)->where('type', 'size')->delete();
+        // Create Product Prices With Currencies
+        if($request->has('product_prices')) {
+            foreach ($request->product_prices as $product_price) {
+                $product_price['price'] = doubleval($product_price['price']);
+                $product_price['discount'] = doubleval($product_price['discount']);
+                ProductPrice::create([
+                    'product_id' => $product->id,
+                    'currency_id' => $product_price['currency_id'],
+                    'price' => $product_price['price'],
+                    'discount' => $product_price['discount'],
+                    'price_after_discount' => ($product_price['price'] - $product_price['discount'])
+                ]);
+            }
+        }
         if($request->extras) {
             foreach ($request->extras as $extra) {
-                ProductVariant::create([
+                $productVariant = ProductVariant::create([
                     'product_id' => $product->id,
                     'type' => 'extra',
-                    'variant' => $extra['variant'],
-                    'price' => $extra['price'],
-                    'price_after_discount' => $extra['price']
+                    'variant' => $extra['variant']
                 ]);
+                // Create Product Variactions Price With Currency
+                foreach ($extra['prices'] as $extraPrice) {
+                    $extraPrice['price'] = doubleval($extraPrice['price']);
+                    ProductVariantPrice::create([
+                        'product_id' => $product->id,
+                        'variant_id' => $productVariant->id,
+                        'currency_id' => $extraPrice['currency_id'],
+                        'price' => $extraPrice['price'],
+                        'price_after_discount' => $extraPrice['price']
+                    ]);
+                }
             }
         }
         if($request->sizes) {
             foreach ($request->sizes as $size) {
-                ProductVariant::create([
+                $productVariant = ProductVariant::create([
                     'product_id' => $product->id,
                     'type' => 'size',
-                    'variant' => $size['variant'],
-                    'price' => $size['price'],
-                    'discount' => $size['discount'],
-                    'price_after_discount' => ($size['price'] - $size['discount'])
+                    'variant' => $size['variant']
                 ]);
+                // Create Product Variactions Price With Currency
+                foreach ($size['prices'] as $sizePrice) {
+                    $sizePrice['price'] = doubleval($sizePrice['price']);
+                    $sizePrice['discount'] = doubleval($sizePrice['discount']);
+                    ProductVariantPrice::create([
+                        'product_id' => $product->id,
+                        'variant_id' => $productVariant->id,
+                        'currency_id' => $sizePrice['currency_id'],
+                        'price' => $sizePrice['price'],
+                        'discount' => $sizePrice['discount'],
+                        'price_after_discount' => ($sizePrice['price'] - $sizePrice['discount'])
+                    ]);
+                }
             }
         }
         return redirect()->back()->with('info', translate('updated successfully'));
@@ -401,7 +439,11 @@ class ProductController extends Controller
     }
 
     public function all_by_ids(Request $request) {
-        $products = Product::with('variants')->whereIn('id', $request->ids)->get();
+        $products = Product::with(['currenctPrice' => function($query) use($request) {
+            return $query->where('currency_id', $request['currency_id']);
+        },'variants.currenctPriceOfVariant' => function($variantQuery) use($request) {
+            return $variantQuery->where('currency_id', $request['currency_id']);
+        }])->whereIn('id', $request->ids)->get();
         return $request->json('data', $products);
     }
 

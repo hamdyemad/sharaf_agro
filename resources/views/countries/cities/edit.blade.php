@@ -23,7 +23,7 @@
                         @method("PATCH")
                         @csrf
                         <div class="row">
-                            <div class="col-12 col-md-6">
+                            <div class="col-12">
                                 <div class="form-group">
                                     <label for="name">{{ translate('city name') }}</label>
                                     <input type="text" class="form-control" name="name" value="{{ $city->name }}">
@@ -32,15 +32,18 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6">
-                                <div class="form-group">
-                                    <label for="name">{{ translate('shipping price') }}</label>
-                                    <input type="text" class="form-control" name="price" value="{{ $city->price }}">
-                                    @error('price')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
+                            @foreach ($city->prices as $price)
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="name">{{ $price->currency->code }}</label>
+                                        <input type="hidden" class="form-control" name="prices[{{ $loop->index }}][currency_id]" value="{{ $price->currency->id }}">
+                                        <input type="text" class="form-control" name="prices[{{ $loop->index }}][price]" placeholder="{{ translate('shipping price') }}" value="{{ $price->price }}">
+                                        @error("prices.$loop->index.price")
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                 </div>
-                            </div>
+                            @endforeach
                             <div class="col-12">
                                 <div class="form-group">
                                     <label for=""></label>

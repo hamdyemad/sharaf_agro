@@ -141,7 +141,9 @@ class CountryController extends Controller
     }
 
     public function allCities(Request $request) {
-        $cities = City::where('country_id', $request->country_id)->get();
+        $cities = City::with(['current_price' => function($query) use($request) {
+            return $query->where('currency_id', $request->currency_id);
+        }])->where('country_id', $request->country_id)->get();
         if($cities) {
             return response()->json(['status' => true, 'data' => $cities]);
         }

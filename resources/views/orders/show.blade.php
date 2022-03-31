@@ -22,6 +22,7 @@
                         <div class="d-print-none">
                             <div class="float-right">
                                 <a href="javascript:window.print()" class="btn btn-success waves-effect waves-light mr-2"><i class="fa fa-print"></i></a>
+                                <a href="{{ route('orders.pdf', $order) }}" class="btn btn-info waves-effect waves-light mr-2"><i class="fa fa-file"></i></a>
                             </div>
                         </div>
                         @include('inc.invoice')

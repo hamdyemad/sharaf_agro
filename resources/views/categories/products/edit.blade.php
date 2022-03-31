@@ -93,7 +93,7 @@
                                         rows="3">{{ $product->description}}</textarea>
                                 </div>
                             </div>
-                            @if(count($product->prices) > 0)
+                            @if(count($product->prices) > 0 && !old('sizes'))
                                 <div class="col-12 prices_table">
                                     <div class="table-responsive">
                                         <table class="table">
@@ -109,13 +109,13 @@
                                                         <input name="product_prices[{{ $loop->index }}][currency_id]" value="{{ $price['currency_id']}}" type="hidden">
                                                         <td>{{ $price->currency->code }}</td>
                                                         <td>
-                                                            <input class="form-control price-input" value="{{ $price->price }}" onkeyup="getFullPrice(this)" name="product_prices[{{ $loop->index }}][price]" type="text" placeholder="السعر">
+                                                            <input class="form-control price-input" value="{{ $price->price }}" onkeyup="getFullPrice(this)" name="product_prices[{{ $loop->index }}][price]" type="text" placeholder="{{ translate('price') }}">
                                                             @error("product_prices.$loop->index.price")
                                                                 <div class="text-danger">{{ $message }}</div>
                                                             @enderror
                                                         </td>
                                                         <td>
-                                                            <input class="form-control discount-input"value="{{ $price->discount }}" onkeyup="getFullPrice(this)" name="product_prices[{{ $loop->index }}][discount]" type="text" placeholder="الخصم">
+                                                            <input class="form-control discount-input"value="{{ $price->discount }}" onkeyup="getFullPrice(this)" name="product_prices[{{ $loop->index }}][discount]" type="text" placeholder="{{ translate('discount') }}">
                                                             @error("product_prices.$loop->index.discount")
                                                                 <div class="text-danger">{{ $message }}</div>
                                                             @enderror
@@ -150,13 +150,19 @@
                                     <label for="extras">{{ translate('extras') }}</label>
                                     <select name="extras_type[]" class="form-control extras select2 select2-multiple"
                                         data-placeholder="{{ translate('choose') }}" multiple>
-                                        <option value="extra" @if(isset($product->variants->groupBy('type')['extra'])) selected @endif>{{ translate('extras') }}</option>
-                                        <option value="size" @if(isset($product->variants->groupBy('type')['size'])) selected @endif>{{ translate('sizes') }}</option>
+                                        <option value="extra"
+                                        @if(isset($product->variants->groupBy('type')['extra'])) selected @endif
+                                        @if(is_array(old('extras_type')) && in_array('extra', old('extras_type'))) selected @endif
+                                        >{{ translate('extras') }}</option>
+                                        <option value="size"
+                                        @if(isset($product->variants->groupBy('type')['size'])) selected @endif
+                                        @if(is_array(old('extras_type')) && in_array('size', old('extras_type'))) selected @endif
+                                        >{{ translate('sizes') }}</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-12 tables">
-                                @if(isset($product->variants->groupBy('type')['extra']))
+                                @if(isset($product->variants->groupBy('type')['extra']) || old('extras'))
                                     <table class="table extra-table">
                                         <thead>
                                             <th>{{ translate('extra') }}</th>
@@ -168,37 +174,68 @@
                                             </th>
                                         </thead>
                                         <tbody>
-                                            @foreach ($product->variants->groupBy('type')['extra'] as $key => $value)
-                                                <tr>
-                                                    <td>
-                                                        <input class="form-control" name="extras[{{ $key }}][variant]" value="{{ $value['variant'] }}" placeholder="{{ translate('extra') }}" type="text">
-                                                        @error("extras.$key.variant")
-                                                            <div class="text-danger">{{ $message }}</div>
-                                                        @enderror
-                                                    </td>
-                                                    @foreach($value->prices as $priceKey => $price)
+                                            @if(old('extras'))
+                                                @foreach (old('extras') as $key => $value)
+                                                    <tr>
                                                         <td>
-                                                            <input name="extras[{{ $key }}][prices][{{ $priceKey }}][currency_id]" value="{{ $price['currency_id'] }}"  type="hidden">
-                                                            <input class="form-control" name="extras[{{ $key }}][prices][{{ $priceKey }}][price]" value="{{ $price['price'] }}" onkeyup="getFullPrice(this)" placeholder="{{ translate('price') }}" type="text">
-                                                            @error("extras.$key.prices.$priceKey.price")
+                                                            <input class="form-control" name="extras[{{ $key }}][variant]" value="{{ $value['variant'] }}" placeholder="{{ translate('extra') }}" type="text">
+                                                            @error("extras.$key.variant")
                                                                 <div class="text-danger">{{ $message }}</div>
                                                             @enderror
                                                         </td>
-                                                    @endforeach
-                                                    @if(count($product->variants->groupBy('type')['extra']) > 1 && $key !== 0)
+                                                        @foreach($value['prices'] as $priceKey => $price)
+                                                            <td>
+                                                                <input name="extras[{{ $key }}][prices][{{ $priceKey }}][currency_id]" value="{{ $price['currency_id'] }}"  type="hidden">
+                                                                <input class="form-control" name="extras[{{ $key }}][prices][{{ $priceKey }}][price]" value="{{ $price['price'] }}" onkeyup="getFullPrice(this)" placeholder="{{ translate('price') }}" type="text">
+                                                                @error("extras.$key.prices.$priceKey.price")
+                                                                    <div class="text-danger">{{ $message }}</div>
+                                                                @enderror
+                                                            </td>
+                                                        @endforeach
+                                                        @if(count(old('extras')) > 1 && $key !== 0)
                                                         <td>
                                                             <button type="button" class="btn btn-danger remove-extra">
                                                                 <span>{{ translate('remove') }}</span>
                                                                 <i class="mdi mdi-trash-can-outline"></i>
                                                             </button>
                                                         </td>
-                                                    @endif
-                                                </tr>
-                                            @endforeach
+                                                        @endif
+                                                    </tr>
+                                                @endforeach
+                                            @endif
+                                            @if(isset($product->variants->groupBy('type')['extra']))
+                                                @foreach ($product->variants->groupBy('type')['extra'] as $key => $value)
+                                                    <tr>
+                                                        <td>
+                                                            <input class="form-control" name="extras[{{ $key }}][variant]" value="{{ $value['variant'] }}" placeholder="{{ translate('extra') }}" type="text">
+                                                            @error("extras.$key.variant")
+                                                                <div class="text-danger">{{ $message }}</div>
+                                                            @enderror
+                                                        </td>
+                                                        @foreach($value->prices as $priceKey => $price)
+                                                            <td>
+                                                                <input name="extras[{{ $key }}][prices][{{ $priceKey }}][currency_id]" value="{{ $price['currency_id'] }}"  type="hidden">
+                                                                <input class="form-control" name="extras[{{ $key }}][prices][{{ $priceKey }}][price]" value="{{ $price['price'] }}" onkeyup="getFullPrice(this)" placeholder="{{ translate('price') }}" type="text">
+                                                                @error("extras.$key.prices.$priceKey.price")
+                                                                    <div class="text-danger">{{ $message }}</div>
+                                                                @enderror
+                                                            </td>
+                                                        @endforeach
+                                                        @if(count($product->variants->groupBy('type')['extra']) > 1 && $key !== 0)
+                                                            <td>
+                                                                <button type="button" class="btn btn-danger remove-extra">
+                                                                    <span>{{ translate('remove') }}</span>
+                                                                    <i class="mdi mdi-trash-can-outline"></i>
+                                                                </button>
+                                                            </td>
+                                                        @endif
+                                                    </tr>
+                                                @endforeach
+                                            @endif
                                         </tbody>
                                     </table>
                                 @endif
-                                @if(isset($product->variants->groupBy('type')['size']))
+                                @if(isset($product->variants->groupBy('type')['size']) || old('sizes'))
                                     <table class="table size-table">
                                         <thead>
                                             <th>{{ translate('size') }}</th>
@@ -207,61 +244,126 @@
                                             </th>
                                         </thead>
                                         <tbody>
-                                            @foreach ($product->variants->groupBy('type')['size'] as $key => $value)
-                                                <tr>
-                                                    <td>
-                                                        <table>
-                                                            <thead>
-                                                                <th>
-                                                                    <input class="form-control" name="sizes[{{ $key }}][variant]" value="{{ $value['variant'] }}" placeholder="{{ translate('size') }}" type="text">
-                                                                    @error("sizes.$key.variant")
-                                                                        <div class="text-danger">{{ $message }}</div>
-                                                                    @enderror
-                                                                </th>
-                                                                @if(count($product->variants->groupBy('type')['size']) > 1 && $key !== 0)
+                                            @if(old('sizes'))
+                                                @foreach (old('sizes') as $key => $value)
+                                                    @if(!$product->variants->groupBy('type')['size']->where('variant', $value['variant'])->first())
+                                                        <tr>
+                                                            <td>
+                                                                <table>
+                                                                    <thead>
+                                                                        <th>
+                                                                            <input class="form-control" name="sizes[{{ $key }}][variant]" value="{{ $value['variant'] }}" placeholder="{{ translate('size') }}" type="text">
+                                                                            @error("sizes.$key.variant")
+                                                                                <div class="text-danger">{{ $message }}</div>
+                                                                            @enderror
+                                                                        </th>
+                                                                        @if(count(old('sizes')) > 1 && $key !== 0)
+                                                                            <th>
+                                                                                <button type="button" class="btn btn-danger remove-size">
+                                                                                    <span>{{ translate('remove') }}</span>
+                                                                                    <i class="mdi mdi-trash-can-outline"></i>
+                                                                                </button>
+                                                                            </th>
+                                                                        @endif
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @foreach($value['prices']  as $priceKey => $price)
+                                                                            <tr class="prices_for_size">
+                                                                                <td>
+                                                                                    {{ $price['currency'] }}
+                                                                                </td>
+                                                                                <td>
+                                                                                    <input name="sizes[{{ $key }}][prices][{{ $priceKey }}][currency_id]" value="{{ $price['currency_id'] }}"  type="hidden">
+                                                                                    <input name="sizes[{{ $key }}][prices][{{ $priceKey }}][currency]" value="{{ $price['currency'] }}"  type="hidden">
+                                                                                    <input class="form-control price-input" value="{{ $price['price'] }}" name="sizes[{{ $key }}][prices][{{ $priceKey }}][price]" onkeyup="getFullPrice(this)" placeholder="{{ translate('price') }}" type="text">
+                                                                                    @error("sizes.$key.prices.$priceKey.price")
+                                                                                        <div class="text-danger">{{ $message }}</div>
+                                                                                    @enderror
+                                                                                </td>
+                                                                                <td>
+                                                                                    <input class="form-control discount-input" value="{{ $price['discount'] }}" name="sizes[{{ $key }}][prices][{{ $priceKey }}][discount]" onkeyup="getFullPrice(this)" placeholder="{{ translate('discount') }}" type="text">
+                                                                                    @error("sizes.$key.prices.$priceKey.discount")
+                                                                                        <div class="text-danger">{{ $message }}</div>
+                                                                                    @enderror
+                                                                                </td>
+                                                                                <td>
+                                                                                    <div class="d-flex align-items-center">
+                                                                                        <div class="price_after_discount">
+                                                                                            {{ $price['price'] - $price['discount'] }}
+                                                                                        </div>
+                                                                                        <div class="currency">{{ $price['currency'] }}</div>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        @endforeach
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+                                                    @endif
+                                                @endforeach
+                                            @endif
+                                            @if(isset($product->variants->groupBy('type')['size']))
+                                                @foreach ($product->variants->groupBy('type')['size'] as $key => $value)
+                                                    <tr>
+                                                        <td>
+                                                            <table>
+                                                                <thead>
                                                                     <th>
-                                                                        <button type="button" class="btn btn-danger remove-size">
-                                                                            <span>{{ translate('remove') }}</span>
-                                                                            <i class="mdi mdi-trash-can-outline"></i>
-                                                                        </button>
+                                                                        <input class="form-control" name="sizes[{{ $key }}][variant]" value="{{ $value['variant'] }}" placeholder="{{ translate('size') }}" type="text">
+                                                                        @error("sizes.$key.variant")
+                                                                            <div class="text-danger">{{ $message }}</div>
+                                                                        @enderror
                                                                     </th>
-                                                                @endif
-                                                            </thead>
-                                                            <tbody>
-                                                                @foreach($value['prices']  as $priceKey => $price)
-                                                                    <tr class="prices_for_size">
-                                                                        <td>
-                                                                            {{ $price->currency->code }}
-                                                                        </td>
-                                                                        <td>
-                                                                            <input name="sizes[{{ $key }}][prices][{{ $priceKey }}][currency_id]" value="{{ $price['currency_id'] }}"  type="hidden">
-                                                                            <input name="sizes[{{ $key }}][prices][{{ $priceKey }}][currency]" value="{{ $price['currency'] }}"  type="hidden">
-                                                                            <input class="form-control price-input" value="{{ $price['price'] }}" name="sizes[{{ $key }}][prices][{{ $priceKey }}][price]" onkeyup="getFullPrice(this)" placeholder="{{ translate('price') }}" type="text">
-                                                                            @error("sizes.$key.prices.$priceKey.price")
-                                                                                <div class="text-danger">{{ $message }}</div>
-                                                                            @enderror
-                                                                        </td>
-                                                                        <td>
-                                                                            <input class="form-control discount-input" value="{{ $price['discount'] }}" name="sizes[{{ $key }}][prices][{{ $priceKey }}][discount]" onkeyup="getFullPrice(this)" placeholder="{{ translate('discount') }}" type="text">
-                                                                            @error("sizes.$key.prices.$priceKey.discount")
-                                                                                <div class="text-danger">{{ $message }}</div>
-                                                                            @enderror
-                                                                        </td>
-                                                                        <td>
-                                                                            <div class="d-flex align-items-center">
-                                                                                <div class="price_after_discount">
-                                                                                    {{ $price['price'] - $price['discount'] }}
+                                                                    @if(count($product->variants->groupBy('type')['size']) > 1 && $key !== 0)
+                                                                        <th>
+                                                                            <button type="button" class="btn btn-danger remove-size">
+                                                                                <span>{{ translate('remove') }}</span>
+                                                                                <i class="mdi mdi-trash-can-outline"></i>
+                                                                            </button>
+                                                                        </th>
+                                                                    @endif
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach($value['prices']  as $priceKey => $price)
+                                                                        <tr class="prices_for_size">
+                                                                            <td>
+                                                                                {{ $price->currency->code }}
+                                                                            </td>
+                                                                            <td>
+                                                                                <input name="sizes[{{ $key }}][prices][{{ $priceKey }}][currency_id]" value="{{ $price['currency_id'] }}"  type="hidden">
+                                                                                <input name="sizes[{{ $key }}][prices][{{ $priceKey }}][currency]" value="{{ $price['currency'] }}"  type="hidden">
+                                                                                <input class="form-control price-input" value="{{ $price['price'] }}" name="sizes[{{ $key }}][prices][{{ $priceKey }}][price]" onkeyup="getFullPrice(this)" placeholder="{{ translate('price') }}" type="text">
+                                                                                @error("sizes.$key.prices.$priceKey.price")
+                                                                                    <div class="text-danger">{{ $message }}</div>
+                                                                                @enderror
+                                                                            </td>
+                                                                            <td>
+                                                                                <input class="form-control discount-input" value="{{ $price['discount'] }}" name="sizes[{{ $key }}][prices][{{ $priceKey }}][discount]" onkeyup="getFullPrice(this)" placeholder="{{ translate('discount') }}" type="text">
+                                                                                @error("sizes.$key.prices.$priceKey.discount")
+                                                                                    <div class="text-danger">{{ $message }}</div>
+                                                                                @enderror
+                                                                            </td>
+                                                                            <td>
+                                                                                <div class="d-flex align-items-center">
+                                                                                    <div class="price_after_discount">
+                                                                                        {{ $price['price'] - $price['discount'] }}
+                                                                                    </div>
+                                                                                    <div class="currency">{{ $price->currency->code }}</div>
                                                                                 </div>
-                                                                                <div class="currency">{{ $price->currency->code }}</div>
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                @endforeach
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
+                                                                            </td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            @endif
                                         </tbody>
                                     </table>
                                 @endif
@@ -517,14 +619,16 @@
                     addRow('size');
                 }
             } else {
-                $(".description").parent().parent().after(prices_table);
+                if($(".description").parent().parent().parent().find('.prices_table').length == 0) {
+                    $(".description").parent().parent().after(prices_table);
+                }
                 $(".size-table").remove();
             }
         });
         function addRow(type) {
             $(`.add-${type}`).on('click', function() {
                 let index = $($(`.${type}-table`).find('tbody')[0]).children().length;
-                $($(`.${type}-table`).find('tbody')[0]).append(tr(index, type));
+                $($(`.${type}-table`).find('tbody')[0]).prepend(tr(index, type));
                 removeRow(type);
             });
         }
@@ -546,12 +650,11 @@
             let tr = $(input).parent().parent(),
                 priceInputVal = parseFloat($(tr).find('.price-input').val()),
                 discountInputVal = parseFloat($(tr).find('.discount-input').val());
-                console.log(priceInputVal)
                 if(isNaN(discountInputVal)) {
                     discountInputVal = 0;
                 }
-                console.log($(tr).find('.price-input'));
-            $(tr).find('.price_after_disount').text((priceInputVal - discountInputVal));
+                console.log($(tr).find('.price_after_discount'));
+            $(tr).find('.price_after_discount').text((priceInputVal - discountInputVal));
         }
     </script>
 @endsection

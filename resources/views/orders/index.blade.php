@@ -94,6 +94,7 @@
                         <thead>
                             <tr>
                                 <th><span>{{ translate('order number') }}</span></th>
+                                <th><span>{{ translate('currency') }}</span></th>
                                 <th><span>{{ translate('customer name') }}</span></th>
                                 <th><span>{{ translate('customer address') }}</span></th>
                                 <th><span>{{ translate('city') }}</span></th>
@@ -110,6 +111,7 @@
                             @foreach ($orders as $order)
                                 <tr id="{{ $order->id }}" data-value="{{ $order }}">
                                     <th scope="row">{{ $order->id }}</th>
+                                    <th>{{ $order->currency->code }}</th>
                                     @if($order->customer_name)
                                         <td>{{ $order->customer_name }}</td>
                                     @else

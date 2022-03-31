@@ -17,7 +17,6 @@ class CreateCitiesTable extends Migration
             $table->id();
             $table->unsignedBigInteger('country_id');
             $table->string('name')->unique();
-            $table->double('price');
             $table->foreign('country_id')->on('countries')->references('id')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });

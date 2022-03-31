@@ -1,0 +1,21 @@
+.cities {
+    ul {
+        list-style-type: none;
+        li {
+            &:not(:last-of-type) {
+                margin-bottom: 20px;
+            }
+            span {
+                &.code {
+                    background-color: $gray-700;
+                }
+                &:not(.code) {
+                    background-color: var(--primary);
+                }
+                color: #fff;
+                padding: 2px 15px;
+                border-radius: 10px;
+            }
+        }
+    }
+}

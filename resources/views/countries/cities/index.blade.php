@@ -7,7 +7,7 @@
         @slot('route1') {{ route('dashboard') }} @endslot
         @slot('li3') {{ translate('cities') }} @endslot
     @endcomponent
-    <div class="card">
+    <div class="card cities">
         <div class="card-header">
             <div class="d-flex flex-column flex-md-row text-center text-md-right justify-content-between">
                 <h2>{{ translate('cities') }}</h2>
@@ -26,12 +26,6 @@
                     </div>
                     <div class="col-6 col-md-4">
                         <div class="form-group">
-                            <label for="price">{{ translate('shipping price') }}</label>
-                            <input class="form-control" name="price" type="text" value="{{ request('price') }}">
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-4">
-                        <div class="form-group">
                             <label for="name"></label>
                             <input type="submit" value="{{ translate('search') }}" class="form-control btn btn-primary mt-1">
                         </div>
@@ -46,11 +40,10 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>{{ translate('city name') }}</th>
-                            <th>{{ translate('shipping price') }}</th>
-                            <th>{{ translate('creation date') }}</th>
-                            <th>{{ translate('last update date') }}</th>
-                            <th>{{ translate('settings') }}</th>
+                            <th><div class="full_width">{{ translate('city name') }}</div></th>
+                            <th><div class="full_width">{{ translate('creation date') }}</div></th>
+                            <th><div class="full_width">{{ translate('last update date') }}</div></th>
+                            <th><div class="full_width">{{ translate('settings') }}</div></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -60,12 +53,11 @@
                                 <td>
                                     {{ $city->name }}
                                 </td>
-                                <td>{{ $city->price }}</td>
                                 <td>
-                                    {{ $city->created_at->diffForHumans() }}
+                                    <div class="full_width">{{ $city->created_at->diffForHumans() }}</div>
                                 </td>
                                 <td>
-                                    {{ $city->updated_at->diffForHumans() }}
+                                    <div class="full_width">{{ $city->updated_at->diffForHumans() }}</div>
                                 </td>
                                 <td>
                                     <div class="options d-flex">
@@ -85,6 +77,18 @@
                                         'route' => route('countries.cities.destroy', ['country' => $country->id, 'city' =>
                                         $city->id])
                                         ])
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <ul>
+                                        @foreach ($city->prices as $price)
+                                            <li>
+                                                <span class="code">{{ $price->currency->code }}</span>
+                                                <span>{{ $price->price }}</span>
+                                            </li>
+                                        @endforeach
+                                    </ul>
                                 </td>
                             </tr>
                         @endforeach

@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Branch;
 use App\Models\City;
 use App\Models\Country;
+use App\Models\Currency;
+use App\Models\Language;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Payment;
@@ -19,6 +21,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use PDF;
 
 class OrderController extends Controller
 {
@@ -68,8 +71,9 @@ class OrderController extends Controller
     {
         $this->authorize('orders.create');
         $status = Status::where('default_val', 1)->first();
-        $countries = Country::where('active', '1')->get();
         if($status) {
+            $countries = Country::where('active', '1')->get();
+            $currencies = Currency::all();
             if(Auth::user()->type !== 'admin') {
                 $products = Product::whereHas('category', function($query) {
                     return $query->where('branch_id', Auth::user()->branch_id);
@@ -78,8 +82,7 @@ class OrderController extends Controller
                 $products = null;
             }
             $branches = Branch::orderBy('name')->get();
-            return view('orders.create', compact('products', 'branches', 'countries'));
-
+            return view('orders.create', compact('products', 'branches', 'countries', 'currencies'));
         } else {
             return redirect()->back()->with('error', translate('a default status must be set'));
         }
@@ -89,7 +92,9 @@ class OrderController extends Controller
         $rules = [
             'type' => 'required|in:inhouse,online',
             'branch_id' => 'required|exists:branches,id',
-            'products_search' => 'required'
+            'products_search' => 'required',
+            'currency_id' => 'required|exists:currencies,id',
+            'products' => 'required',
         ];
         $mesages = [
             'type.required' => translate('the type is required'),
@@ -97,6 +102,7 @@ class OrderController extends Controller
             'branch_id.exists' => translate('the branch should be exists'),
             'type.in' => translate('you should choose a type from the stock'),
             'products_search.required' => translate('you should choose a minmum 1 product'),
+            'products.*.required' => translate('you should choose a minmum 1 product'),
         ];
         if($request->type == 'online') {
             $rules['customer_name'] = 'required';
@@ -151,6 +157,7 @@ class OrderController extends Controller
                 'type' => $request->type,
                 'branch_id' => $request->branch_id,
                 'status_id' => $status->id,
+                'currency_id' => $request->currency_id,
                 'city_id' => $request->city_id,
                 'customer_name' => $request->customer_name,
                 'customer_phone' => $request->customer_phone,
@@ -177,11 +184,11 @@ class OrderController extends Controller
                         OrderDetail::create([
                             'order_id' => $order->id,
                             'product_id' => $productId,
-                            'price' => $product->price_after_discount,
+                            'price' => $product->currenctPrice->price_after_discount,
                             'qty' => $productObj['amount'],
-                            'total_price' => $product->price_after_discount * $productObj['amount']
+                            'total_price' => $product->currenctPrice->price_after_discount * $productObj['amount']
                         ]);
-                        array_push($grand_total, $product->price_after_discount * $productObj['amount']);
+                        array_push($grand_total, $product->currenctPrice->price_after_discount * $productObj['amount']);
                     }
                     if(isset($productObj['variants'])) {
                         foreach ($productObj['variants'] as $variantId => $variant) {
@@ -192,11 +199,11 @@ class OrderController extends Controller
                                     'product_id' => $productId,
                                     'variant' => $productVariant->variant,
                                     'variant_type' => $productVariant->type,
-                                    'price' => $productVariant->price_after_discount,
+                                    'price' => $productVariant->currenctPriceOfVariant->price_after_discount,
                                     'qty' => $variant['amount'],
-                                    'total_price' => $productVariant->price_after_discount * $variant['amount']
+                                    'total_price' => $productVariant->currenctPriceOfVariant->price_after_discount * $variant['amount']
                                 ]);
-                                array_push($grand_total, $productVariant->price_after_discount * $variant['amount']);
+                                array_push($grand_total, $productVariant->currenctPriceOfVariant->price_after_discount * $variant['amount']);
                             }
                         }
                     }
@@ -233,6 +240,13 @@ class OrderController extends Controller
         return view('orders.show', compact('order', 'statuses_history'));
     }
 
+    public function pdf(Order $order) {
+        $currenctLang = Language::where('code', app()->getLocale())->first();
+        Carbon::setLocale(app()->getLocale());
+        $pdf = PDF::loadView('orders.pdf', ['order' => $order, 'rtl' => $currenctLang->rtl]);
+        return $pdf->stream($order->id. '.pdf');
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -243,17 +257,17 @@ class OrderController extends Controller
     {
         $this->authorize('orders.edit');
         $status = Status::where('default_val', 1)->first();
-        $countries = Country::where('active', '1')->get();
-        if($order->city) {
-            $cities = City::where('country_id', $order->city->country_id)->get();
-        } else {
-            $cities = [];
-        }
         if($status) {
-        $products = Product::orderBy('name')->get();
-        $branches = Branch::orderBy('name')->get();
-        return view('orders.edit', compact('order', 'branches', 'products', 'countries', 'cities'));
-
+            $countries = Country::where('active', '1')->get();
+            if($order->city) {
+                $cities = City::where('country_id', $order->city->country_id)->get();
+            } else {
+                $cities = [];
+            }
+            $currencies = Currency::all();
+            $products = Product::orderBy('name')->get();
+            $branches = Branch::orderBy('name')->get();
+            return view('orders.edit', compact('order', 'branches', 'products', 'countries', 'cities', 'currencies'));
         } else {
             return redirect()->back()->with('error', translate('you should choose a default status'));
         }

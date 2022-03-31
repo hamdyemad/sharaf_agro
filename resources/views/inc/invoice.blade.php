@@ -4,6 +4,7 @@
             <div class="invoice-title d-flex justify-content-between">
                 <h4 class="font-size-16">
                     <strong>{{ translate('order number') }} ({{ $order->id }})</strong>
+                    <strong class="d-block mt-1 font-size-16">{{ translate('order status') }} ({{ $order->status->name }})</strong>
                     @if($order->paid)
                         <div class="badge badge-success d-block mt-1 p-2 font-size-16">{{ translate('paid') }}</div>
                     @endif
@@ -52,12 +53,10 @@
                     @else
                         <img src="{{ asset('/images/default.jpg') }}" alt="">
                     @endif
-                    @if($order->type == 'inhouse')
-                        <div class="d-flex align-items-center">
-                            <strong class="d-block mr-2">{{ translate('order branch') }} : </strong>
-                            <span class="badge badge-primary">{{ $order->branch->name }}</span>
-                        </div>
-                    @endif
+                    <div class="d-flex align-items-center">
+                        <strong class="d-block mr-2">{{ translate('order branch') }} : </strong>
+                        <span class="badge badge-primary">{{ $order->branch->name }}</span>
+                    </div>
                     @if($order->notes)
                         <div class="d-flex align-items-center mt-2">
                             <strong class="d-block mr-2">{{ translate('notes') }} : </strong>
@@ -141,7 +140,7 @@
                                                         </div>
                                                         <div class="line">
                                                             <strong>{{ translate('price') }} :</strong>
-                                                            <span class="badge badge-secondary">{{ $variant->price  }}</span>
+                                                            <span class="badge badge-secondary">{{ $order->currency->code . $variant->price  }}</span>
                                                         </div>
                                                         <div class="line">
                                                             <strong>{{ translate('quantity') }} :</strong>
@@ -150,7 +149,7 @@
                                                         @if($variant->qty > 1)
                                                             <div class="line">
                                                                 <strong>{{ translate('total price') }} :</strong>
-                                                                <span class="badge badge-secondary">{{ $variant->total_price  }}</span>
+                                                                <span class="badge badge-secondary">{{ $order->currency->code . $variant->total_price  }}</span>
                                                             </div>
                                                         @endif
                                                     </div>
@@ -166,7 +165,7 @@
                                                                     </div>
                                                                     <div class="line">
                                                                         <strong>{{ translate('price') }} :</strong>
-                                                                        <span class="badge badge-secondary">{{ $variant->price  }}</span>
+                                                                        <span class="badge badge-secondary">{{ $order->currency->code . $variant->price  }}</span>
                                                                     </div>
                                                                     <div class="line">
                                                                         <strong>{{ translate('quantity') }} :</strong>
@@ -175,7 +174,7 @@
                                                                     @if($variant->qty > 1)
                                                                         <div class="line">
                                                                             <strong>{{ translate('total price') }} :</strong>
-                                                                            <span class="badge badge-secondary">{{ $variant->total_price  }}</span>
+                                                                            <span class="badge badge-secondary">{{ $order->currency->code . $variant->total_price  }}</span>
                                                                         </div>
                                                                     @endif
                                                                 </div>
@@ -185,7 +184,7 @@
                                                 @endif
                                             </td>
                                             <td><strong>{{ $value->pluck('qty')->sum() }}</strong></td>
-                                            <td><strong>{{ $value->pluck('total_price')->sum() }}</strong></td>
+                                            <td><strong>{{ $order->currency->code . $value->pluck('total_price')->sum() }}</strong></td>
                                         </tr>
                                     @endforeach
                                 @endif
@@ -195,9 +194,9 @@
                                     <td class="thick-line text-center">
                                         <strong>{{ translate('total price withoud extras') }}</strong></td>
                                     @if(isset($order->order_details->groupBy('variant_type')['extra']))
-                                    <td class="thick-line"><strong>{{  ($order->grand_total  - $order->shipping -  $order->order_details->groupBy('variant_type')['extra']->pluck('total_price')->sum()) + $order->total_discount }}</strong></td>
+                                    <td class="thick-line"><strong>{{  $order->currency->code . (($order->grand_total  - $order->shipping -  $order->order_details->groupBy('variant_type')['extra']->pluck('total_price')->sum()) + $order->total_discount) }}</strong></td>
                                     @else
-                                    <td class="thick-line"><strong>{{ ( $order->grand_total - $order->shipping) + $order->total_discount  }}</strong></td>
+                                    <td class="thick-line"><strong>{{ $order->currency->code . (( $order->grand_total - $order->shipping) + $order->total_discount)  }}</strong></td>
                                     @endif
                                 </tr>
                                 @if(isset($order->order_details->groupBy('variant_type')['extra']))
@@ -205,7 +204,7 @@
                                         <td class="thick-line"></td>
                                         <td class="thick-line"></td>
                                         <td class="thick-line text-center"> <strong>{{ translate('total price of extras') }}</strong></td>
-                                        <td class="thick-line"><strong>{{ $order->order_details->groupBy('variant_type')['extra']->pluck('total_price')->sum() }}</strong></td>
+                                        <td class="thick-line"><strong>{{ $order->currency->code . $order->order_details->groupBy('variant_type')['extra']->pluck('total_price')->sum() }}</strong></td>
                                     </tr>
                                 @endif
                                 @if($order->shipping)
@@ -214,7 +213,7 @@
                                         <td class="no-line"></td>
                                         <td class="no-line text-center">
                                             <strong>{{ translate('shipping') }}</strong></td>
-                                        <td class="no-line"><strong>{{ $order->shipping }}</strong></td>
+                                        <td class="no-line"><strong>{{ $order->currency->code . $order->shipping }}</strong></td>
                                     </tr>
                                 @endif
                                 @if($order->total_discount)
@@ -223,7 +222,7 @@
                                         <td class="no-line"></td>
                                         <td class="no-line text-center">
                                             <strong>{{ translate('discount') }}</strong></td>
-                                        <td class="no-line"><strong>{{ $order->total_discount }}</strong></td>
+                                        <td class="no-line"><strong>{{ $order->currency->code . $order->total_discount }}</strong></td>
                                     </tr>
                                 @endif
                                 <tr>
@@ -232,7 +231,7 @@
                                     <td class="no-line text-center">
                                         <strong>{{ translate('final price') }}</strong></td>
                                     <td class="no-line">
-                                        <h4 class="m-0"><strong>{{ $order->grand_total }}</strong></h4></td>
+                                        <h4 class="m-0"><strong>{{ $order->currency->code . $order->grand_total }}</strong></h4></td>
                                 </tr>
                             </tbody>
                         </table>

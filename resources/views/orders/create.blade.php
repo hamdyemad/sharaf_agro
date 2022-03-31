@@ -23,6 +23,16 @@
                     <form action="{{ route('orders.store') }}" method="POST">
                         @csrf
                         <div class="row">
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="country">{{ translate('currency') }}</label>
+                                    <select class="form-control select2 currency_select" name="currency_id">
+                                        @foreach ($currencies as $currency)
+                                        <option data-code="{{ $currency->code }}" value="{{ $currency->id }}" @if(old('currency_id') == $currency->id) selected @endif>{{ $currency->code }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
                             @if(Auth::user()->type == 'admin')
                                 <div class="col-12 col-md-6 branch_col">
                                     <div class="form-group">
@@ -76,7 +86,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6">
+                            <div class="col-12 col-md">
                                 <div class="form-group">
                                     <label for="customer_phone">{{ translate('customer phone') }}</label>
                                     <input type="number" class="form-control" name="customer_phone" value="{{ old('customer_phone') }}">
@@ -115,22 +125,27 @@
                                             <tbody>
                                                 <tr>
                                                     <td>{{ translate('total price') }}</td>
-                                                    <td>
-                                                        <div class="total_prices"></div>
+                                                    <td class="d-flex">
+                                                        <div class="total_prices">0</div>
+                                                        <div class="currency"></div>
                                                     </td>
                                                 </tr>
                                                 <tr class="shipping_tr d-none">
                                                     <td>{{ translate('shipping') }}</td>
-                                                    <td><div class="shipping">0</div></td>
+                                                    <td class="d-flex">
+                                                        <div class="shipping">0</div>
+                                                        <div class="currency"></div>
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <td>{{ translate('discount') }}</td>
-                                                    <td><input class="form-control total_discount" name="total_discount" type="number" placeholder="{{ translate('discount') }}" value="{{ old('total_discount') }}"></td>
+                                                    <td><input class="form-control total_discount" name="total_discount" type="number" placeholder="{{ translate('discount') }}" value="{{ old('total_discount') }}" min="0"></td>
                                                 </tr>
                                                 <tr>
                                                     <td>{{ translate('price after discount') }}</td>
-                                                    <td>
+                                                    <td class="d-flex">
                                                         <div class="grand_total"></div>
+                                                        <div class="currency"></div>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -206,12 +221,23 @@
         getFullPrice();
     })
 
+    $(".currency").text($("[name=currency_id]").find(":selected").data('code'));
 
-    $(".branch_select").on('change', function() {
-        getProductsByBranchId($(this).val());
+    $(".branch_select,.currency_select").on('change', function() {
+        // Change Currency Code
+        $(".currency").text($("[name=currency_id]").find(":selected").data('code'));
+        // Get Products By Branch id
+        getProductsByBranchId($(".branch_select").val());
+        // Get Cities By Country id
+        getCitiesByCountryIdAjax($(".select_country").val());
+        $('.cart-of-total-container').addClass('d-none');
+        $('.cart-of-total-container').removeClass('d-block d-md-flex flex-row-reverse ');
         $(".products_table").empty();
         $(".select_products").empty();
+
+        getFullPrice();
     });
+
     function getProductsByBranchId(branch_id) {
         let token = $("meta[name=_token]").attr('content');
         $.ajax({
@@ -226,9 +252,10 @@
                     $(".select_products").select2().html('');
                     res.data.forEach((obj) => {
                         $(".select_products").append(`
-                        <option value="${obj.id}" @if(is_array(old('products_search')) && in_array(${obj.id}, old('products_search'))) selected @endif>${obj.name}</option>
+                            <option value="${obj.id}">${obj.name}</option>
                         `);
-                    })
+                    });
+
                 } else {
                     toastr.error(res.message);
                 }
@@ -246,19 +273,21 @@
             'method': 'POST',
             'data': {
                 '_token': token,
-                country_id: country_id
+                country_id: country_id,
+                currency_id: $("[name=currency_id]").val()
             },
             'url' : `{{ route('countries.cities.all') }}`,
             'success': function(res) {
                 if(res.status) {
                     $(".select_city").select2().html('');
                     res.data.forEach((obj) => {
-                        $(".select_city").append(`<option value="${obj.id}" data-shipping="${obj.price}">${obj.name}</option>`);
-                    })
+                        $(".select_city").append(`<option value="${obj.id}" data-shipping="${obj.current_price.price}">${obj.name}</option>`);
+                    });
                     $('.shipping_tr').removeClass('d-none');
                     $(".shipping_tr .shipping").text($(".select_city option:selected").data('shipping'))
                     $(".select_city").on('change', function() {
                         $(".shipping_tr .shipping").text($(".select_city option:selected").data('shipping'))
+                        getFullPrice();
                     })
                     getFullPrice();
                 }
@@ -302,7 +331,7 @@
                     ${obj.variant }
                 </td>
                 <td>
-                    <div class="price">${obj.price_after_discount }</div>
+                    <div class="price">${obj.currenct_price_of_variant.price_after_discount }</div>
                 </td>
                 <td>
                     <input class="form-control amount" name="products[${product.id}][variants][${obj.id}][amount]"  min="1"  type="number" placeholder="{{ translate('quantity') }}" value="1">
@@ -312,7 +341,7 @@
                 </td>
 
                 <td>
-                    <div class="total_price">${obj.price_after_discount }</div>
+                    <div class="total_price">${obj.currenct_price_of_variant.price_after_discount }</div>
                 </td>
             </tr>
         `;
@@ -405,7 +434,8 @@
         $.ajax({
             'method': 'GET',
             'data': {
-                ids: productsIds
+                ids: productsIds,
+                currency_id: $("[name=currency_id]").val()
             },
             'url' : "{{ route('products.all_by_ids') }}",
             'success': function(products) {
@@ -438,9 +468,9 @@
                                     `);
                                 });
                             } else {
-                                $(`.${product.id}`).append(`<td><div class="price">${product.price_after_discount}</div></td>`);
+                                $(`.${product.id}`).append(`<td><div class="price">${product.currenct_price.price_after_discount}</div></td>`);
                                 $(`.${product.id}`).append(`<td><input class="form-control amount" value="1" min="1" type="number" name="products[${product.id}][amount]"></td>`);
-                                $(`.${product.id}`).append(`<td><div class="total_price">${product.price_after_discount}</div></td>`);
+                                $(`.${product.id}`).append(`<td><div class="total_price">${product.currenct_price.price_after_discount}</div></td>`);
                                 $(`.${product.id}`).append(`<td>{{ translate('there is no sizes') }}</td>`);
                             }
                             if(extraTypeArray.length !==0) {
@@ -463,9 +493,9 @@
                                 $(".products_table").append(getProductVariantHeadingTable());
                             }
                             $(".products_table .variant_table tbody").append(getProductVariantHeadingTr(product))
-                            $(`.${product.id}`).append(`<td><div class="price">${product.price_after_discount}</div></td>`);
+                            $(`.${product.id}`).append(`<td><div class="price">${product.currenct_price.price_after_discount}</div></td>`);
                             $(`.${product.id}`).append(`<td><input class="form-control amount" value="1" min="1" type="number" name="products[${product.id}][amount]"></td>`);
-                            $(`.${product.id}`).append(`<td><div class="total_price">${product.price_after_discount}</div></td>`);
+                            $(`.${product.id}`).append(`<td><div class="total_price">${product.currenct_price.price_after_discount}</div></td>`);
                             $(`.${product.id}`).append(`<td>{{ translate('there is no sizes') }}</td>`);
                             $(`.${product.id}`).append(`<td>{{ translate('there is no extras') }}</td>`);
                             getFullPrice();
