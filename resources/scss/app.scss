@@ -96,6 +96,13 @@ body {
 .select2-search__field {
     text-align: left;
 }
+.select2-results__option {
+    color: var(--primary) !important;
+    &:hover {
+        color: var(--white);
+    }
+}
+
 .was-validated .form-control:invalid,
 .form-control.is-invalid {
     background-position: right calc(0.375em + 0.1875rem) center;
@@ -126,6 +133,14 @@ body {
     @import "./admin/orders/show";
     @import "./admin/orders/index";
 
+    // News
+    @import "./admin/news/edit";
+    @import "./admin/news/index";
+    @import "./admin/news/all_news";
+
+    // Orders Under Work
+    @import "./admin/orders_under_work/show";
+
     // Settings
     @import "./admin/settings/edit";
 
@@ -134,7 +149,6 @@ body {
     @import "./admin/users/create";
 
     // Roles
-    @import "./admin/roles/index";
     @import "./admin/roles/create";
 
     // Languages
@@ -142,38 +156,6 @@ body {
 
     /* INC */
     @import "./inc/invoice";
-}
-
-/*  Front End   */
-@import "./frontend/navbar";
-@import "./frontend/home";
-@import "./frontend/branch";
-@import "./frontend/product";
-@import "./frontend/cart";
-@import "./frontend/payment";
-@import "./frontend/order_confirmed";
-@import "./frontend/user/profile";
-@import "./frontend/inc/user_side_nav";
-@import "./frontend/footer";
-
-.order_tracker {
-    padding: 55px 0;
-    .track {
-        position: relative;
-        h3 {
-            width: max-content;
-            margin: auto;
-            @media (max-width: 991px) {
-                font-size: 18px;
-            }
-        }
-        &.active {
-            color: var(--green) !important;
-        }
-        span.mdi {
-            font-size: 30px;
-        }
-    }
 }
 
 .bell {
@@ -197,4 +179,9 @@ body {
         border-radius: 50%;
         text-align: center;
     }
+}
+
+.max {
+    width: max-content;
+    display: block;
 }

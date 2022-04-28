@@ -4,19 +4,48 @@
             margin: 5px;
         }
     }
+    table {
+        p {
+            width: 300px;
+        }
+    }
     img {
         width: 70px;
         height: 70px;
         border-radius: 50%;
     }
-    span {
+    .badge {
         width: max-content;
-        padding-inline-start: 10px;
+        margin: 5px 0;
+        font-size: 16px;
     }
     a,
     button {
         display: flex;
         align-items: center;
         height: 100%;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        &:not(:last-of-type) {
+            margin-bottom: 10px;
+        }
+        li {
+            display: flex;
+            align-items: center;
+            span {
+                display: block;
+                width: max-content;
+                font-weight: bold;
+            }
+            p {
+                margin: 0;
+                margin-inline-start: 10px !important;
+                color: $gray-700;
+            }
+        }
     }
 }

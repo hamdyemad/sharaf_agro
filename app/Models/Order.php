@@ -2,33 +2,44 @@
 
 namespace App\Models;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $fillable = ['type', 'branch_id', 'status_id', 'currency_id','user_id','city_id','customer_name',
-    'customer_phone', 'customer_address','paid',
-    'notes','total_discount', 'shipping','grand_total', 'viewed', 'client_viewed', 'client_status_viewed'];
+    protected $fillable = [
+        'category_id',
+        'sub_category_id',
+        'customer_id',
+        'employee_id',
+        'status_id',
+        'name',
+        'details',
+        'files',
+        'submission_date',
+        'expected_date',
+        'expiry_date',
+        'expected_notify'
+    ];
 
-    public function branch() {
-        return $this->belongsTo(Branch::class, 'branch_id');
+    public function category() {
+        return $this->belongsTo(Category::class);
     }
 
-    public function currency() {
-        return $this->belongsTo(Currency::class, 'currency_id');
-    }
-
-    public function order_details() {
-        return $this->hasMany(OrderDetail::class);
+    public function sub_category() {
+        return $this->belongsTo(SubCategory::class);
     }
 
     public function status() {
-        return $this->belongsTo(Status::class, 'status_id');
+        return $this->belongsTo(Status::class);
+    }
+    public function customer() {
+        return $this->belongsTo(User::class, 'customer_id');
+    }
+    public function employee() {
+        return $this->belongsTo(User::class, 'employee_id');
     }
 
-    public function city() {
-        return $this->belongsTo(City::class, 'city_id');
-    }
+
 
 }
-

@@ -8,4 +8,16 @@
             height: 70px;
         }
     }
+
+    table {
+        @media (max-width: 991px) {
+            overflow: auto;
+            display: block;
+        }
+        input {
+            @media (max-width: 991px) {
+                min-width: 200px;
+            }
+        }
+    }
 }

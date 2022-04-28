@@ -5,21 +5,21 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">
-                        {{ translate('remove item') }}
+                        ازالة العنصر
                     </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    {{ translate('are you sure to remove it') .' ?' }}
+                    هل أنت متأكد من ازالة ذلك ؟
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ translate('no') }}</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">لا</button>
                     <form action="{{ $route }}" method="POST">
                         @method('DELETE')
                         @csrf
-                        <button type="submit" class="btn btn-danger">{{ translate('yes') }}</button>
+                        <button type="submit" class="btn btn-danger">نعم</button>
                     </form>
                 </div>
             </div>

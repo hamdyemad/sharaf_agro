@@ -3,6 +3,7 @@
 //
 
 #page-topbar {
+    z-index: 9999;
     position: fixed;
     top: 0;
     right: 0;
@@ -41,9 +42,8 @@
 .logo {
     // line-height: 70px;
     img {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
+        width: 200px;
+        height: 75px;
     }
     .logo-sm {
         display: none;

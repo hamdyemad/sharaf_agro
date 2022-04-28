@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Branch;
 use App\Models\Category;
+use App\Models\News;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Status;
+use App\Models\SubCategory;
+use App\User;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -19,13 +22,14 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $productsCount = Product::all()->count();
         $categoriesCount = Category::all()->count();
-        $branchesCount = Branch::all()->count();
+        $subCategoriesCount = SubCategory::all()->count();
+        $employeesCount = User::where('type', 'sub-admin')->get()->count();
+        $customersCount = User::where('type', 'user')->get()->count();
         $ordersCount = Order::all()->count();
-        $statuses = Status::orderBy('name')->get();
-        return view('dashboard.index', compact('productsCount', 'categoriesCount',
-        'branchesCount', 'ordersCount'));
+        $newsCount = News::all()->count();
+        return view('dashboard.index', compact(
+            'categoriesCount', 'subCategoriesCount', 'employeesCount', 'customersCount', 'ordersCount','newsCount'));
     }
 
     /**

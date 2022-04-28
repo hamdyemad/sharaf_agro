@@ -5,12 +5,12 @@
                         <a href="javascript:void(0);" class="right-bar-toggle float-right">
                             <i class="mdi mdi-close noti-icon"></i>
                         </a>
-                        <h5 class="m-0">{{ translate('settings') }}</h5>
+                        <h5 class="m-0">الأعدادات</h5>
                     </div>
 
                     <!-- Settings -->
                     <hr class="mt-0" />
-                    <h6 class="text-center mb-0">{{ translate('choose layouts') }}</h6>
+                    <h6 class="text-center mb-0">أختر اللاير</h6>
 
                     <div class="p-4">
                         <div class="mb-2">
@@ -18,7 +18,7 @@
                         </div>
                         <div class="custom-control custom-switch mb-3">
                             <input type="checkbox" class="custom-control-input theme-choice" id="light-mode-switch" checked />
-                            <label class="custom-control-label" for="light-mode-switch">{{ translate('light mode') }}</label>
+                            <label class="custom-control-label" for="light-mode-switch">light mode</label>
                         </div>
 
                         <div class="mb-2">
@@ -26,7 +26,7 @@
                         </div>
                         <div class="custom-control custom-switch mb-3">
                             <input type="checkbox" class="custom-control-input theme-choice" id="dark-mode-switch" data-bsStyle="css/bootstrap-dark.min.css" data-appStyle="css/app-dark.min.css" />
-                            <label class="custom-control-label" for="dark-mode-switch">{{ translate('dark mode') }}</label>
+                            <label class="custom-control-label" for="dark-mode-switch">dark mode</label>
                         </div>
 
 

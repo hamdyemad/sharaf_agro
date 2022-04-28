@@ -5,16 +5,11 @@ namespace App\Traits;
 trait File
 {
 
-    public $settingsPath = 'public/uploads/settings/';
-    public $categoriesPath = 'public/uploads/categories/';
-    public $subCategoriesPath = 'public/uploads/sub-categories/';
-    public $productsPath = 'public/uploads/products/';
-    public $usersPath = 'public/uploads/users/';
-    public $projectPath = 'public/uploads/project/';
-  /**
-   * path with file name
-   * return delete
-   */
+    public $usersPath = 'uploads/users/';
+    public $ordersPath = 'uploads/orders/';
+    public $ordersUnderWorkPath = 'uploads/orders_under_work/';
+    public $newsPath = 'uploads/news/';
+    public $settingsPath = 'uploads/settings/';
 
   public function uploadFile($request, $path, $inputName)
   {

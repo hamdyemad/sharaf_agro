@@ -1148,7 +1148,8 @@ File: Main RTL Css File
 }
 
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
-  background-color: #263442;
+  background-color: #f8f9fa;
+  color: #263442 !important;
 }
 
 .select2-container--default .select2-results__option[aria-selected=true] {
@@ -1156,12 +1157,8 @@ File: Main RTL Css File
   color: #16181b;
 }
 
-.select2-container--default .select2-results__option[aria-selected=true]:hover {
-  background-color: #263442;
-  color: #fff;
-}
-
 .select2-results__option {
+  color: #263442 !important;
   padding: 6px 12px;
 }
 

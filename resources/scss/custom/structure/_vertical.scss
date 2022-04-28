@@ -154,16 +154,17 @@
 }
 
 .mm-active {
-    color: $sidebar-menu-item-active-color !important;
+    color: $sidebar-menu-item-active-color;
+    background-color: $sidebar-bg;
     .active {
-        color: $sidebar-menu-item-active-color !important;
-
+        background-color: $sidebar-dark-menu-item-icon-color;
+        color: $sidebar-bg !important;
         i {
-            color: $sidebar-menu-item-active-color !important;
+            color: $sidebar-bg !important;
         }
     }
     > i {
-        color: $sidebar-menu-item-active-color !important;
+        color: $sidebar-bg !important;
     }
 }
 

@@ -278,12 +278,80 @@ File: Main Js File
             sessionStorage.setItem("is_visited", "rtl-mode-switch");
         }
     }
+    function fileSys() {
+        $(".files").on("click", function() {
+            $(this)
+                .parent()
+                .find(".input_files")
+                .click();
+        });
+        $(".input_files").on("change", function() {
+            let filesBtn = $(this)
+                .parent()
+                .find(".files");
+            let imgs = $(this)
+                .parent()
+                .find(".imgs");
+
+            imgs.empty();
+            let files = this.files,
+                images = 0,
+                pdfs = 0;
+            for (let i = 0; i < files.length; i++) {
+                if (files[i].type.startsWith("image/")) {
+                    images++;
+                }
+                if (files[i].type == "application/pdf") {
+                    pdfs++;
+                }
+            }
+            if (images > $(this).data("img")) {
+                $(this)[0].value = "";
+                $(this)
+                    .parent()
+                    .find(".img-error")
+                    .removeAttr("hidden");
+            } else if (pdfs > $(this).data("pdf")) {
+                $(this)[0].value = "";
+                $(this)
+                    .parent()
+                    .find(".pdf-error")
+                    .removeAttr("hidden");
+            } else {
+                $(this)
+                    .parent()
+                    .find(".file_error")
+                    .attr("hidden", "");
+                files.forEach(file => {
+                    let fileReader = new FileReader();
+                    fileReader.readAsDataURL(file);
+                    fileReader.onload = function(event) {
+                        let img = document.createElement("img");
+                        img.src = event.target.result;
+                        imgs.append(img);
+                    };
+                    if (files.length > 1) {
+                        filesBtn.text(files.length);
+                    } else {
+                        if (files[0].name.length > 15) {
+                            filesBtn.text(
+                                files[0].name.substring(0, 15) + "..."
+                            );
+                        } else {
+                            filesBtn.text(files[0].name);
+                        }
+                    }
+                });
+            }
+        });
+    }
 
     function init() {
+        fileSys();
         initMetisMenu();
         initLeftMenuCollapse();
-        initActiveMenu();
-        initMenuItem();
+        // initActiveMenu();
+        // initMenuItem();
         initFullScreen();
         initRightSidebar();
         initDropdownMenu();
@@ -295,51 +363,5 @@ File: Main Js File
     }
 
     init();
-
-    $(".files").on("click", function() {
-        $(".input_files").click();
-    });
-    $(".input_files").on("change", function(e) {
-        $(".input_files")
-            .parent()
-            .find(".imgs")
-            .empty();
-        let files = this.files;
-        if (files.length > 5) {
-            $(".file_error").removeAttr("hidden");
-        } else {
-            $(".file_error").attr("hidden", "");
-            files.forEach(file => {
-                let fileReader = new FileReader();
-                fileReader.readAsDataURL(file);
-                fileReader.onload = function(event) {
-                    let img = document.createElement("img");
-                    img.setAttribute("class", "rounded");
-                    img.src = event.target.result;
-                    $(".input_files")
-                        .parent()
-                        .find(".imgs")
-                        .append(img);
-                };
-                if (files.length > 1) {
-                    $(".files").text(files.length);
-                } else {
-                    $(".files").text(files[0].name);
-                }
-            });
-        }
-    });
-
     $(".btn-default").text("تحديد");
-
-    $(".cart_items").on("click", function(event) {
-        event.stopPropagation();
-    });
-
-    $(".frontend").css("padding-bottom", $(".footer_fixed").height() + "px");
-
-    $(".frontend .header").css(
-        "height",
-        `calc(100vh - ${$(".frontend .navbar").height()}px)`
-    );
 })(jQuery);

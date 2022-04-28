@@ -20,7 +20,6 @@ class RoleController extends Controller
     public function index()
     {
         $this->authorize('roles.index');
-        Carbon::setLocale(app()->getLocale());
         $roles = Role::latest();
         $roles = $roles->paginate(10);
         return view('roles.index', compact('roles'));
@@ -52,13 +51,13 @@ class RoleController extends Controller
             'permessions' => 'required'
         ];
         $messages = [
-            'name.required' => translate('the name is required'),
-            'name.unique' => translate('you should choose a name is not already exists'),
-            'permessions.required' => translate('the permessions is required'),
+            'name.required' => 'الأسم مطلوب',
+            'name.unique' => 'الأسم هذا موجود بالفعل',
+            'permessions.required' => 'الصلاحيات مطلوبة',
         ];
         $validator = Validator::make($request->all(), $rules, $messages);
         if($validator->fails()) {
-            return redirect()->back()->withErrors($validator->errors())->with('error', translate('there is something error'))->withInput($request->all());
+            return redirect()->back()->withErrors($validator->errors())->with('error', 'يوجد خطأ ما')->withInput($request->all());
         }
         $role = Role::create([
             'name' => $request->name
@@ -66,7 +65,7 @@ class RoleController extends Controller
         foreach ($request->permessions as $permession) {
             $role->permessions()->attach($permession);
         }
-        return redirect()->back()->with('success', translate('created successfully'));
+        return redirect()->to(route('roles.index'))->with('success', 'تم انشاء الصلاحية بنجاح');
 
     }
 
@@ -109,13 +108,13 @@ class RoleController extends Controller
             'permessions' => 'required'
         ];
         $messages = [
-            'name.required' => translate('the name is required'),
-            'name.unique' => translate('you should choose a name is not exists'),
-            'permessions.required' => translate('the permessions is required'),
+            'name.required' => 'الأسم مطلوب',
+            'name.unique' => 'الأسم هذا موجود بالفعل',
+            'permessions.required' => 'الصلاحيات مطلوبة',
         ];
         $validator = Validator::make($request->all(), $rules, $messages);
         if($validator->fails()) {
-            return redirect()->back()->withErrors($validator->errors())->with('error', translate('there is something error'))->withInput($request->all());
+            return redirect()->back()->withErrors($validator->errors())->with('error', 'يوجد خطأ ما')->withInput($request->all());
         }
         $role->update([
             'name' => $request->name
@@ -128,7 +127,7 @@ class RoleController extends Controller
         foreach ($request->permessions as $permession) {
             $role->permessions()->attach($permession);
         }
-        return redirect()->back()->with('info', translate('updated successfully'));
+        return redirect()->back()->with('info', 'تم تعديل الصلاحية بنجاح');
     }
 
     /**
@@ -141,7 +140,7 @@ class RoleController extends Controller
     {
         $this->authorize('roles.destroy');
         Role::destroy($role->id);
-        return redirect()->back()->with('success', translate('deleted successfully'));
+        return redirect()->back()->with('success', 'تمت الأزالة بنجاح');
 
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use Tymon\JWTAuth\Facades\JWTAuth;
+
 trait Res
 {
   public function sendRes($message, $status = true,  $data = [])
@@ -18,7 +20,7 @@ trait Res
       return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() . ' minutes',
+            'expires_in' => JWTAuth::factory()->getTTL() . ' minutes',
             'status' => $status,
             'message' => $message,
             'data' => $data

@@ -242,7 +242,7 @@ File: Lightbox
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\resturant\resources\js\pages\lightbox.init.js */"./resources/js/pages/lightbox.init.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\new\resources\js\pages\lightbox.init.js */"./resources/js/pages/lightbox.init.js");
 
 
 /***/ })

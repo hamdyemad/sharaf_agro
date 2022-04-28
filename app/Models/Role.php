@@ -12,4 +12,5 @@ class Role extends Model
     public function permessions() {
         return $this->belongsToMany(Permession::class, 'roles_permessions', 'role_id')->withTimestamps();
     }
+
 }

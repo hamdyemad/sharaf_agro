@@ -16,7 +16,9 @@ class newOrder implements ShouldBroadcast
 
 
     public $order;
-    public $products_count;
+    public $customer_name;
+    public $main_category;
+    public $sub_category;
     public $status;
     /**
      * Create a new event instance.
@@ -26,7 +28,9 @@ class newOrder implements ShouldBroadcast
     public function __construct($data)
     {
         $this->order = $data['order'];
-        $this->products_count = $data['products_count'];
+        $this->customer_name = $data['customer_name'];
+        $this->main_category = $data['main_category'];
+        $this->sub_category = $data['sub_category'];
         $this->status = $data['status'];
     }
 

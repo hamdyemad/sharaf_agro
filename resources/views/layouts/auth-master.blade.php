@@ -24,14 +24,7 @@
     <!-- App Css-->
     <link href="{{ URL::asset('/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
     {{-- RTL Bootstrap --}}
-    @php
-    $language = App\Models\Language::where('code', App::getLocale())->first();
-    @endphp
-    @if($language)
-        @if($language->rtl)
-            <link href="{{ URL::asset('/css/app-rtl.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
-        @endif
-    @endif
+    <link href="{{ URL::asset('/css/app-rtl.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
     <!-- headerCss -->
     @yield('headerCss')
 

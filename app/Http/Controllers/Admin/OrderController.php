@@ -2,29 +2,34 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Events\changeOrderStatus;
 use App\Events\newOrder;
+use App\Exports\OrderExport;
 use App\Http\Controllers\Controller;
-use App\Models\Branch;
-use App\Models\City;
-use App\Models\Country;
-use App\Models\Currency;
-use App\Models\Language;
+use App\Mail\SendOrder;
+use App\Models\Category;
+use App\Models\FirebaseToken;
 use App\Models\Order;
-use App\Models\OrderDetail;
-use App\Models\Payment;
-use App\Models\Product;
-use App\Models\ProductVariant;
+use App\Models\OrderView;
 use App\Models\Status;
-use App\Models\StatusHistory;
+use App\Models\SubCategory;
+use App\Models\UserCategory;
+use App\Models\UserSubCategory;
+use App\Traits\File;
+use App\Traits\FirebaseNotify;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
-use PDF;
+use Maatwebsite\Excel\Facades\Excel;
+use Stripe\Customer;
+
+use function GuzzleHttp\Promise\all;
 
 class OrderController extends Controller
 {
+    use File, FirebaseNotify;
     /**
      * Display a listing of the resource.
      *
@@ -32,34 +37,95 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('orders.index');
-        Carbon::setLocale(app()->getLocale());
-        $orders = Order::latest();
-        $statuses = Status::all();
-        $branches = Branch::all();
-        if(Auth::user()->type !== 'admin') {
-            $orders = $orders->where('branch_id', Auth::user()->branch_id);
+        $customers = User::where('type', 'user')->get();
+        $employees = User::where('type', 'sub-admin')->get();
+        if(Auth::user()->type !== 'sub-admin') {
+            $categories = Category::all();
+        } else {
+            $employeeCategories = UserCategory::where('user_id', Auth::id())->pluck('category_id');
+            $categories = Category::whereIn('id',$employeeCategories)->get();
         }
-        if($request->customer_name) {
-            $orders = $orders->where('customer_name', 'like', '%' . $request->customer_name .'%');
+        $statuses = Status::whereNotIn('name',['تم القبول', 'رفض', 'معلق'])->orderBy('name')->get();
+        if(Auth::user()->type == 'admin') {
+            $orders = Order::latest();
+        } else if(Auth::user()->type == 'sub-admin') {
+            $orders = Order::where('employee_id', Auth::id())->latest();
+        } else if(Auth::user()->type == 'user') {
+            $orders = Order::where('customer_id', Auth::id())->latest();
         }
-        if($request->customer_phone) {
-            $orders = $orders->where('customer_phone', 'like', '%' . $request->customer_phone .'%');
+        if($request->employee_id) {
+            $orders->where('employee_id', $request->employee_id);
         }
-        if($request->type) {
-            $orders = $orders->where('type', 'like', '%' . $request->type .'%');
+        if($request->name) {
+            $orders->where('name', 'like', '%'. $request->name . '%');
         }
-        if($request->branch_id) {
-            $orders = $orders->where('branch_id', 'like', '%' . $request->type .'%');
+        if($request->customer_id) {
+            $orders->where('customer_id', $request->customer_id);
         }
         if($request->status_id) {
-            $orders = $orders->where('status_id', 'like', '%' . $request->status_id .'%');
+            $orders->where('status_id', $request->status_id);
         }
+        if($request->category_id) {
+            $orders->where('category_id', $request->category_id);
+        }
+        if($request->sub_category_id) {
+            $orders->where('sub_category_id', $request->sub_category_id);
+        }
+        if($request->from) {
+            $orders->whereDate('created_at', '>=', $request->from);
+        }
+        if($request->to) {
+            $orders->whereDate('created_at', '<=', $request->to);
+        }
+        if($request->from && $request->to) {
+            $orders
+            ->whereDate('created_at', '<=', $request->to)
+            ->whereDate('created_at', '>=', $request->from);
+        }
+
         $orders = $orders->paginate(10);
-        foreach($orders as $order) {
-            $order->update(['viewed' => true]);
+        return view('orders.index', compact('orders', 'customers', 'employees', 'categories', 'statuses'));
+    }
+
+    public function export(Request $request) {
+        if(Auth::user()->type == 'admin') {
+            $orders = Order::latest();
+        } else if(Auth::user()->type == 'sub-admin') {
+            $orders = Order::where('employee_id', Auth::id())->latest();
+        } else if(Auth::user()->type == 'user') {
+            $orders = Order::where('customer_id', Auth::id())->latest();
         }
-        return view('orders.index', compact('orders', 'statuses', 'branches'));
+        if($request->employee_id) {
+            $orders->where('employee_id', $request->employee_id);
+        }
+        if($request->name) {
+            $orders->where('name', 'like', '%'. $request->name . '%');
+        }
+        if($request->customer_id) {
+            $orders->where('customer_id', $request->customer_id);
+        }
+        if($request->status_id) {
+            $orders->where('status_id', $request->status_id);
+        }
+        if($request->category_id) {
+            $orders->where('category_id', $request->category_id);
+        }
+        if($request->sub_category_id) {
+            $orders->where('sub_category_id', $request->sub_category_id);
+        }
+        if($request->from) {
+            $orders->whereDate('created_at', '>=', $request->from);
+        }
+        if($request->to) {
+            $orders->whereDate('created_at', '<=', $request->to);
+        }
+        if($request->from && $request->to) {
+            $orders
+            ->whereDate('created_at', '<=', $request->to)
+            ->whereDate('created_at', '>=', $request->from);
+        }
+        $orders = $orders->get();
+        return Excel::download(new OrderExport($orders), 'orders.xlsx');
     }
 
     /**
@@ -69,73 +135,11 @@ class OrderController extends Controller
      */
     public function create()
     {
-        $this->authorize('orders.create');
-        $status = Status::where('default_val', 1)->first();
-        if($status) {
-            $countries = Country::where('active', '1')->get();
-            $currencies = Currency::all();
-            if(Auth::user()->type !== 'admin') {
-                $products = Product::whereHas('category', function($query) {
-                    return $query->where('branch_id', Auth::user()->branch_id);
-                })->latest()->get();
-            } else {
-                $products = null;
-            }
-            $branches = Branch::orderBy('name')->get();
-            return view('orders.create', compact('products', 'branches', 'countries', 'currencies'));
-        } else {
-            return redirect()->back()->with('error', translate('a default status must be set'));
-        }
-    }
-
-    public function validateOrder($request) {
-        $rules = [
-            'type' => 'required|in:inhouse,online',
-            'branch_id' => 'required|exists:branches,id',
-            'products_search' => 'required',
-            'currency_id' => 'required|exists:currencies,id',
-            'products' => 'required',
-        ];
-        $mesages = [
-            'type.required' => translate('the type is required'),
-            'branch_id.required' => translate('the branch is required'),
-            'branch_id.exists' => translate('the branch should be exists'),
-            'type.in' => translate('you should choose a type from the stock'),
-            'products_search.required' => translate('you should choose a minmum 1 product'),
-            'products.*.required' => translate('you should choose a minmum 1 product'),
-        ];
-        if($request->type == 'online') {
-            $rules['customer_name'] = 'required';
-            $rules['customer_address'] = 'required';
-            $rules['customer_phone'] = 'required';
-            $rules['city_id'] = 'required';
-            $mesages['customer_name.required'] = translate('the name is required');
-            $mesages['customer_address.required'] = translate('the address is required');
-            $mesages['customer_phone.required'] =translate('the phone is required');
-            $mesages['city_id.required'] = translate('the city is required');
-        }
-        if($request->products) {
-            foreach ($request->products as $productId => $productObj) {
-                if(isset($productObj['amount'])) {
-                    $rules["products.$productId.amount"] = ['required','integer','min:1'];
-                    $mesages["products.$productId.amount.required"] = translate('the amount is required');
-                    $mesages["products.$productId.amount.min"] = translate('the amount should be at least 1');
-                }
-                if(isset($productObj['variants'])) {
-                    foreach ($productObj['variants'] as $variantId => $variant) {
-                        $rules["products.$productId.variants.$variantId.amount"] = ['required', 'integer','min:1'];
-                        $mesages["products.$productId.variants.$variantId.amount.required"] = translate('the amount is required');
-                        $mesages["products.$productId.variants.$variantId.amount.min"] = translate('the amount should be at least 1');
-                    }
-                }
-            }
-        }
-        $validator = Validator::make($request->all(),$rules, $mesages);
-        if($validator->fails()) {
-            return redirect()->back()->withErrors($validator->errors())
-            ->withInput($request->all())
-            ->with('error', translate('there is something error'));
-        }
+        $categories = Category::all();
+        $userCategories =  UserCategory::where('user_id', auth()->id())->get();
+        $customers = User::where('type', 'user')->get();
+        $statuses = Status::whereIn('name',['تحت الأنشاء', 'تم التقديم', 'مكتمل'])->orderBy('name')->get();
+        return view('orders.create', compact('userCategories', 'categories', 'customers', 'statuses'));
     }
 
     /**
@@ -146,84 +150,103 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        $city = City::find($request->city_id);
-        if($city) {
-            $request['shipping'] = $city->price;
-        }
-        $this->authorize('orders.create');
-        $status = Status::where('default_val', 1)->first();
+        $status = Status::find($request['status_id']);
+        $creation = [
+            'category_id' => $request->category_id,
+            'sub_category_id' => $request->sub_category_id,
+            'customer_id' => $request->customer_id,
+            'employee_id' => Auth::id(),
+            'status_id' => $request->status_id,
+            'name' => $request->name,
+            'details' => $request->details,
+            'submission_date' => $request->submission_date,
+            'expected_date' => $request->expected_date,
+            'expiry_date' => $request->expiry_date,
+        ];
         if($status) {
-            $creation = [
-                'type' => $request->type,
-                'branch_id' => $request->branch_id,
-                'status_id' => $status->id,
-                'currency_id' => $request->currency_id,
-                'city_id' => $request->city_id,
-                'customer_name' => $request->customer_name,
-                'customer_phone' => $request->customer_phone,
-                'customer_address' => $request->customer_address,
-                'notes' => $request->notes,
-                'total_discount' => $request->total_discount,
-                'shipping' => $request->shipping,
-                'grand_total' => 0
+            $rules = [
+                'category_id' => 'required|exists:categories,id|max:255',
+                'customer_id' => 'required|exists:users,id|max:255',
+                'name' => 'required|string|max:255',
+                'details' => 'required|string',
+                'status_id' => 'required|exists:statuses,id',
             ];
-            if($this->validateOrder($request)) {
-                return $this->validateOrder($request);
+            $messages = [
+                'category_id.required' => 'القسم الرئيسى مطلوب',
+                'category_id.exists' => 'القسم الرئيسى غير موجود',
+                'customer_id.required' => 'أختر الشركة',
+                'customer_id.exists' => 'الشركة غير موجودة',
+                'name.required' => 'أسم المركب مطلوب',
+                'name.string' => 'أسم المركب يجب أن يكون من نوع string',
+                'name.max' => 'أسم المركب يجب أن يكون أقل من 255 حرف',
+                'details.required' => 'تفاصيل المركب مطلوبة',
+                'details.string' => 'تفاصيل المركب يجب أن يكون من نوع string',
+                'status_id.required' => 'الحالة مطلوبة',
+                'status_id.exists' => 'الحالة غير موجودة',
+            ];
+            $subs = SubCategory::where('category_id', $request['category_id'])->get();
+            if($subs->count() > 0) {
+                $rules['sub_category_id'] = 'required|exists:sub_categories,id';
             }
-            $grand_total = [];
+            if($status->name == 'تم التقديم') {
+                $rules['submission_date'] = 'required|date';
+                $rules['expected_date'] = 'required|date';
+                $messages['submission_date.required'] = 'تاريخ التقديم مطلوب';
+                $messages['submission_date.date'] = 'الصيغة يجب أن تكون من نوع date';
+                $messages['expected_date.required'] = 'الناريخ المتوقع مطلوب';
+            }
+            $validator = Validator::make($request->all(), $rules, $messages);
+            if($validator->fails()) {
+                return redirect()->back()->withErrors($validator->errors())->with('error', 'يوجد خطأ ما')->withInput($request->all());
+            }
+            if($request['files']) {
+                foreach ($request->file('files') as $file) {
+                    $files[] = $this->uploadFiles($file, $this->ordersPath);
+                }
+                $creation['files'] = json_encode($files);
+            }
             $order = Order::create($creation);
-            StatusHistory::create([
-                'user_id' => Auth::id(),
-                'order_id' => $order->id,
-                'status_id' => $status->id
-            ]);
-            foreach ($request->products as $productId => $productObj) {
-                $product = Product::find($productId);
-                if($product) {
-                    if(isset($productObj['amount'])) {
-                        OrderDetail::create([
-                            'order_id' => $order->id,
-                            'product_id' => $productId,
-                            'price' => $product->currenctPrice->price_after_discount,
-                            'qty' => $productObj['amount'],
-                            'total_price' => $product->currenctPrice->price_after_discount * $productObj['amount']
-                        ]);
-                        array_push($grand_total, $product->currenctPrice->price_after_discount * $productObj['amount']);
-                    }
-                    if(isset($productObj['variants'])) {
-                        foreach ($productObj['variants'] as $variantId => $variant) {
-                            $productVariant = ProductVariant::find($variantId);
-                            if($productVariant) {
-                                OrderDetail::create([
-                                    'order_id' => $order->id,
-                                    'product_id' => $productId,
-                                    'variant' => $productVariant->variant,
-                                    'variant_type' => $productVariant->type,
-                                    'price' => $productVariant->currenctPriceOfVariant->price_after_discount,
-                                    'qty' => $variant['amount'],
-                                    'total_price' => $productVariant->currenctPriceOfVariant->price_after_discount * $variant['amount']
-                                ]);
-                                array_push($grand_total, $productVariant->currenctPriceOfVariant->price_after_discount * $variant['amount']);
-                            }
-                        }
+            $main_category = Category::find($request->category_id);
+            $data = [
+                'name' => $request->name,
+                'customer_name' => $order->customer->name,
+                'status_name' => $status->name,
+                'category_name' => $main_category->name,
+                'details' => $request->details,
+                'subject' => $request->name . ' (طلب جديد)'
+            ];
+            $passedDataOfRealTime = [
+                'order' => $order,
+                'main_category' => $main_category->name,
+                'sub_category' => '',
+                'status' => $status->name
+            ];
+            if($request->sub_category_id) {
+                $sub_category_name = $main_category->sub_categories->find($request->sub_category_id)->name;
+                $data['sub_category_name'] = $sub_category_name;
+                $passedDataOfRealTime['sub_category'] = $sub_category_name;
+            }
+            try {
+                // Send Notification with firebase to mobiles
+                $tokens = FirebaseToken::where('user_id', $order->customer_id)->get();
+                if($tokens->count() > 0) {
+                    foreach ($tokens as $token) {
+                        $this->send_notify($token, $order->name, 'تم انشاء مركب جديد أتطلع عليه الأن');
                     }
                 }
+                event(new newOrder($passedDataOfRealTime));
+            } catch (\Throwable $th) {
+                //throw $th;
             }
-            $grand_total = array_reduce($grand_total,
-            function($acc, $current) {return $acc + $current;});
-            $order->grand_total = (($grand_total + $request->shipping) - $creation['total_discount']);
-            $order->save();
-            event(new newOrder([
-                'order' => $order,
-                'products_count' => $order->order_details->groupBy('product_id')->count(),
-                'status' => $order->status
-            ]));
-            return redirect()->back()->with('success', translate('created successfully'));
+            try {
+                Mail::to($order->customer->email)->send(new SendOrder($data));
+            } catch (\Throwable $th) {
+                throw $th;
+            }
+            return redirect()->to(route('orders.index'))->with('success', 'تم انشاء الطلب بنجاح');
         } else {
-            return redirect()->back()->with('error', translate('you should choose a default status'));
+            return redirect()->back()->with('error', 'الحالة غير موجودة');
         }
-
-
     }
 
     /**
@@ -234,17 +257,33 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        $order->update(['viewed' => true]);
-        Carbon::setLocale(app()->getLocale());
-        $statuses_history = StatusHistory::where('order_id', $order->id)->latest()->get();
-        return view('orders.show', compact('order', 'statuses_history'));
-    }
-
-    public function pdf(Order $order) {
-        $currenctLang = Language::where('code', app()->getLocale())->first();
-        Carbon::setLocale(app()->getLocale());
-        $pdf = PDF::loadView('orders.pdf', ['order' => $order, 'rtl' => $currenctLang->rtl]);
-        return $pdf->stream($order->id. '.pdf');
+        $pdfs = [];
+        $images = [];
+        $order_view = OrderView::
+        where('order_id', $order->id)
+        ->where('user_id', Auth::id())
+        ->first();
+        if(!$order_view) {
+            OrderView::create([
+                'order_id' => $order->id,
+                'user_id' => Auth::id(),
+                'viewed' => 1
+            ]);
+        } else {
+            $order_view->update([
+                'viewed' => 1
+            ]);
+        }
+        if($order->files) {
+            foreach (json_decode($order->files) as $file) {
+                if(strrchr($file,'.') == '.pdf') {
+                    array_push($pdfs, $file);
+                } else {
+                    array_push($images, $file);
+                }
+            }
+        }
+        return view('orders.show', compact('order', 'images', 'pdfs'));
     }
 
     /**
@@ -255,22 +294,11 @@ class OrderController extends Controller
      */
     public function edit(Order $order)
     {
-        $this->authorize('orders.edit');
-        $status = Status::where('default_val', 1)->first();
-        if($status) {
-            $countries = Country::where('active', '1')->get();
-            if($order->city) {
-                $cities = City::where('country_id', $order->city->country_id)->get();
-            } else {
-                $cities = [];
-            }
-            $currencies = Currency::all();
-            $products = Product::orderBy('name')->get();
-            $branches = Branch::orderBy('name')->get();
-            return view('orders.edit', compact('order', 'branches', 'products', 'countries', 'cities', 'currencies'));
-        } else {
-            return redirect()->back()->with('error', translate('you should choose a default status'));
-        }
+        $categories = Category::all();
+        $userCategories =  UserCategory::where('user_id', auth()->id())->get();
+        $customers = User::where('type', 'user')->get();
+        $statuses = Status::whereIn('name', ['تحت الأنشاء', 'تم التقديم', 'مكتمل'])->orderBy('name')->get();
+        return view('orders.edit', compact('order','userCategories', 'categories', 'customers', 'statuses'));
     }
 
     /**
@@ -282,92 +310,121 @@ class OrderController extends Controller
      */
     public function update(Request $request, Order $order)
     {
-        $this->authorize('orders.edit');
-        $city = City::find($request->city_id);
-        if($city) {
-            $request['shipping'] = $city->price;
-        }
-        $status = Status::where('default_val', 1)->first();
+        $status = Status::find($request['status_id']);
+        $creation = [
+            'category_id' => $request->category_id,
+            'sub_category_id' => $request->sub_category_id,
+            'customer_id' => $request->customer_id,
+            'status_id' => $request->status_id,
+            'name' => $request->name,
+            'details' => $request->details,
+            'submission_date' => $request->submission_date,
+            'expected_date' => $request->expected_date,
+            'expiry_date' => $request->expiry_date,
+        ];
         if($status) {
-            $creation = [
-                'type' => $request->type,
-                'branch_id' => $request->branch_id,
-                'status_id' => $status->id,
-                'customer_name' => $request->customer_name,
-                'customer_phone' => $request->customer_phone,
-                'customer_address' => $request->customer_address,
-                'notes' => $request->notes,
-                'total_discount' => $request->total_discount,
-                'shipping' => $request->shipping,
-                'grand_total' => 0
+            $rules = [
+                'category_id' => 'required|exists:categories,id|max:255',
+                'customer_id' => 'required|exists:users,id|max:255',
+                'name' => 'required|string|max:255',
+                'details' => 'required|string',
+                'status_id' => 'required|exists:statuses,id',
             ];
-            if($this->validateOrder($request)) {
-                return $this->validateOrder($request);
+            $messages = [
+                'category_id.required' => 'القسم الرئيسى مطلوب',
+                'category_id.exists' => 'القسم الرئيسى غير موجود',
+                'customer_id.required' => 'أختر الشركة',
+                'customer_id.exists' => 'الشركة غير موجودة',
+                'name.required' => 'أسم المركب مطلوب',
+                'name.string' => 'أسم المركب يجب أن يكون من نوع string',
+                'name.max' => 'أسم المركب يجب أن يكون أقل من 255 حرف',
+                'details.required' => 'تفاصيل المركب مطلوبة',
+                'details.string' => 'تفاصيل المركب يجب أن يكون من نوع string',
+                'status_id.required' => 'الحالة مطلوبة',
+                'status_id.exists' => 'الحالة غير موجودة',
+            ];
+            $subs = SubCategory::where('category_id', $request['category_id'])->get();
+            if($subs->count() > 0) {
+                $rules['sub_category_id'] = 'required|exists:sub_categories,id';
             }
-            $grand_total = [];
-            $order->update($creation);
-            OrderDetail::where('order_id', $order->id)->delete();
-            foreach ($request->products as $productId => $productObj) {
-                $product = Product::find($productId);
-                if($product) {
-                    if(isset($productObj['amount'])) {
-                        OrderDetail::create([
-                            'order_id' => $order->id,
-                            'product_id' => $productId,
-                            'price' => $product->price_after_discount,
-                            'qty' => $productObj['amount'],
-                            'total_price' => $product->price_after_discount * $productObj['amount']
-                        ]);
-                        array_push($grand_total, $product->price_after_discount * $productObj['amount']);
-                    }
-                    if(isset($productObj['variants'])) {
-                        foreach ($productObj['variants'] as $variantId => $variant) {
-                            $productVariant = ProductVariant::find($variantId);
-                            if($productVariant) {
-                                OrderDetail::create([
-                                    'order_id' => $order->id,
-                                    'product_id' => $productId,
-                                    'variant' => $productVariant->variant,
-                                    'variant_type' => $productVariant->type,
-                                    'price' => $productVariant->price_after_discount,
-                                    'qty' => $variant['amount'],
-                                    'total_price' => $productVariant->price_after_discount * $variant['amount']
-                                ]);
-                                array_push($grand_total, $productVariant->price_after_discount * $variant['amount']);
-                            }
+            if($status->name == 'تم التقديم') {
+                $rules['submission_date'] = 'required|date';
+                $rules['expected_date'] = 'required|date';
+                $messages['submission_date.required'] = 'تاريخ التقديم مطلوب';
+                $messages['submission_date.date'] = 'الصيغة يجب أن تكون من نوع date';
+                $messages['expected_date.required'] = 'الناريخ المتوقع مطلوب';
+            }
+            $validator = Validator::make($request->all(), $rules, $messages);
+            if($validator->fails()) {
+                return redirect()->back()->withErrors($validator->errors())->with('error', 'يوجد خطأ ما')->withInput($request->all());
+            }
+            if($request['files']) {
+                if($order->files) {
+                    foreach (json_decode($order->files) as $file) {
+                        if(file_exists($file)) {
+                            unlink($file);
                         }
                     }
                 }
+                foreach ($request->file('files') as $file) {
+                    $files[] = $this->uploadFiles($file, $this->ordersPath);
+                }
+                $creation['files'] = json_encode($files);
             }
-            $grand_total = array_reduce($grand_total,
-            function($acc, $current) {return $acc + $current;});
-            $order->grand_total = ($grand_total + $request->shipping) - $creation['total_discount'];
-            $order->save();
-            return redirect()->back()->with('info', translate('updated successfully'));
-        } else {
-            return redirect()->back()->with('error', translate('you should choose a default status'));
-        }
-    }
-
-    public function updateStatus(Request $request) {
-        $order = Order::find($request->order_id);
-        if($order) {
-            $order->update([
-                'status_id' => $request->status_id,
-                'client_status_viewed' => 0
-            ]);
-            StatusHistory::create([
-                'user_id' => Auth::id(),
-                'order_id' => $order->id,
-                'status_id' => $order->status_id
-            ]);
-            event(new changeOrderStatus([
-                'user_id' => Auth::id(),
-                'status_id' => $request->status_id,
+            $order->update($creation);
+            $passedDataOfRealTime = [
                 'order' => $order,
-                'status_name' => $order->status->name
-            ]));
-            return response()->json(['msg' => translate('updated successfully'), 'status' => true]);
+                'customer_name' => $order->customer->name,
+                'main_category' => $order->category->name,
+                'sub_category' => '',
+                'status' => $status->name
+            ];
+            if($request->sub_category_id) {
+                $sub_category_name = $order->category->sub_categories->find($request->sub_category_id)->name;
+                $passedDataOfRealTime['sub_category'] = $sub_category_name;
+            }
+            try {
+                // Send Notification with firebase to mobiles
+                $tokens = FirebaseToken::where('user_id', $order->customer_id)->get();
+                if($tokens->count() > 0) {
+                    foreach ($tokens as $token) {
+                        $this->send_notify($token, $order->name, 'تعديل جديد على المركب أتطلع عليه الأن');
+                    }
+                }
+
+                event(new newOrder($passedDataOfRealTime));
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+            $orders_view = OrderView::
+            where('order_id', $order->id)
+            ->get();
+            if($orders_view->count() > 0) {
+                foreach ($orders_view as $order_view) {
+                    $order_view->update([
+                        'viewed' => 0
+                    ]);
+                }
+            }
+            $main_category = Category::find($request->category_id);
+            $data = [
+                'name' => $request->name,
+                'status_name' => $status->name,
+                'category_name' => $main_category->name,
+                'details' => $request->details,
+                'subject' => $request->name . ' (تعديل جديد على الطلب)'
+            ];
+            if($request->sub_category_id) {
+                $data['sub_category_name'] = $main_category->sub_categories->find($request->sub_category_id)->name;
+            }
+            try {
+                Mail::to($order->customer->email)->send(new SendOrder($data));
+            } catch (\Throwable $th) {
+                throw $th;
+            }
+            return redirect()->to(route('orders.index'))->with('success', 'تم تعديل الطلب بنجاح');
+        } else {
+            return redirect()->back()->with('error', 'الحالة غير موجودة');
         }
     }
 
@@ -379,8 +436,15 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
-        $this->authorize('orders.destroy');
+        if($order->files) {
+            foreach (json_decode($order->files) as $file) {
+                if(file_exists($file)) {
+                    unlink($file);
+                }
+            }
+        }
         Order::destroy($order->id);
-        return redirect()->back()->with('success', translate('deleted successfully'));
+        return redirect()->back()->with('success', 'تم ازالة الطلب بنجاح');
+
     }
 }

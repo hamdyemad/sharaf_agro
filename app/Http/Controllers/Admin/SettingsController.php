@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\FirebaseToken;
 use App\Models\Setting;
 use App\Traits\File;
+use App\Traits\FirebaseNotify;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class SettingsController extends Controller
 {
@@ -14,7 +18,7 @@ class SettingsController extends Controller
     {
     }
 
-    use File;
+    use File, FirebaseNotify;
     /**
      * Display a listing of the resource.
      *
@@ -110,8 +114,30 @@ class SettingsController extends Controller
                     ]);
                 }
             }
-            return redirect()->back()->with('info', translate('updated successfully'));
+            return redirect()->back()->with('success', 'تم التعديل بنجاح');
 
+        }
+    }
+
+    public function firebase_tokens(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'currentToken' => 'required|string'
+        ], [
+            'currentToken.required' => 'التوكين مطلوب',
+            'currentToken.string' => 'التوكين يجب أن يكون نوعه سترينج'
+        ]);
+        if($validator->fails()) {
+            return $this->sendRes('يوجد خطأ ما', false, $validator->errors());
+        }
+        $firebaseToken = FirebaseToken::where('token', $request->currentToken)->first();
+        if(!$firebaseToken) {
+            FirebaseToken::create([
+                'user_id' => Auth::id(),
+                'token' => $request->currentToken
+            ]);
+            return $this->sendRes('تم انشاء التوكين', true);
+        } {
+            return "token is created before";
         }
     }
 

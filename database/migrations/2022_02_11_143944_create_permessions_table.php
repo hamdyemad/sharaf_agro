@@ -13,14 +13,14 @@ class CreatePermessionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('permessions', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('key');
-            $table->string('group_by');
-            $table->unique(['name', 'key']);
-            $table->timestamps();
-        });
+        // Schema::create('permessions', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('name');
+        //     $table->string('key');
+        //     $table->string('group_by');
+        //     $table->unique(['name', 'key']);
+        //     $table->timestamps();
+        // });
     }
 
     /**

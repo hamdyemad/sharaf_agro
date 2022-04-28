@@ -19,7 +19,6 @@ class StatusController extends Controller
     public function index(Request $request)
     {
         $this->authorize('statuses.index');
-        Carbon::setLocale(app()->getLocale());
         $statuses = Status::latest();
         if($request->name) {
            $statuses->where('name', 'like', '%' . $request->name . '%');

@@ -1,3 +1,48 @@
+@php
+
+    $orders = App\Models\Order::where('expected_notify', 0)->get();
+    if($orders->count() > 0) {
+        foreach ($orders as $order) {
+            if($order->expected_date) {
+                $expected_date =  new \Carbon\Carbon($order->expected_date);
+                $now = \Carbon\Carbon::now();
+                if($expected_date->subDays(get_setting('expected_date'))->lte($now)) {
+                    $order->update([
+                        'expected_notify' => 1
+                    ]);
+                    $main_category = App\Models\Category::find($order->category_id);
+                    $data = [
+                        'name' => $order->name,
+                        'customer_name' => $order->customer->name,
+                        'status_name' => $order->status->name,
+                        'category_name' => $main_category->name,
+                        'details' => $order->details,
+                        'subject' => $order->name . ' (تنبيه خاص بالتوقيت المتوقع)'
+                    ];
+                    $order_view = App\Models\OrderView::
+                    where('order_id', $order->id)
+                    ->where('user_id', $order->employee->id)
+                    ->first();
+                    if($order_view) {
+                        $order_view->update([
+                            'viewed' => 0
+                        ]);
+                    }
+                    if($order->sub_category_id) {
+                        $data['sub_category_name'] = $main_category->sub_categories->find($order->sub_category_id)->name;
+                    }
+                    try {
+                        Mail::to($order->employee->email)->send(new App\Mail\ExpectedOrderNotify($data));
+                    } catch (\Throwable $th) {
+                        throw $th;
+                    }
+                    header("Refresh:0");
+                }
+            }
+        }
+    }
+@endphp
+
 <!DOCTYPE html>
 <html lang="ar">
 
@@ -16,6 +61,7 @@
     @else
         <link rel="shortcut icon" href="{{ URL::asset('/images/default.jpg') }}">
     @endif
+
 
     <!-- headerCss -->
     @yield('headerCss')
@@ -39,14 +85,7 @@
     <!-- App Css-->
     <link href="{{ URL::asset('/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
     {{-- RTL Bootstrap --}}
-    @php
-    $language = App\Models\Language::where('code', App::getLocale())->first();
-    @endphp
-    @if($language)
-        @if($language->rtl)
-            <link href="{{ URL::asset('/css/app-rtl.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
-        @endif
-    @endif
+    <link href="{{ URL::asset('/css/app-rtl.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
     <!-- Responsive Table css -->
     <link href="{{ URL::asset('/libs/rwd-table/rwd-table.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- Bootstrap Css -->
@@ -138,40 +177,69 @@
         // Enable pusher logging - don't include this in production
         // Pusher.logToConsole = true;
 
-        var pusher = new Pusher('32b4313009ecadbd1560', {
+        var pusher = new Pusher('8cf93e11f9f0e9fd8117', {
         cluster: 'mt1'
         });
 
-        var orderChannel = pusher.subscribe('newOrder');
-        orderChannel.bind('App\\Events\\newOrder', function(data) {
-            if(data) {
-                if(data.order.branch_id == "{{ Auth::user()->branch_id }}" || "{{Auth::user()->type}}" == 'admin') {
-                    let orders_count = parseInt($('.navbar-header .dropdown .badge-pill').text());
-                    $('.navbar-header .dropdown .badge-pill').text(orders_count + 1);
-                    $('.vertical-menu .orders .badge-pill').text(orders_count + 1);
-                    $(".navbar-header .dropdown .simplebar-content").prepend(`
-                        <a href="{{ asset('/') }}admin/orders/${data.order.id}" class="text-reset notification-item">
-                            <div class="media">
-                                <div class="avatar-xs mr-3">
-                                    <span class="avatar-title border-primary rounded-circle ">
-                                        <i class="mdi mdi-cart-outline"></i>
-                                    </span>
-                                </div>
-                                <div class="media-body">
-                                    <h6 class="mt-0 mb-1">رقم الطلب : (${data.order.id})</h6>
-                                    <h6 class="mt-0 mb-1">طلب جديد</h6>
-                                    <h6 class="mt-0 mb-1">الحالة : (${data.status.name})</h6>
-                                    <div class="text-muted">
-                                        <p class="mb-1">عدد الأكلات : (${data.products_count})</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    `);
-                }
-            }
-        });
+        var token = $("meta[name=_token]").attr('content');
+        // Show Loading On Submit
+        $("input[type=submit]").click(function() {
+            $("#preloader_all").removeClass('d-none');
+        })
     </script>
+    {{-- RealTime --}}
+    @include('realtime.order')
+    @include('realtime.news')
+    @include('realtime.order_under_work')
+    @include('realtime.inquire')
+    {{-- Firebase Push Notifications --}}
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-app.js";
+        import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-messaging.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyDp_thdB3kSn73uNrovqBIH0kmiKaP4RF4",
+            authDomain: "sharaf-6a5a8.firebaseapp.com",
+            projectId: "sharaf-6a5a8",
+            storageBucket: "sharaf-6a5a8.appspot.com",
+            messagingSenderId: "370503949424",
+            appId: "1:370503949424:web:8c4f48ec25ba5b5adbe8b5",
+            measurementId: "G-3PYF3M2CZY"
+        };
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const messaging = getMessaging(app);
+        getToken(messaging, { vapidKey: "{{ env('FIREBASE_VAPID_KEY') }}" }).then((currentToken) => {
+        if (currentToken) {
+            $.ajax({
+                method: "POST",
+                url: "/admin/firebase_tokens",
+                data: {
+                    currentToken: currentToken,
+                    _token: token
+                },
+                success: function(res) {
+                    // console.log(res);
+                },
+                error: function(err) {
+                    // console.log(err);
+                }
+            })
+        } else {
+            // Show permission request UI
+            console.log('No registration token available. Request permission to generate one.');
+            // ...
+        }
+        }).catch((err) => {
+        console.log('An error occurred while retrieving token. ', err);
+        // ...
+        });
+      </script>
 
     <!-- footerScript -->
     @yield('footerScript')

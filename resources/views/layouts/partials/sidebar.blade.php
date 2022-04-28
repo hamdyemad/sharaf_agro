@@ -1,14 +1,4 @@
- <!-- ========== Left Sidebar Start ========== -->
- @php
-    if(Auth::user()->type == 'admin') {
-        $orders_count = App\Models\Order::where('viewed', 0)->latest()->get()->count();
-    } else {
-        $orders_count = App\Models\Order::where('viewed', 0)->where('branch_id', Auth::user()->branch_id)->latest()->get()->count();
-    }
-@endphp
  <div class="vertical-menu">
-
-
      <div data-simplebar class="h-100">
          <!--- Sidemenu -->
          <div id="sidebar-menu">
@@ -20,170 +10,156 @@
                          <img src="{{ asset('/images/default.jpg') }}" alt="">
                      @endif
                  </a>
-                 <span class="badge badge-primary d-block">{{ Auth::user()->name }}</span>
+                 <span class="badge badge-primary d-block mt-1">{{ Auth::user()->name }}</span>
              </div>
              <!-- Left Menu Start -->
              <ul class="metismenu list-unstyled" id="side-menu">
-                 <li class="menu-title">{{translate("the main")}}</li>
-                 <li>
-                     <a href="{{ route('dashboard') }}" class="waves-effect">
+                 <li class="menu-title">الرئيسية</li>
+                 <li class="@if(activeRoute('dashboard')) mm-active @endif">
+                     <a href="{{ route('dashboard') }}" class="@if(activeRoute('dashboard')) active @endif waves-effect">
                          <i class="mdi mdi-view-dashboard"></i>
-                         <span>{{ translate('dashboard') }}</span>
+                         <span>لوحة التحكم</span>
                      </a>
                  </li>
-                 @can('settings.edit')
-                     <li>
-                         <a href="{{ route('settings.edit') }}" class="waves-effect">
-                             <i class="mdi mdi-settings"></i>
-                             <span>{{ translate('general settings') }}</span>
-                         </a>
-                     </li>
-                 @endcan
-                 @can('business.index')
-                     <li>
-                         <a href="javascript: void(0);" class="has-arrow waves-effect">
-                             <i class="mdi mdi-credit-card"></i>
-                             <span>{{ translate('financial transactions') }}</span>
-                         </a>
-                         <ul class="sub-menu" aria-expanded="false">
-                            @can('currencies.index')
-                                <li>
-                                    <a href="{{ route('currencies.index') }}" class="waves-effect">
-                                        <span>{{ translate('currencies') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                             @can('business.all')
-                                 <li>
-                                     <a href="{{ route('business.all') }}" class="waves-effect">
-                                         <span>{{ translate('revenues and expenses') }}</span>
-                                     </a>
-                                 </li>
-                             @endcan
-                             <li>
-                                <a href="{{ route('business.index') }}" class="waves-effect">
-                                    <span>{{ translate('all financial transactions') }}</span>
-                                </a>
-                            </li>
-                         </ul>
-                     </li>
-                 @endcan
-                 @can('branches.index')
-                     <li>
-                         <a href="javascript: void(0);" class="has-arrow waves-effect">
-                             <i class="mdi mdi-source-branch"></i>
-                             <span>{{ translate('branches') }}</span>
-                         </a>
-                         <ul class="sub-menu" aria-expanded="false">
-                             <li><a href="{{ route('branches.index') }}">{{ translate('all branches') }}</a></li>
-                             @can('branches.create')
-                                 <li><a href="{{ route('branches.create') }}">{{ translate('create branch') }}</a></li>
-                             @endcan
-                         </ul>
-                     </li>
-                 @endcan
-                 <li class="orders">
-                     <a href="javascript: void(0);" class="has-arrow waves-effect">
-                         <i class="mdi mdi-cart-outline"></i>
-                         @if($orders_count !== 0)
-                            <span class="badge badge-pill badge-primary float-right">{{ $orders_count }}</span>
-                         @endif
-                         <span>{{ translate('orders') }}</span>
-                        </a>
-                        <ul class="sub-menu" aria-expanded="false">
-                             @can('orders.index')
-                                <li><a href="{{ route('orders.index') }}">{{ translate('all orders') }}</a></li>
-                             @endcan
-                             @can('orders.create')
-                                 <li><a href="{{ route('orders.create') }}">{{ translate('create order') }}</a></li>
-                             @endcan
-                             @can('statuses.index')
-                             <li><a href="{{ route('statuses.index') }}">{{ translate('orders statuses') }}</a></li>
-                             @endcan
-                             @can('statuses.create')
-                                <li><a href="{{ route('statuses.create') }}">{{ translate('create orders statuses') }}</a></li>
-                             @endcan
-                         </ul>
-                </li>
-
-                 @can('categories.index')
-                     <li>
-                         <a href="javascript: void(0);" class="has-arrow waves-effect">
-                             <i class="mdi mdi-inbox-multiple"></i>
-
-                             <span>{{ translate('categories') }}</span>
-                         </a>
-                         <ul class="sub-menu" aria-expanded="false">
-                             <li><a href="{{ route('categories.index') }}">{{ translate('all categories') }}</a></li>
-                             @can('categories.create')
-                                 <li><a href="{{ route('categories.create') }}">{{ translate('create category') }}</a></li>
-                             @endcan
-                         </ul>
-                     </li>
-                 @endcan
-                 @can('products.index')
-                     <li>
-                         <a href="javascript: void(0);" class="has-arrow waves-effect">
-                             <i class="mdi mdi-food"></i>
-
-                             <span>{{ translate('foods') }}</span>
-                         </a>
-                         <ul class="sub-menu" aria-expanded="false">
-                             <li><a href="{{ route('products.index') }}">{{ translate('all foods') }}</a></li>
-                             @can('products.create')
-                                 <li><a href="{{ route('products.create') }}">{{ translate('create food') }}</a></li>
-                             @endcan
-                         </ul>
-                     </li>
-                 @endcan
-                 @can('countries.index')
-                     <li>
-                         <a href="javascript: void(0);" class="has-arrow waves-effect">
-                             <i class="mdi mdi-airplane"></i>
-                             <span>{{ translate('shipping and countries') }}</span>
-                         </a>
-                         <ul class="sub-menu" aria-expanded="false">
-                             <li><a href="{{ route('countries.index') }}">{{ translate('all countries') }}</a></li>
-                             @can('countries.create')
-                                 <li><a href="{{ route('countries.create') }}">{{ translate('create country') }}</a></li>
-                             @endcan
-                         </ul>
-                     </li>
-                 @endcan
-                 @can('users.index')
-                     <li>
-                         <a href="javascript: void(0);" class="has-arrow waves-effect">
-                             <i class="mdi mdi-account-supervisor-outline"></i>
-
-                             <span>{{ translate('staff and users') }}</span>
-                         </a>
-                         <ul class="sub-menu" aria-expanded="false">
-                             <li><a href="{{ route('users.index') }}">{{ translate('all staff') }}</a></li>
-                             <li><a href="{{ route('users.index') . '?type=user' }}">{{ translate('all users') }}</a></li>
-                         </ul>
-                     </li>
-                 @endcan
-                 @can('roles.index')
-                     <li>
-                         <a href="javascript: void(0);" class="has-arrow waves-effect">
-                             <i class="mdi mdi-account-lock-outline"></i>
-                             <span>{{ translate('permessions') }}</span>
-                         </a>
-                         <ul class="sub-menu" aria-expanded="false">
-                             <li><a href="{{ route('roles.index') }}">{{ translate('all permessions') }}</a></li>
-                             @can('roles.create')
-                                 <li><a href="{{ route('roles.create') }}">{{ translate('create permession') }}</a></li>
-                             @endcan
-                         </ul>
-                     </li>
-                 @endcan
-                 @can('languages.index')
-                    <li>
-                        <a href="{{ route('languages.index') }}" class="waves-effect">
-                            <i class="mdi mdi-translate"></i>
-                            <span>{{ translate('langs ​​and translation') }}</span>
+                 @if(Auth::user()->type == 'user')
+                    <li class="@if(activeRoute('news.all_news')) mm-active @endif">
+                        <a href="{{ route('news.all_news') }}" class="@if(activeRoute('news.all_news')) active @endif waves-effect">
+                            <i class="mdi mdi-newspaper"></i>
+                            <span>الأخبار</span>
                         </a>
                     </li>
+                 @endif
+                 @can('settings.edit')
+                     <li class="@if(activeRoute('settings.edit')) mm-active @endif">
+                         <a href="{{ route('settings.edit') }}" class="@if(activeRoute('settings.edit')) active @endif waves-effect">
+                             <i class="mdi mdi-settings"></i>
+                             <span>الأعدادات العامة</span>
+                         </a>
+                     </li>
+                 @endcan
+                 @can('categories.index')
+                    <li class="@if(activeRoute(['categories.index', 'sub_categories.index'])) mm-active @endif">
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="mdi mdi-inbox-multiple"></i>
+                            <span>الأقسام</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a class="@if(activeRoute('categories.index')) active @endif" href="{{ route('categories.index') }}"> الأقسام الرئيسية</a></li>
+                            <li><a class="@if(activeRoute('sub_categories.index')) active @endif" href="{{ route('sub_categories.index') }}">الأقسام الفرعية</a></li>
+                        </ul>
+                    </li>
+                @endcan
+                @can('news.index')
+                    <li class="@if(activeRoute(['news.index', 'news.create'])) mm-active @endif">
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="mdi mdi-newspaper"></i>
+                            <span>الأخبار</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a class="@if(activeRoute('news.index')) active @endif" href="{{ route('news.index') }}">كل الأخبار</a></li>
+                            @can('news.create')
+                                <li><a class="@if(activeRoute('news.create')) active @endif" href="{{ route('news.create') }}">انشاء خبر</a></li>
+                            @endcan
+                        </ul>
+                    </li>
+                 @endcan
+                @if(Auth::user()->type == 'user')
+                    <li class="@if(activeRoute('orders.index')) mm-active @endif">
+                        <a href="{{ route('orders.index') }}" class="@if(activeRoute('orders.index')) active @endif waves-effect">
+                            <i class="mdi mdi-cart-outline"></i>
+                            <span>الطلبات</span>
+                        </a>
+                    </li>
+                @endif
+                @can('orders.index')
+                    <li class="@if(activeRoute(['orders.index', 'orders.create'])) mm-active @endif">
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="mdi mdi-cart-outline"></i>
+                            <span>الطلبات</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            @can('orders.index')
+                            <li><a class="@if(activeRoute('orders.index')) active @endif" href="{{ route('orders.index') }}">الطلبات</a></li>
+                            @endcan
+                            @can('orders.create')
+                            <li><a class="@if(activeRoute('orders.create')) active @endif" href="{{ route('orders.create') }}">انشاء طلب</a></li>
+                            @endcan
+                        </ul>
+                    </li>
+                @endcan
+                @if(Auth::user()->type == 'user' || Auth::user()->can('orders_under_work.index'))
+                    <li class="@if(activeRoute(['orders_under_work.index', 'orders_under_work.create'])) mm-active @endif">
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="mdi mdi-wechat"></i>
+                            <span>الرسائل الخاصة بالطلبات</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a class="@if(activeRoute('orders_under_work.index')) active @endif" href="{{ route('orders_under_work.index') }}">كل الرسائل</a></li>
+                            @if(Auth::user()->type == 'user')
+                                <li><a class="@if(activeRoute('orders_under_work.create')) active @endif" href="{{ route('orders_under_work.create') }}">انشاء رسالة</a></li>
+                            @endif
+                        </ul>
+                    </li>
+                @endif
+                @if(Auth::user()->type == 'user' || Auth::user()->can('inquires.index'))
+                    <li class="@if(activeRoute(['inquires.index', 'inquires.create'])) mm-active @endif">
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="mdi mdi-chat"></i>
+                            <span>الاستفسارات</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a class="@if(activeRoute('inquires.index')) active @endif" href="{{ route('inquires.index') }}">كل الأستفسارات</a></li>
+                            @if(Auth::user()->type == 'user')
+                                <li><a class="@if(activeRoute('inquires.create')) active @endif" href="{{ route('inquires.create') }}">انشاء أستفسار</a></li>
+                            @endif
+                        </ul>
+                    </li>
+                @endif
+
+                @can('users.index')
+                    <li class="@if(activeRoute(['users.index', 'users.create'])) mm-active @endif">
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="mdi mdi-account-supervisor-outline"></i>
+                            <span>الموظفين</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a class="@if(activeRoute('users.index')) active @endif" href="{{ route('users.index') }}">الموظفين</a></li>
+                            <li><a class="@if(activeRoute('users.create')) active @endif" href="{{ route('users.create') }}">انشاء موظف</a></li>
+                        </ul>
+                    </li>
+                 @endcan
+                 @can('customers.index')
+                    <li class="@if(activeRoute(['customers.index', 'customers.create', 'balances.index'])) mm-active @endif">
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="mdi mdi-account-supervisor-outline"></i>
+                            <span>الشركات</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            @can('customers.index')
+                            <li><a class="@if(activeRoute('customers.index')) active @endif" href="{{ route('customers.index') }}">الشركات</a></li>
+                            @endcan
+                            @can('customers.create')
+                            <li><a class="@if(activeRoute('customers.create')) active @endif" href="{{ route('customers.create') }}">انشاء شركة</a></li>
+                            @endcan
+                            @can('balances.index')
+                            <li><a class="@if(activeRoute('balances.index')) active @endif" href="{{ route('balances.index') }}">رصيد الشركات</a></li>
+                            @endcan
+                        </ul>
+                    </li>
+                 @endcan
+                 @can('roles.index')
+                     <li class="@if(activeRoute(['roles.index', 'roles.create'])) mm-active @endif">
+                         <a href="javascript: void(0);" class="has-arrow waves-effect">
+                             <i class="mdi mdi-account-lock-outline"></i>
+                             <span>الصلاحيات</span>
+                         </a>
+                         <ul class="sub-menu" aria-expanded="false">
+                             <li><a class="@if(activeRoute('roles.index')) active @endif" href="{{ route('roles.index') }}">كل الصلاحيات</a></li>
+                             @can('roles.create')
+                                 <li><a class="@if(activeRoute('roles.create')) active @endif" href="{{ route('roles.create') }}">انشاء صلاحية</a></li>
+                             @endcan
+                         </ul>
+                     </li>
                  @endcan
                  {{-- <li>
                      <a href="/calendar/calendar" class=" waves-effect">

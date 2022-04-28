@@ -6,13 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-    protected $fillable = ['branch_id','name', 'photo', 'viewed_number', 'active'];
+    protected $fillable = ['name'];
 
-    public function products() {
-        return $this->hasMany(Product::class, 'category_id');
-    }
-
-    public function branch() {
-        return $this->belongsTo(Branch::class, 'branch_id');
+    public function sub_categories() {
+        return $this->hasMany(SubCategory::class, 'category_id');
     }
 }
