@@ -32,47 +32,45 @@ class OrderUnderWorkController extends Controller
      */
     public function index(Request $request)
     {
-        if(Auth::user()->type == 'user' || Auth::user()->can('orders_under_work.index')) {
-            $customers = User::where('type', 'user')->get();
-            $statuses = Status::whereIn('name', ['تم القبول', 'رفض', 'معلق'])->orderBy('name')->get();
-            if(Auth::user()->type == 'user') {
-                $orders = OrderUnderWork::where('customer_id', Auth::id())->latest();
-            } else if(Auth::user()->type == 'sub-admin') {
-                $user_categories = UserCategory::where('user_id', Auth::id())->pluck('category_id');
-                $user_sub_categories = UserSubCategory::where('user_id', Auth::id())->pluck('sub_category_id');
-                $orders = OrderUnderWork::
-                whereIn('category_id', $user_categories)
-                ->whereIn('sub_category_id', $user_sub_categories)
-                ->latest();
-            } else {
-                $orders = OrderUnderWork::latest();
-            }
-            if(Auth::user()->type == 'admin' || Auth::user()->type == 'user') {
-                $categories = Category::all();
-            } else {
-                $employeeCategories = UserCategory::where('user_id', Auth::id())->pluck('category_id');
-                $categories = Category::whereIn('id',$employeeCategories)->get();
-            }
-            if($request->name) {
-                $orders->where('name', 'like', '%'. $request->name . '%');
-            }
-            if($request->customer_id) {
-                $orders->where('customer_id', $request->customer_id);
-            }
-            if($request->status_id) {
-                $orders->where('status_id', $request->status_id);
-            }
-            if($request->category_id) {
-                $orders->where('category_id', $request->category_id);
-            }
-            if($request->sub_category_id) {
-                $orders->where('sub_category_id', $request->sub_category_id);
-            }
-            $orders = $orders->paginate(10);
-            return view('orders_under_work.index', compact('orders', 'categories', 'statuses'));
+        $customers = User::where('type', 'user')->get();
+        $statuses = Status::whereIn('name', ['تم القبول', 'رفض', 'معلق'])->orderBy('name')->get();
+        if(Auth::user()->type == 'user') {
+            $orders = OrderUnderWork::where('customer_id', Auth::id())->latest();
+        } else if(Auth::user()->type == 'sub-admin' && Auth::user()->can('orders_under_work.index') == true) {
+            $user_categories = UserCategory::where('user_id', Auth::id())->pluck('category_id');
+            $user_sub_categories = UserSubCategory::where('user_id', Auth::id())->pluck('sub_category_id');
+            $orders = OrderUnderWork::
+            whereIn('category_id', $user_categories)
+            ->whereIn('sub_category_id', $user_sub_categories)
+            ->latest();
+        } else if(Auth::user()->type == 'admin') {
+            $orders = OrderUnderWork::latest();
         } else {
             return abort(401);
         }
+        if(Auth::user()->type == 'admin' || Auth::user()->type == 'user') {
+            $categories = Category::all();
+        } else {
+            $employeeCategories = UserCategory::where('user_id', Auth::id())->pluck('category_id');
+            $categories = Category::whereIn('id',$employeeCategories)->get();
+        }
+        if($request->name) {
+            $orders->where('name', 'like', '%'. $request->name . '%');
+        }
+        if($request->customer_id) {
+            $orders->where('customer_id', $request->customer_id);
+        }
+        if($request->status_id) {
+            $orders->where('status_id', $request->status_id);
+        }
+        if($request->category_id) {
+            $orders->where('category_id', $request->category_id);
+        }
+        if($request->sub_category_id) {
+            $orders->where('sub_category_id', $request->sub_category_id);
+        }
+        $orders = $orders->paginate(10);
+        return view('orders_under_work.index', compact('orders', 'categories', 'statuses'));
     }
 
     /**
@@ -128,6 +126,8 @@ class OrderUnderWorkController extends Controller
                 $subs = SubCategory::where('category_id', $request['category_id'])->get();
                 if($subs->count() > 0) {
                     $rules['sub_category_id'] = 'required|exists:sub_categories,id';
+                    $messages['sub_category_id.required'] = 'الصنف الفرعى مطلوب';
+                    $messages['sub_category_id.exists'] = 'الصنف الفرعى غير موجود';
                 }
                 $validator = Validator::make($request->all(), $rules, $messages);
                 if($validator->fails()) {
@@ -342,6 +342,8 @@ class OrderUnderWorkController extends Controller
             $subs = SubCategory::where('category_id', $request['category_id'])->get();
             if($subs->count() > 0) {
                 $rules['sub_category_id'] = 'required|exists:sub_categories,id';
+                $messages['sub_category_id.required'] = 'الصنف الفرعى مطلوب';
+                $messages['sub_category_id.exists'] = 'الصنف الفرعى غير موجود';
             }
             $validator = Validator::make($request->all(), $rules, $messages);
             if($validator->fails()) {

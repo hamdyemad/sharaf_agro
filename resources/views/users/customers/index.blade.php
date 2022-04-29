@@ -117,7 +117,7 @@
                                                     </ul>
                                                 @endforeach
                                             @else
-                                            <div class="alert alert-info">لا يوجد أشخاص مسئولة</div>
+                                            <div class="alert alert-info max">لا يوجد أشخاص مسئولة</div>
                                             @endif
                                         </td>
                                         <td>{{ $user->email }}</td>

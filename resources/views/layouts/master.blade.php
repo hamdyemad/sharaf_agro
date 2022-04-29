@@ -177,8 +177,8 @@
         // Enable pusher logging - don't include this in production
         // Pusher.logToConsole = true;
 
-        var pusher = new Pusher('8cf93e11f9f0e9fd8117', {
-        cluster: 'mt1'
+        var pusher = new Pusher('423c01a9accfc4e9cdb4', {
+            cluster: 'eu'
         });
 
         var token = $("meta[name=_token]").attr('content');

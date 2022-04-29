@@ -35,47 +35,45 @@ class InquireController extends Controller
      */
     public function index(Request $request)
     {
-        if(Auth::user()->type == 'user' || Auth::user()->can('inquires.index')) {
-            $customers = User::where('type', 'user')->get();
-            $statuses = Status::whereIn('name', ['تم التواصل', 'معلق'])->orderBy('name')->get();
-            if(Auth::user()->type == 'user') {
-                $inquires = Inquire::where('customer_id', Auth::id())->latest();
-            } else if(Auth::user()->type == 'sub-admin') {
-                $user_categories = UserCategory::where('user_id', Auth::id())->pluck('category_id');
-                $user_sub_categories = UserSubCategory::where('user_id', Auth::id())->pluck('sub_category_id');
-                $inquires = Inquire::
-                whereIn('category_id', $user_categories)
-                ->whereIn('sub_category_id', $user_sub_categories)
-                ->latest();
-            } else {
-                $inquires = Inquire::latest();
-            }
-            if(Auth::user()->type == 'admin' || Auth::user()->type == 'user') {
-                $categories = Category::all();
-            } else {
-                $employeeCategories = UserCategory::where('user_id', Auth::id())->pluck('category_id');
-                $categories = Category::whereIn('id',$employeeCategories)->get();
-            }
-            if($request->details) {
-                $inquires->where('details', 'like', '%'. $request->details . '%');
-            }
-            if($request->customer_id) {
-                $inquires->where('customer_id', $request->customer_id);
-            }
-            if($request->status_id) {
-                $inquires->where('status_id', $request->status_id);
-            }
-            if($request->category_id) {
-                $inquires->where('category_id', $request->category_id);
-            }
-            if($request->sub_category_id) {
-                $inquires->where('sub_category_id', $request->sub_category_id);
-            }
-            $inquires = $inquires->paginate(10);
-            return view('inquires.index', compact('inquires', 'categories', 'statuses'));
+        $customers = User::where('type', 'user')->get();
+        $statuses = Status::whereIn('name', ['تم التواصل', 'معلق'])->orderBy('name')->get();
+        if(Auth::user()->type == 'user') {
+            $inquires = Inquire::where('customer_id', Auth::id())->latest();
+        } else if(Auth::user()->type == 'sub-admin' && Auth::user()->can('inquires.index') == true) {
+            $user_categories = UserCategory::where('user_id', Auth::id())->pluck('category_id');
+            $user_sub_categories = UserSubCategory::where('user_id', Auth::id())->pluck('sub_category_id');
+            $inquires = Inquire::
+            whereIn('category_id', $user_categories)
+            ->whereIn('sub_category_id', $user_sub_categories)
+            ->latest();
+        } else if(Auth::user()->type == 'admin') {
+            $inquires = Inquire::latest();
         } else {
-            abort(401);
+            return abort(401);
         }
+        if(Auth::user()->type == 'admin' || Auth::user()->type == 'user') {
+            $categories = Category::all();
+        } else {
+            $employeeCategories = UserCategory::where('user_id', Auth::id())->pluck('category_id');
+            $categories = Category::whereIn('id',$employeeCategories)->get();
+        }
+        if($request->details) {
+            $inquires->where('details', 'like', '%'. $request->details . '%');
+        }
+        if($request->customer_id) {
+            $inquires->where('customer_id', $request->customer_id);
+        }
+        if($request->status_id) {
+            $inquires->where('status_id', $request->status_id);
+        }
+        if($request->category_id) {
+            $inquires->where('category_id', $request->category_id);
+        }
+        if($request->sub_category_id) {
+            $inquires->where('sub_category_id', $request->sub_category_id);
+        }
+        $inquires = $inquires->paginate(10);
+        return view('inquires.index', compact('inquires', 'categories', 'statuses'));
     }
 
     /**

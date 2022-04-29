@@ -37,54 +37,60 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        $customers = User::where('type', 'user')->get();
-        $employees = User::where('type', 'sub-admin')->get();
-        if(Auth::user()->type !== 'sub-admin') {
-            $categories = Category::all();
-        } else {
-            $employeeCategories = UserCategory::where('user_id', Auth::id())->pluck('category_id');
-            $categories = Category::whereIn('id',$employeeCategories)->get();
-        }
-        $statuses = Status::whereNotIn('name',['تم القبول', 'رفض', 'معلق'])->orderBy('name')->get();
-        if(Auth::user()->type == 'admin') {
-            $orders = Order::latest();
-        } else if(Auth::user()->type == 'sub-admin') {
-            $orders = Order::where('employee_id', Auth::id())->latest();
-        } else if(Auth::user()->type == 'user') {
-            $orders = Order::where('customer_id', Auth::id())->latest();
-        }
-        if($request->employee_id) {
-            $orders->where('employee_id', $request->employee_id);
-        }
-        if($request->name) {
-            $orders->where('name', 'like', '%'. $request->name . '%');
-        }
-        if($request->customer_id) {
-            $orders->where('customer_id', $request->customer_id);
-        }
-        if($request->status_id) {
-            $orders->where('status_id', $request->status_id);
-        }
-        if($request->category_id) {
-            $orders->where('category_id', $request->category_id);
-        }
-        if($request->sub_category_id) {
-            $orders->where('sub_category_id', $request->sub_category_id);
-        }
-        if($request->from) {
-            $orders->whereDate('created_at', '>=', $request->from);
-        }
-        if($request->to) {
-            $orders->whereDate('created_at', '<=', $request->to);
-        }
-        if($request->from && $request->to) {
-            $orders
-            ->whereDate('created_at', '<=', $request->to)
-            ->whereDate('created_at', '>=', $request->from);
-        }
+        if(
+            Auth::user()->type == 'sub-admin' && $this->authorize('orders.index')
+            || Auth::user()->type == 'user' || Auth::user()->type == 'admin') {
+                $customers = User::where('type', 'user')->get();
+                $employees = User::where('type', 'sub-admin')->get();
+                if(Auth::user()->type !== 'sub-admin') {
+                    $categories = Category::all();
+                } else {
+                    $employeeCategories = UserCategory::where('user_id', Auth::id())->pluck('category_id');
+                    $categories = Category::whereIn('id',$employeeCategories)->get();
+                }
+                $statuses = Status::whereNotIn('name',['تم القبول', 'رفض', 'معلق'])->orderBy('name')->get();
+                if(Auth::user()->type == 'admin') {
+                    $orders = Order::latest();
+                } else if(Auth::user()->type == 'sub-admin') {
+                    $orders = Order::where('employee_id', Auth::id())->latest();
+                } else if(Auth::user()->type == 'user') {
+                    $orders = Order::where('customer_id', Auth::id())->latest();
+                }
+                if($request->employee_id) {
+                    $orders->where('employee_id', $request->employee_id);
+                }
+                if($request->name) {
+                    $orders->where('name', 'like', '%'. $request->name . '%');
+                }
+                if($request->customer_id) {
+                    $orders->where('customer_id', $request->customer_id);
+                }
+                if($request->status_id) {
+                    $orders->where('status_id', $request->status_id);
+                }
+                if($request->category_id) {
+                    $orders->where('category_id', $request->category_id);
+                }
+                if($request->sub_category_id) {
+                    $orders->where('sub_category_id', $request->sub_category_id);
+                }
+                if($request->from) {
+                    $orders->whereDate('created_at', '>=', $request->from);
+                }
+                if($request->to) {
+                    $orders->whereDate('created_at', '<=', $request->to);
+                }
+                if($request->from && $request->to) {
+                    $orders
+                    ->whereDate('created_at', '<=', $request->to)
+                    ->whereDate('created_at', '>=', $request->from);
+                }
 
-        $orders = $orders->paginate(10);
-        return view('orders.index', compact('orders', 'customers', 'employees', 'categories', 'statuses'));
+                $orders = $orders->paginate(10);
+                return view('orders.index', compact('orders', 'customers', 'employees', 'categories', 'statuses'));
+        } else {
+            return abort(401);
+        }
     }
 
     public function export(Request $request) {
@@ -135,6 +141,7 @@ class OrderController extends Controller
      */
     public function create()
     {
+        $this->authorize('orders.create');
         $categories = Category::all();
         $userCategories =  UserCategory::where('user_id', auth()->id())->get();
         $customers = User::where('type', 'user')->get();
@@ -150,6 +157,7 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('orders.create');
         $status = Status::find($request['status_id']);
         $creation = [
             'category_id' => $request->category_id,
@@ -257,33 +265,35 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        $pdfs = [];
-        $images = [];
-        $order_view = OrderView::
-        where('order_id', $order->id)
-        ->where('user_id', Auth::id())
-        ->first();
-        if(!$order_view) {
-            OrderView::create([
-                'order_id' => $order->id,
-                'user_id' => Auth::id(),
-                'viewed' => 1
-            ]);
-        } else {
-            $order_view->update([
-                'viewed' => 1
-            ]);
-        }
-        if($order->files) {
-            foreach (json_decode($order->files) as $file) {
-                if(strrchr($file,'.') == '.pdf') {
-                    array_push($pdfs, $file);
-                } else {
-                    array_push($images, $file);
+        if(Auth::user()->type == 'user' || $this->authorize('orders.show')) {
+            $pdfs = [];
+            $images = [];
+            $order_view = OrderView::
+            where('order_id', $order->id)
+            ->where('user_id', Auth::id())
+            ->first();
+            if(!$order_view) {
+                OrderView::create([
+                    'order_id' => $order->id,
+                    'user_id' => Auth::id(),
+                    'viewed' => 1
+                ]);
+            } else {
+                $order_view->update([
+                    'viewed' => 1
+                ]);
+            }
+            if($order->files) {
+                foreach (json_decode($order->files) as $file) {
+                    if(strrchr($file,'.') == '.pdf') {
+                        array_push($pdfs, $file);
+                    } else {
+                        array_push($images, $file);
+                    }
                 }
             }
+            return view('orders.show', compact('order', 'images', 'pdfs'));
         }
-        return view('orders.show', compact('order', 'images', 'pdfs'));
     }
 
     /**
@@ -294,6 +304,7 @@ class OrderController extends Controller
      */
     public function edit(Order $order)
     {
+        $this->authorize('orders.edit');
         $categories = Category::all();
         $userCategories =  UserCategory::where('user_id', auth()->id())->get();
         $customers = User::where('type', 'user')->get();
@@ -310,6 +321,7 @@ class OrderController extends Controller
      */
     public function update(Request $request, Order $order)
     {
+        $this->authorize('orders.edit');
         $status = Status::find($request['status_id']);
         $creation = [
             'category_id' => $request->category_id,
@@ -436,6 +448,7 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
+        $this->authorize('orders.destroy');
         if($order->files) {
             foreach (json_decode($order->files) as $file) {
                 if(file_exists($file)) {
