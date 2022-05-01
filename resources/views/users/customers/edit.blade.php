@@ -1,22 +1,22 @@
 @extends('layouts.master')
 
 @section('title')
-انشاء شركة
+تعديل الشركة
 @endsection
 
 @section('content')
     @component('common-components.breadcrumb')
-        @slot('title') انشاء شركة @endslot
+        @slot('title') تعديل الشركة @endslot
         @slot('li1') لوحة التحكم @endslot
         @slot('route1') {{ route('dashboard') }} @endslot
         @slot('li2') كل الشركات @endslot
         @slot('route2') {{ route('customers.index') }} @endslot
-        @slot('li3') انشاء شركة @endslot
+        @slot('li3') تعديل الشركة @endslot
     @endcomponent
     <div class="create_user">
         <div class="card">
             <div class="card-header">
-                انشاء شركة
+                تعديل الشركة
             </div>
             <div class="card-body">
                 <form class="form-horizontal mt-4" method="POST" action="{{ route('customers.update', $user) }}"
@@ -119,9 +119,12 @@
                         </div>
                         <div class="col-12 col-md-6">
                             <div class="form-group">
-                                <label for="username">رقم التليفون (أختيارى)</label>
+                                <label for="username">رقم التليفون</label>
                                 <input type="text" name="phone" value="{{ old('phone') }}"
                                     class="form-control">
+                                @error('phone')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                         <div class="col-12 col-md-6">
@@ -131,6 +134,17 @@
                                     class="form-control">
                             </div>
                         </div>
+                        @if(Auth::user()->type == 'admin')
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="password">كلمة السر الجديدة</label>
+                                    <input type="password" name="password" value="{{ old('password') }}"class="form-control">
+                                    @error('password')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        @endif
                         <div class="col-12">
                             <div class="form-group">
                                 <button class="btn btn-primary w-md waves-effect waves-light" type="submit">تعديل الحساب</button>

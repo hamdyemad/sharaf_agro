@@ -112,9 +112,12 @@
                         </div>
                         <div class="col-12 col-md-6">
                             <div class="form-group">
-                                <label for="username">رقم التليفون (أختيارى)</label>
+                                <label for="username">رقم التليفون</label>
                                 <input type="text" name="phone" value="{{ old('phone') }}"
                                     class="form-control">
+                                @error('phone')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                         <div class="col-12 col-md-6">

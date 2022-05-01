@@ -73,12 +73,32 @@ class OrderUnderWorkController extends Controller
         return view('orders_under_work.index', compact('orders', 'categories', 'statuses'));
     }
 
+    public function alerts(Request $request)
+    {
+        $orders = OrderUnderWork::orderBy('updated_at', 'DESC');
+        if(Auth::user()->type == 'user') {
+            $orders = $orders->where('customer_id', Auth::id())->latest();
+        } else if(Auth::user()->type == 'sub-admin' && Auth::user()->can('orders_under_work.alerts') == true) {
+            $user_categories = UserCategory::where('user_id', Auth::id())->pluck('category_id');
+            $user_sub_categories = UserSubCategory::where('user_id', Auth::id())->pluck('sub_category_id');
+            $orders = $orders->whereIn('category_id', $user_categories)
+            ->whereIn('sub_category_id', $user_sub_categories)
+            ->latest();
+        } else if(Auth::user()->type == 'admin') {
+            $orders = $orders->latest();
+        } else {
+            return abort(401);
+        }
+        $orders = $orders->paginate(10);
+        return view('orders_under_work.alerts', compact('orders'));
+    }
+
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         if(Auth::user()->type == 'user') {
             $categories = Category::all();

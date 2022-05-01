@@ -35,8 +35,8 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="useremail">الأيميل</label>
-                                    <input type="email" name="email" class="form-control" name="email"
+                                    <label for="useremail">البريد الألكترونى</label>
+                                    <input type="email" name="email" class="form-control"
                                         value="{{ $user->email }}" id="useremail"
                                         autocomplete="email">
                                     @error('email')
@@ -44,7 +44,20 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-12">
+                            @if(Auth::user()->type == 'admin')
+                                <div class="col-12 col-md-6">
+                                    <div class="form-group">
+                                        <label for="phone">رقم الموبيل</label>
+                                        <input type="text"class="form-control" name="phone"
+                                            value="{{ $user->phone }}"
+                                            autocomplete="phone">
+                                        @error('phone')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            @endif
+                            <div class="col-12 @if(Auth::user()->type == 'admin') col-md-6 @endif">
                                 <div class="form-group">
                                     <label for="name">الصورة الشخصية</label>
                                     <input type="file" class="form-control input_files" accept="image/*" hidden

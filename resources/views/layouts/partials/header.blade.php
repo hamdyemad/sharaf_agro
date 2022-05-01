@@ -189,17 +189,14 @@
                                 <div class="simplebar-content news">
                                     @foreach ($news as $new)
                                         <a href="{{ route('news.show', $new) }}" class="text-reset notification-item">
-                                            <div class="media">
+                                            <div class="media align-items-center">
                                                 <div class="avatar-xs mr-3">
                                                     <span class="avatar-title border-info rounded-circle ">
                                                         <i class="mdi mdi-newspaper"></i>
                                                     </span>
                                                 </div>
                                                 <div class="media-body">
-                                                    <h6 class="mt-0 mb-1">أسم الخبر : {{ $new->name }}</h6>
-                                                    <div class="text-muted">
-                                                        <p style="word-break: break-word" class="mb-1">تفاصيل الخبر : {{ $new->details }}</p>
-                                                    </div>
+                                                    <h6 class="mt-0 mb-0">أسم الخبر : {{ $new->name }}</h6>
                                                 </div>
                                             </div>
                                         </a>

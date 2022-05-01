@@ -48,7 +48,7 @@ class OrderController extends Controller
                     $employeeCategories = UserCategory::where('user_id', Auth::id())->pluck('category_id');
                     $categories = Category::whereIn('id',$employeeCategories)->get();
                 }
-                $statuses = Status::whereNotIn('name',['تم القبول', 'رفض', 'معلق'])->orderBy('name')->get();
+                $statuses = Status::whereIn('name',['مكتمل', 'تم التقديم', 'تحت الأنشاء'])->orderBy('name')->get();
                 if(Auth::user()->type == 'admin') {
                     $orders = Order::latest();
                 } else if(Auth::user()->type == 'sub-admin') {
@@ -132,6 +132,45 @@ class OrderController extends Controller
         }
         $orders = $orders->get();
         return Excel::download(new OrderExport($orders), 'orders.xlsx');
+    }
+
+    public function alerts(Request $request) {
+        if(
+            Auth::user()->type == 'sub-admin' && $this->authorize('orders.alerts.index')
+            || Auth::user()->type == 'user' || Auth::user()->type == 'admin') {
+                $orders = Order::orderBy('updated_at', 'DESC')->orderBy('expected_date', 'DESC');
+                if(Auth::user()->type == 'admin') {
+                    $orders = $orders->latest();
+                } else if(Auth::user()->type == 'sub-admin') {
+                    $orders =  $orders->where('employee_id', Auth::id())->latest();
+                } else if(Auth::user()->type == 'user') {
+                    $orders =  $orders->where('customer_id', Auth::id())->latest();
+                }
+                $orders = $orders->paginate(10);
+                return view('orders.alerts', compact('orders'));
+        } else {
+            return abort(401);
+        }
+    }
+
+    public function alerts_renovations(Request $request) {
+        if(
+            Auth::user()->type == 'sub-admin' && $this->authorize('orders.alerts.renovations')
+            || Auth::user()->type == 'user' || Auth::user()->type == 'admin') {
+                $orders = Order::where('expiry_date', '!=', null)
+                ->orderBy('updated_at', 'DESC')->orderBy('expiry_date', 'DESC');
+                if(Auth::user()->type == 'admin') {
+                    $orders = $orders->latest();
+                } else if(Auth::user()->type == 'sub-admin') {
+                    $orders =  $orders->where('employee_id', Auth::id())->latest();
+                } else if(Auth::user()->type == 'user') {
+                    $orders =  $orders->where('customer_id', Auth::id())->latest();
+                }
+                $orders = $orders->paginate(10);
+                return view('orders.alerts_renovations', compact('orders'));
+        } else {
+            return abort(401);
+        }
     }
 
     /**

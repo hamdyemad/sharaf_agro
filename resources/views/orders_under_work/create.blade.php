@@ -29,7 +29,7 @@
                                     <select class="form-control select2 select_main_category" name="category_id">
                                         <option value="">أختر</option>
                                         @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}" @if(old('category_id') == $category->id) selected @endif>{{ $category->name }}</option>
+                                            <option value="{{ $category->id }}" @if(old('category_id')) @if(old('category_id') == $category->id) selected @endif  @endif>{{ $category->name }}</option>
                                         @endforeach
                                     </select>
                                     @error('category_id')

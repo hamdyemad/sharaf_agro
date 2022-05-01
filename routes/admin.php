@@ -118,6 +118,8 @@ Route::group(['middleware' => ['web', 'auth','notBanned']], function() {
         // Orders
         Route::group(['prefix' => 'orders', 'as' => 'orders.'], function() {
             Route::get('/', 'OrderController@index')->name('index');
+            Route::get('/alerts', 'OrderController@alerts')->name('alerts');
+            Route::get('/alerts/renovations', 'OrderController@alerts_renovations')->name('alerts.renovations');
             Route::get('/export-orders', 'OrderController@export')->name('export');
             Route::post('/', 'OrderController@store')->name('store');
             Route::get('/create', 'OrderController@create')->name('create');
@@ -134,6 +136,7 @@ Route::group(['middleware' => ['web', 'auth','notBanned']], function() {
         Route::group(['prefix' => 'orders_under_work', 'as' => 'orders_under_work.'], function() {
             Route::get('/', 'OrderUnderWorkController@index')->name('index');
             Route::post('/', 'OrderUnderWorkController@store')->name('store');
+            Route::get('/alerts', 'OrderUnderWorkController@alerts')->name('alerts');
             Route::get('/create', 'OrderUnderWorkController@create')->name('create');
             Route::get('/edit/{order}', 'OrderUnderWorkController@edit')->name('edit');
             Route::get('/show/{order}', 'OrderUnderWorkController@show')->name('show');

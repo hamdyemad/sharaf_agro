@@ -101,11 +101,11 @@ class NewsController extends Controller
             //throw $th;
         }
         if($request->send_notify == 'on') {
-            $users = User::where('type', 'user')->get();
+            $users = User::all();
             if($users->count() > 0) {
                 $data = [
                     'name' => $request->name,
-                    'details' => $request->details,
+                    'details' => 'details',
                     'images' => $new->images,
                     'subject' => $request->name
                 ];
@@ -113,7 +113,7 @@ class NewsController extends Controller
                     try {
                         Mail::to($user->email)->send(new SendNew($data));
                     } catch (\Throwable $th) {
-                        throw $th;
+                        // throw $th;
                     }
                 }
             }

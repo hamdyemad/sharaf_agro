@@ -47,6 +47,7 @@
                                 <th>#</th>
                                 <th><span class="max">أسم الصلاحية</span></th>
                                 <th><span class="max">عدد الصلاحيات</span></th>
+                                <th><span class="max">الموظفين المضاف لهم الصلاحية</span></th>
                                 <th><span class="max">وقت الأنشاء</span></th>
                                 <th><span class="max">وقت أخر تعديل</span></th>
                                 <th><span class="max">الأعدادات</span></th>
@@ -59,6 +60,14 @@
                                     <td><span class="max">{{ $role->name }}</span></td>
                                     <td>{{ $role->permessions->count() }}</td>
                                     <td>
+                                        @forelse ($role->users->pluck('name') as $name)
+                                            <span class="badge badge-primary d-block mb-1 p-2 font-size-14">{{ $name }}</span>
+                                        @empty
+                                            <div class="alert alert-info">لا يوجد موظفين مضافين</div>
+                                        @endforelse
+                                    </td>
+                                    <td>
+
                                         {{ $role->created_at->diffForHumans() }}
                                     </td>
                                     <td>

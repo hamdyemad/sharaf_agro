@@ -61,6 +61,8 @@
     @else
         <link rel="shortcut icon" href="{{ URL::asset('/images/default.jpg') }}">
     @endif
+    {{-- Include Tiny Configurations Component --}}
+    <x-head.tinymce-config/>
 
 
     <!-- headerCss -->

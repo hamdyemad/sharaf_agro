@@ -65,7 +65,8 @@ class UserController extends Controller
     public function update_profile(Request $request,User $user) {
         $updateArray = [
             'name' => $request->name,
-            'email' => $request->email
+            'email' => $request->email,
+            'phone' => $request->phone
         ];
         $rules = [
             'name' => ['required', 'string', 'max:255'],
@@ -85,6 +86,10 @@ class UserController extends Controller
         ];
         $hashed = false;
         $hashed = Hash::check($request->old_password, $user->password);
+        if(Auth::user()->type == 'admin') {
+            $rules['phone'] = ['required', 'string'];
+            $messages['phone.required'] = ' رقم الموبيل مطلوب';
+        }
         if($hashed) {
             if($request->password !== null) {
                 $rules['password'] = 'required|min:8';
@@ -111,7 +116,6 @@ class UserController extends Controller
             return redirect()->back()->with('success', 'تم التعديل بنجاح');
         } else {
             return redirect()->back()->with('old_password.invalid', 'الرقم السرى القديم خطأ');
-
         }
     }
 

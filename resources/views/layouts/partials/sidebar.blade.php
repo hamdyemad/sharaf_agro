@@ -63,44 +63,43 @@
                         </ul>
                     </li>
                  @endcan
-                @if(Auth::user()->type == 'user')
-                    <li class="@if(activeRoute('orders.index')) mm-active @endif">
-                        <a href="{{ route('orders.index') }}" class="@if(activeRoute('orders.index')) active @endif waves-effect">
-                            <i class="mdi mdi-cart-outline"></i>
-                            <span>الطلبات</span>
-                        </a>
-                    </li>
-                @endif
-                @can('orders.index')
-                    <li class="@if(activeRoute(['orders.index', 'orders.create'])) mm-active @endif">
+                @if(Auth::user()->type == 'user' || Auth::user()->can('orders.index'))
+                    <li class="@if(activeRoute(['orders.index', 'orders.create', 'orders.alerts', 'orders.alerts.renovations'])) mm-active @endif">
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
                             <i class="mdi mdi-cart-outline"></i>
                             <span>الطلبات</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
-                            @can('orders.index')
                             <li><a class="@if(activeRoute('orders.index')) active @endif" href="{{ route('orders.index') }}">الطلبات</a></li>
-                            @endcan
                             @can('orders.create')
                             <li><a class="@if(activeRoute('orders.create')) active @endif" href="{{ route('orders.create') }}">انشاء طلب</a></li>
                             @endcan
-                        </ul>
-                    </li>
-                @endcan
-                @if(Auth::user()->type == 'user' || Auth::user()->can('orders_under_work.index'))
-                    <li class="@if(activeRoute(['orders_under_work.index', 'orders_under_work.create'])) mm-active @endif">
-                        <a href="javascript: void(0);" class="has-arrow waves-effect">
-                            <i class="mdi mdi-wechat"></i>
-                            <span>الرسائل الخاصة بالطلبات</span>
-                        </a>
-                        <ul class="sub-menu" aria-expanded="false">
-                            <li><a class="@if(activeRoute('orders_under_work.index')) active @endif" href="{{ route('orders_under_work.index') }}">كل الرسائل</a></li>
-                            @if(Auth::user()->type == 'user')
-                                <li><a class="@if(activeRoute('orders_under_work.create')) active @endif" href="{{ route('orders_under_work.create') }}">انشاء رسالة</a></li>
+                            @if(Auth::user()->type == 'user' || Auth::user()->can('orders.alerts.index'))
+                            <li><a class="@if(activeRoute('orders.alerts')) active @endif" href="{{ route('orders.alerts') }}">التنبيهات اليومية</a></li>
+                            @endif
+                            @if(Auth::user()->type == 'user' || Auth::user()->can('orders.alerts.renovations'))
+                            <li><a class="@if(activeRoute('orders.alerts.renovations')) active @endif" href="{{ route('orders.alerts.renovations') }}">تنبيهات التجديدات</a></li>
                             @endif
                         </ul>
                     </li>
                 @endif
+                <li class="@if(activeRoute(['orders_under_work.index', 'orders_under_work.create','orders_under_work.alerts'])) mm-active @endif">
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="mdi mdi-wechat"></i>
+                        <span>الرسائل الخاصة بالطلبات</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        @if(Auth::user()->type == 'user' || Auth::user()->can('orders_under_work.index'))
+                            <li><a class="@if(activeRoute('orders_under_work.index')) active @endif" href="{{ route('orders_under_work.index') }}">كل الرسائل</a></li>
+                        @endif
+                        @if(Auth::user()->type == 'user' || Auth::user()->can('orders_under_work.alerts'))
+                            <li><a class="@if(activeRoute('orders_under_work.alerts')) active @endif" href="{{ route('orders_under_work.alerts') }}">التنبيهات اليومية</a></li>
+                        @endif
+                        @if(Auth::user()->type == 'user')
+                            <li><a class="@if(activeRoute('orders_under_work.create')) active @endif" href="{{ route('orders_under_work.create') }}">انشاء رسالة</a></li>
+                        @endif
+                    </ul>
+                </li>
                 @if(Auth::user()->type == 'user' || Auth::user()->can('inquires.index'))
                     <li class="@if(activeRoute(['inquires.index', 'inquires.create'])) mm-active @endif">
                         <a href="javascript: void(0);" class="has-arrow waves-effect">

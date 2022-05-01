@@ -30,18 +30,20 @@
                                 <input class="form-control" name="name" type="text" value="{{ request('name') }}">
                             </div>
                         </div>
-                        <div class="col-12 col-md-6">
-                            <div class="form-group">
-                                <label for="name">الشركة</label>
-                                <select class="form-control select2" name="customer_id">
-                                    <option value="">أختر</option>
-                                    @foreach ($customers as $customer)
-                                        <option value="{{ $customer->id }}" @if ($customer->id == request('customer_id')) selected @endif>
-                                            {{ $customer->name }}</option>
-                                    @endforeach
-                                </select>
+                        @if(Auth::user()->type !== 'user')
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="name">الشركة</label>
+                                    <select class="form-control select2" name="customer_id">
+                                        <option value="">أختر</option>
+                                        @foreach ($customers as $customer)
+                                            <option value="{{ $customer->id }}" @if ($customer->id == request('customer_id')) selected @endif>
+                                                {{ $customer->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                        </div>
+                        @endif
                         @if(Auth::user()->type == 'admin')
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
@@ -100,9 +102,6 @@
                         </div>
                         <div class="col-12 col-md-6">
                             <div class="form-group">
-                                @if(Auth::user()->type == 'user')
-                                    <label for=""></label>
-                                @endif
                                 <input type="submit" value="بحث" class="form-control btn btn-primary mt-1">
                             </div>
                         </div>

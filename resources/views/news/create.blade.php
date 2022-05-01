@@ -21,7 +21,7 @@
                 <form action="{{ route('news.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
-                        <div class="col-12 col-md-6">
+                        <div class="col-12">
                             <div class="form-group">
                                 <label for="name">أسم الخبر</label>
                                 <input type="text" class="form-control" name="name" value="{{ old('name') }}">
@@ -30,10 +30,10 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="col-12 col-md-6">
+                        <div class="col-12">
                             <div class="form-group">
                                 <label for="name">تفاصيل الخبر</label>
-                                <textarea class="form-control" name="details" id="" cols="30" rows="10">{{ old('details') }}</textarea>
+                                <textarea id="myeditorinstance" name="details">{{ old('details') }}</textarea>
                                 @error('details')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror

@@ -131,6 +131,7 @@
                                                     <button type="button" class="btn btn-primary form-control files">
                                                         <span class="mdi mdi-plus btn-lg"></span>
                                                     </button>
+                                                    <div class="alert alert-secondary mt-1">( يمكن إضافة 3 صور او3 ملفات PDF بحد اقصي 2 ميجا بايت/ملف)</div>
                                                     <div class="text-danger file_error pdf-error" hidden>يجب أختيار أقل من 3 من ملفات ال pdf</div>
                                                     <div class="text-danger file_error img-error" hidden>يجب أختيار أقل من 3 من الصور</div>
                                                     @error('files')

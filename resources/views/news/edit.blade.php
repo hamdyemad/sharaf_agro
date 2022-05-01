@@ -22,7 +22,7 @@
                     @csrf
                     @method("PATCH")
                     <div class="row">
-                        <div class="col-12 col-md-6">
+                        <div class="col-12">
                             <div class="form-group">
                                 <label for="name">أسم الخبر</label>
                                 <input type="text" class="form-control" name="name" value="{{ $new->name }}">
@@ -31,10 +31,10 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="col-12 col-md-6">
+                        <div class="col-12">
                             <div class="form-group">
                                 <label for="name">تفاصيل الخبر</label>
-                                <textarea class="form-control" name="details" id="" cols="30" rows="10">{{ $new->details }}</textarea>
+                                <textarea id="myeditorinstance" name="details">{{ $new->details }}</textarea>
                                 @error('details')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -46,7 +46,11 @@
                                 <input type="file" class="form-control input_files" multiple accept="image/*" hidden
                                     name="images[]" data-img="5" data-pdf="1">
                                 <button type="button" class="btn btn-primary form-control files">
-                                    <span class="mdi mdi-plus btn-lg"></span>
+                                    @if($new->images)
+                                        {{ count(json_decode($new->images)) }}
+                                    @else
+                                        <span class="mdi mdi-plus btn-lg"></span>
+                                    @endif
                                 </button>
                                 @if($new->images)
                                     <div class="imgs">

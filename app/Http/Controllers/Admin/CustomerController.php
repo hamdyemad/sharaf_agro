@@ -82,6 +82,7 @@ class CustomerController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', 'unique:users,username'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'phone' => ['required', 'string'],
             'avatar' => ['image'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'responsible.*.name' => ['required', 'string', 'max:255'],
@@ -96,7 +97,7 @@ class CustomerController extends Controller
             'email.string' => 'البريد الألكترونى يجب أن يكون حروف او ارقام',
             'email.max' => 'يجب أدخال أقل من 255 حرف',
             'email.unique' => 'البريد هذا موجود بالفعل',
-
+            'phone.required' => 'رقم الموبيل مطلوب',
             'username.required' => 'أسم المستخدم مطلوب',
             'username.string' => 'أسم المستخدم يجب أن يكون حروف او ارقام',
             'username.max' => 'يجب أدخال أقل من 255 حرف',
@@ -184,10 +185,12 @@ class CustomerController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', Rule::unique('users','username')->ignore($user->id)],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users','email')->ignore($user->id)],
+            'phone' => ['required', 'string'],
             'avatar' => ['image'],
             'responsible.*.name' => ['required', 'string', 'max:255'],
             'responsible.*.phone' => ['required', 'string', 'max:255'],
         ];
+
         $messages = [
             'name.required' => 'الأسم مطلوب',
             'name.string' => 'الأسم يجب أن يكون حروف او ارقام',
@@ -196,6 +199,7 @@ class CustomerController extends Controller
             'email.string' => 'البريد الألكترونى يجب أن يكون حروف او ارقام',
             'email.max' => 'يجب أدخال أقل من 255 حرف',
             'email.unique' => 'البريد هذا موجود بالفعل',
+            'phone.required' => 'رقم الموبيل مطلوب',
             'username.required' => 'أسم الشركة مطلوب',
             'username.string' => 'أسم الشركة يجب أن يكون حروف او ارقام',
             'username.max' => 'يجب أدخال أقل من 255 حرف',
@@ -210,10 +214,19 @@ class CustomerController extends Controller
             'responsible.*.phone.string' => ' رقم المسئول يجب أن يكون أرقام',
             'responsible.*.phone.max' => 'يجب أدخال أقل من 255 حرف',
         ];
+        if(Auth::user()->type == 'admin') {
+            if($request->password) {
+                $rules['password'] = 'min:8';
+                $messages['password.min'] = 'يجب أن يكون الرقم السرى أكثر من 8 حروف';
+                $creation['password'] = Hash::make($request->password);
+            }
+        }
         $validator = Validator::make($request->all(), $rules, $messages);
         if($validator->fails()) {
             return redirect()->back()->withErrors($validator->errors())->with('error', 'يوجد خطأ ما')->withInput($request->all());
         }
+
+
         if($request->has('avatar')) {
             $creation['avatar'] = $this->uploadFile($request, $this->usersPath, 'avatar');
             if(file_exists($user->avatar)) {

@@ -122,9 +122,11 @@
                                         </td>
                                         <td>
                                             <div>
-                                                @foreach ($user->roles as $role)
+                                                @forelse ($user->roles as $role)
                                                     <span class="badge badge-primary d-block">{{ $role->name }}</span>
-                                                @endforeach
+                                                @empty
+                                                <div class="alert alert-info max">لا يوجد صلاحيات</div>
+                                                @endforelse
                                             </div>
                                         </td>
                                         <td><p>{{ $user->address }}</p></td>

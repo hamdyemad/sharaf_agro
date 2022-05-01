@@ -21,8 +21,6 @@
                         <h1>أسم الخبر : {{ $new->name }}</h1>
                     </div>
                     <div class="card-body">
-                        <h3>تفاصيل الخبر</h4>
-                        <p>{{ $new->details }}</p>
                         @if(count(json_decode($new->images)) > 0)
                             <div class="images_carousel owl-carousel owl-theme">
                                 @foreach (json_decode($new->images) as $image)
@@ -34,6 +32,14 @@
                                 @endforeach
                             </div>
                         @endif
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>تفاصيل الخبر</h4>
+                            </div>
+                            <div class="card-body">
+                                @php echo $new->details; @endphp
+                            </div>
+                        </div>
                         @if(Auth::user()->type == 'user')
                         <a class="btn btn-info" href="{{ route('news.all_news') }}">الرجوع الى الأخبار</a>
                         @else
