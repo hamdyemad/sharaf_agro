@@ -131,7 +131,6 @@ class OrderUnderWorkController extends Controller
                     'category_id' => 'required|exists:categories,id|max:255',
                     'name' => 'required|string|max:255',
                     'details' => 'required|string',
-                    'files' => 'required'
                 ];
                 $messages = [
                     'category_id.required' => 'القسم الرئيسى مطلوب',
@@ -141,7 +140,6 @@ class OrderUnderWorkController extends Controller
                     'name.max' => 'أسم المركب يجب أن يكون أقل من 255 حرف',
                     'details.required' => 'تفاصيل المركب مطلوبة',
                     'details.string' => 'تفاصيل المركب يجب أن يكون من نوع string',
-                    'files.required' => ' المرفقات مطلوبة',
                 ];
                 $subs = SubCategory::where('category_id', $request['category_id'])->get();
                 if($subs->count() > 0) {

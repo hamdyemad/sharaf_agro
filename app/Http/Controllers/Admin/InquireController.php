@@ -377,17 +377,9 @@ class InquireController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(OrderUnderWork $order)
+    public function destroy(Inquire $inquire)
     {
-        if($order->files) {
-            foreach (json_decode($order->files) as $file) {
-                if(file_exists($file)) {
-                    unlink($file);
-                }
-            }
-        }
-        OrderUnderWork::destroy($order->id);
-        return redirect()->back()->with('success', 'تم ازالة الرسالة بنجاح');
-
+        Inquire::destroy($inquire->id);
+        return redirect()->back()->with('success', 'تم ازالة الأستفسار بنجاح');
     }
 }

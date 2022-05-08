@@ -170,7 +170,6 @@
             },
             'url' : `{{ route('sub_categories.all') }}`,
             'success': function(res) {
-                console.log(res);
                 if(res.status) {
                     res.data.forEach((obj) => {
                         $(".select_sub_categories").append(`<option value="${obj.id}">${obj.name}</option>`);

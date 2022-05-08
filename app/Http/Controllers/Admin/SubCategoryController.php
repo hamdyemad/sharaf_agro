@@ -59,11 +59,10 @@ class SubCategoryController extends Controller
     {
         $this->authorize('categories.create');
         $validator = Validator::make($request->all(), [
-            'name' => 'required|unique:sub_categories,name',
+            'name' => 'required',
             'category_id' => 'required|exists:categories,id'
         ], [
             'name.required' => 'أسم القسم مطلوب',
-            'name.unique' => 'أسم القسم موجود بالفعل',
             'category_id.required' => 'القسم الرئيسى مطلوب',
             'category_id.exists' => 'القسم الرئيسى غير موجود',
 
@@ -103,11 +102,10 @@ class SubCategoryController extends Controller
     {
         $this->authorize('categories.edit');
         $validator = Validator::make($request->all(), [
-            'name' => ['required', Rule::unique('sub_categories', 'name')->ignore($sub_category->id)],
+            'name' => ['required'],
             'category_id' => 'required|exists:categories,id'
         ], [
             'name.required' => 'أسم القسم مطلوب',
-            'name.unique' => 'أسم القسم موجود بالفعل',
             'category_id.required' => 'القسم الرئيسى مطلوب',
             'category_id.exists' => 'القسم الرئيسى غير موجود',
 
