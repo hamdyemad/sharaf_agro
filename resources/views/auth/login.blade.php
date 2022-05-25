@@ -33,7 +33,6 @@
                                                 <strong>{{ $message }}</strong>
                                             </span>
                                         @enderror
-
                                     </div>
                                     <div class="form-group">
                                         <label for="userpassword">الرقم السرى</label>

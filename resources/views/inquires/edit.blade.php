@@ -50,14 +50,18 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="customer">حالة الطلب</label>
-                                    <select class="form-control select2 status_select" name="status_id">
-                                        <option value="">أختر</option>
-                                        @foreach ($statuses as $status)
-                                            <option data-name="{{ $status->name }}" value="{{ $status->id }}" @if($status->id == $inquire->status_id) selected  @endif>{{ $status->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('status_id')
+                                    <label for="customer">أسم الراسل</label>
+                                    <input class="form-control" name="sender_name" value="{{ $inquire->sender_name }}" type="text">
+                                    @error('sender_name')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="customer">رقم الموبيل</label>
+                                    <input class="form-control" name="sender_phone" value="{{ $inquire->sender_phone }}" type="text">
+                                    @error('sender_phone')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>

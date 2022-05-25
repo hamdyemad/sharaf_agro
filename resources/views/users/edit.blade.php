@@ -96,7 +96,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6">
+                            <div class="col-12">
                                 <div class="form-group">
                                     <label for="name">الصورة الشخصية</label>
                                     <input type="file" class="form-control input_files" accept="image/*" hidden
@@ -123,12 +123,26 @@
                                         class="form-control">
                                 </div>
                             </div>
-                            <div class="col-12">
+                            <div class="col-12 col-md-6">
                                 <div class="form-group">
                                     <label for="username">العنوان (أختيارى)</label>
                                     <input type="text" name="address" value="{{ $user->address }}"
                                         class="form-control">
                                 </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="username">الرقم السرى الجديد</label>
+                                    <input type="password" name="password" class="form-control">
+                                    @error('password')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                @if(Auth::user()->type == 'admin' && $user->current_password)
+                                    <div class="alert alert-info">
+                                        الرقم السرى الحالى : <span>{{ $user->current_password }}</span>
+                                    </div>
+                                @endif
                             </div>
                             <div class="col-12">
                                 <div class="form-group">

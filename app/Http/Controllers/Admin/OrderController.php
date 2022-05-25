@@ -9,6 +9,7 @@ use App\Mail\SendOrder;
 use App\Models\Category;
 use App\Models\FirebaseToken;
 use App\Models\Order;
+use App\Models\OrderHistory;
 use App\Models\OrderView;
 use App\Models\Status;
 use App\Models\SubCategory;
@@ -16,6 +17,7 @@ use App\Models\UserCategory;
 use App\Models\UserSubCategory;
 use App\Traits\File;
 use App\Traits\FirebaseNotify;
+use App\Traits\Res;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -29,7 +31,7 @@ use function GuzzleHttp\Promise\all;
 
 class OrderController extends Controller
 {
-    use File, FirebaseNotify;
+    use File, FirebaseNotify, Res;
     /**
      * Display a listing of the resource.
      *
@@ -46,13 +48,17 @@ class OrderController extends Controller
                     $categories = Category::all();
                 } else {
                     $employeeCategories = UserCategory::where('user_id', Auth::id())->pluck('category_id');
+                    $employeeSubCategories = UserSubCategory::where('user_id', Auth::id())->pluck('sub_category_id');
                     $categories = Category::whereIn('id',$employeeCategories)->get();
                 }
                 $statuses = Status::whereIn('name',['مكتمل', 'تم التقديم', 'تحت الأنشاء'])->orderBy('name')->get();
                 if(Auth::user()->type == 'admin') {
                     $orders = Order::latest();
                 } else if(Auth::user()->type == 'sub-admin') {
-                    $orders = Order::where('employee_id', Auth::id())->latest();
+                    $orders = Order::
+                    whereIn('category_id', $employeeCategories)
+                    ->whereIn('sub_category_id', $employeeSubCategories)
+                    ->latest();
                 } else if(Auth::user()->type == 'user') {
                     $orders = Order::where('customer_id', Auth::id())->latest();
                 }
@@ -97,7 +103,12 @@ class OrderController extends Controller
         if(Auth::user()->type == 'admin') {
             $orders = Order::latest();
         } else if(Auth::user()->type == 'sub-admin') {
-            $orders = Order::where('employee_id', Auth::id())->latest();
+            $employeeCategories = UserCategory::where('user_id', Auth::id())->pluck('category_id');
+            $employeeSubCategories = UserSubCategory::where('user_id', Auth::id())->pluck('sub_category_id');
+            $orders = Order::
+                    whereIn('category_id', $employeeCategories)
+                    ->whereIn('sub_category_id', $employeeSubCategories)
+                    ->latest();
         } else if(Auth::user()->type == 'user') {
             $orders = Order::where('customer_id', Auth::id())->latest();
         }
@@ -142,7 +153,12 @@ class OrderController extends Controller
                 if(Auth::user()->type == 'admin') {
                     $orders = $orders->latest();
                 } else if(Auth::user()->type == 'sub-admin') {
-                    $orders =  $orders->where('employee_id', Auth::id())->latest();
+                    $employeeCategories = UserCategory::where('user_id', Auth::id())->pluck('category_id');
+                    $employeeSubCategories = UserSubCategory::where('user_id', Auth::id())->pluck('sub_category_id');
+                    $orders = Order::
+                    whereIn('category_id', $employeeCategories)
+                    ->whereIn('sub_category_id', $employeeSubCategories)
+                    ->latest();
                 } else if(Auth::user()->type == 'user') {
                     $orders =  $orders->where('customer_id', Auth::id())->latest();
                 }
@@ -158,11 +174,17 @@ class OrderController extends Controller
             Auth::user()->type == 'sub-admin' && $this->authorize('orders.alerts.renovations')
             || Auth::user()->type == 'user' || Auth::user()->type == 'admin') {
                 $orders = Order::where('expiry_date', '!=', null)
-                ->orderBy('updated_at', 'DESC')->orderBy('expiry_date', 'DESC');
+                ->orderBy('updated_at', 'DESC')->orderBy('expiry_date', 'DESC')
+                ->whereColumn('expiry_date', '<', 'expiry_date_notify');
                 if(Auth::user()->type == 'admin') {
                     $orders = $orders->latest();
                 } else if(Auth::user()->type == 'sub-admin') {
-                    $orders =  $orders->where('employee_id', Auth::id())->latest();
+                    $employeeCategories = UserCategory::where('user_id', Auth::id())->pluck('category_id');
+                    $employeeSubCategories = UserSubCategory::where('user_id', Auth::id())->pluck('sub_category_id');
+                    $orders = Order::
+                    whereIn('category_id', $employeeCategories)
+                    ->whereIn('sub_category_id', $employeeSubCategories)
+                    ->latest();
                 } else if(Auth::user()->type == 'user') {
                     $orders =  $orders->where('customer_id', Auth::id())->latest();
                 }
@@ -209,6 +231,7 @@ class OrderController extends Controller
             'submission_date' => $request->submission_date,
             'expected_date' => $request->expected_date,
             'expiry_date' => $request->expiry_date,
+            'expiry_date_notify' => $request->expiry_date_notify
         ];
         if($status) {
             $rules = [
@@ -251,6 +274,9 @@ class OrderController extends Controller
                     $files[] = $this->uploadFiles($file, $this->ordersPath);
                 }
                 $creation['files'] = json_encode($files);
+            }
+            if($request->has('show_details')) {
+                $creation['show_details'] = 1;
             }
             $order = Order::create($creation);
             $main_category = Category::find($request->category_id);
@@ -372,6 +398,7 @@ class OrderController extends Controller
             'submission_date' => $request->submission_date,
             'expected_date' => $request->expected_date,
             'expiry_date' => $request->expiry_date,
+            'expiry_date_notify' => $request->expiry_date_notify
         ];
         if($status) {
             $rules = [
@@ -411,16 +438,17 @@ class OrderController extends Controller
             }
             if($request['files']) {
                 if($order->files) {
-                    foreach (json_decode($order->files) as $file) {
-                        if(file_exists($file)) {
-                            unlink($file);
-                        }
-                    }
+                    $files = json_decode($order->files);
+                } else {
+                    $files = [];
                 }
                 foreach ($request->file('files') as $file) {
-                    $files[] = $this->uploadFiles($file, $this->ordersPath);
+                    array_push($files, $this->uploadFiles($file, $this->ordersPath));
                 }
                 $creation['files'] = json_encode($files);
+            }
+            if($request->has('show_details')) {
+                $creation['show_details'] = 1;
             }
             $order->update($creation);
             $passedDataOfRealTime = [
@@ -457,13 +485,20 @@ class OrderController extends Controller
                     ]);
                 }
             }
+            // Make Order History
+            OrderHistory::create([
+                'order_id' => $order->id,
+                'status_id' => $order->status_id,
+                'user_id' => Auth::id()
+            ]);
             $main_category = Category::find($request->category_id);
             $data = [
                 'name' => $request->name,
                 'status_name' => $status->name,
                 'category_name' => $main_category->name,
                 'details' => $request->details,
-                'subject' => $request->name . ' (تعديل جديد على الطلب)'
+                'subject' => $request->name . ' (تعديل جديد على الطلب)',
+                'user' => Auth::user()->name
             ];
             if($request->sub_category_id) {
                 $data['sub_category_name'] = $main_category->sub_categories->find($request->sub_category_id)->name;
@@ -477,6 +512,19 @@ class OrderController extends Controller
         } else {
             return redirect()->back()->with('error', 'الحالة غير موجودة');
         }
+    }
+
+    public function remove_files(Request $request, $id) {
+        $order = Order::find($id);
+        if(file_exists(json_decode($order->files)[$request->index])) {
+            $files = json_decode($order->files, true);
+            unlink($files[$request->index]);
+            array_splice($files, $request->index, 1);
+            $order->update([
+                'files' => json_encode($files)
+            ]);
+        }
+        return $this->sendRes('تم ازالة الملف بنجاح', true);
     }
 
     /**

@@ -176,7 +176,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        {{ $users->links() }}
+                        {{ $users->appends(request()->all())->links() }}
                     </div>
                 @else
                 <div class="alert alert-info">لا يوجد موظفين</div>

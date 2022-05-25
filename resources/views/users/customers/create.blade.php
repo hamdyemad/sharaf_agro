@@ -79,7 +79,9 @@
                                         <thead>
                                             <th>#</th>
                                             <th>الأسم</th>
-                                            <th>رقم التليفون</th>
+                                            <th>
+                                                رقم الموبيل
+                                            </th>
                                             <th>الأعدادات</th>
                                         </thead>
                                         <tbody>
@@ -89,17 +91,22 @@
                                                         <td>{{ $loop->index + 1 }}</td>
                                                         <td>
                                                             <input class="form-control" type="text" value="{{ $responsible['name'] }}" name="responsible[{{ $loop->index }}][name]">
-                                                            @error("responsible.$loop->index.name")
+                                                            @error("responsible.*.name")
                                                                 <div class="text-danger">{{ $message }}</div>
                                                             @enderror
                                                         </td>
-                                                        <td>
-                                                            <input class="form-control" type="text" value="{{ $responsible['phone'] }}" name="responsible[{{ $loop->index }}][phone]">
-                                                            @error("responsible.$loop->index.phone")
-                                                                <div class="text-danger">{{ $message }}</div>
-                                                            @enderror
+                                                        <td class="phones_td">
+                                                            @foreach ($responsible['phones'] as $phone)
+                                                                <div class="mb-1">
+                                                                    <input class="form-control" type="text" value="{{ $phone }}" name="responsible[{{ $loop->index }}][phones][]">
+                                                                    @error("responsible.*.phones.*")
+                                                                        <div class="text-danger">{{ $message }}</div>
+                                                                    @enderror
+                                                                </div>
+                                                            @endforeach
                                                         </td>
                                                         <td>
+                                                            <button type="button" class="btn btn-success add_phone ml-2">اضافة رقم جديد</button>
                                                             <button type="button" class="btn btn-danger remove_responsible">ازالة</button>
                                                         </td>
                                                     </tr>
@@ -164,6 +171,17 @@
 <script>
 
     let index = 0;
+
+    function phone_div(index) {
+        return `
+        <div class="mb-1">
+            <input class="form-control" type="text" name="responsible[${index}][phones][]">
+            @error("responsible.*.phones.*")
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
+        </div>
+    `;
+    }
     function tr(index) {
         return `
             <tr>
@@ -174,13 +192,16 @@
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </td>
-                <td>
-                    <input class="form-control" type="text" name="responsible[${index}][phone]">
-                    @error("responsible.*.phone")
-                        <div class="text-danger">{{ $message }}</div>
-                    @enderror
+                <td class="phones_td">
+                    <div class="mt-1">
+                        <input class="form-control" type="text" name="responsible[${index}][phones][]">
+                        @error("responsible.*.phones.*")
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </td>
                 <td>
+                    <button type="button" class="btn btn-success add_phone ml-2">اضافة رقم جديد</button>
                     <button type="button" class="btn btn-danger remove_responsible">ازالة</button>
                 </td>
             </tr>
@@ -190,8 +211,17 @@
         index++
         $(".responsible_table").parent().removeClass('d-none');
         $(".responsible_table tbody").append(tr(index));
+        add_phone(index);
         remove_tr();
     });
+
+    function add_phone(index) {
+        $(".add_phone").on('click', function() {
+            $(this).parent().parent().find('.phones_td').prepend(phone_div(index));
+        });
+    }
+    add_phone();
+
 
     function remove_tr() {
         $(".remove_responsible").on('click', function() {

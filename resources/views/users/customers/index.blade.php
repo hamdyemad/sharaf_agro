@@ -104,18 +104,20 @@
                                         <td>{{ $user->username }}</td>
                                         <td>
                                             @if($user->responsibles->count() > 0)
-                                                @foreach ($user->responsibles as $responsible)
-                                                    <ul>
+                                                <ul>
+                                                    @foreach ($user->responsibles->groupBy('name') as $key => $responsible)
                                                         <li>
                                                             <span>الأسم: </span>
-                                                            <p>{{ $responsible->name }}</p>
+                                                            <p>{{ $key }}</p>
                                                         </li>
                                                         <li>
-                                                            <span>رقم الموبيل: </span>
-                                                            <p>{{ $responsible->phone }}</p>
-                                                        </li>
-                                                    </ul>
-                                                @endforeach
+                                                            <span>أرقام الموبيل : </span>
+                                                            @foreach ($responsible as $responsibleItem)
+                                                                <span class="badge badge-secondary ml-1">{{ $responsibleItem->phone }}</span>
+                                                            @endforeach
+                                                            </li>
+                                                    @endforeach
+                                                </ul>
                                             @else
                                             <div class="alert alert-info max">لا يوجد أشخاص مسئولة</div>
                                             @endif
@@ -180,7 +182,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        {{ $users->links() }}
+                        {{ $users->appends(request()->all())->links() }}
                     </div>
                 @else
                 <div class="alert alert-info">لا يوجد شركات</div>

@@ -18,7 +18,9 @@ class CreateInquiriesTable extends Migration
             $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('sub_category_id')->nullable();
             $table->unsignedBigInteger('customer_id');
-            $table->unsignedBigInteger('status_id');
+            $table->string('sender_name');
+            $table->string('sender_phone');
+            $table->text('reply')->nullable();
             $table->text('details');
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->foreign('sub_category_id')->references('id')->on('sub_categories')->onDelete('cascade');

@@ -17,6 +17,8 @@ class OrderUnderWork extends Model
         'details',
         'files',
         'reason',
+        'sender_name',
+        'sender_phone'
     ];
 
     public function category() {
@@ -32,6 +34,10 @@ class OrderUnderWork extends Model
     }
     public function customer() {
         return $this->belongsTo(User::class, 'customer_id');
+    }
+
+    public function histories() {
+        return $this->hasMany(OrderUnderWorkHistory::class, 'order_id');
     }
 
 }

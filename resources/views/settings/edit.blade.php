@@ -43,16 +43,6 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
-                                    <label for="name">عدد أيام ارسال التنبيه بالتجديدات</label>
-                                    <input type="text" class="form-control" value="{{ get_setting('expiry_date') }}"
-                                        name="type[expiry_date]">
-                                    @error('expiry_date')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <div class="form-group">
                                     <label for="name">اللوجو</label>
                                     <input type="file" class="form-control input_files" accept="image/*" hidden name="logo">
                                     <button type="button" class="btn btn-primary form-control files">

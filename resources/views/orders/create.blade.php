@@ -112,6 +112,10 @@
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
                                     <label for="customer">تفاصيل المركب</label>
+                                    <div>
+                                        <input type="checkbox" name="show_details" id="switch1" switch="none" checked />
+                                        <label for="switch1" data-on-label="ظهور" data-off-label="اخفاء"></label>
+                                    </div>
                                     <textarea class="form-control" name="details" cols="30" rows="10">{{ old('details') }}</textarea>
                                     @error('details')
                                         <div class="text-danger">{{ $message }}</div>
@@ -161,7 +165,16 @@
                                                     </div>
                                                 @endif
                                                 @if(old('status_id') == '2')
-                                                    <div class="col-12">
+                                                    <div class="col-12 col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="submission"> تاريخ ارسال التنبيه بالتجديدات (أختيارى)</label>
+                                                            <input class="form-control" value="{{ old('expiry_date_notify') }}" type="date" name="expiry_date_notify">
+                                                            @error('expiry_date_notify')
+                                                                <div class="text-danger">{{ $message }}</div>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-md-6">
                                                         <div class="form-group">
                                                             <label for="submission">تاريخ الأنتهاء (أختيارى)</label>
                                                             <input class="form-control" value="{{ old('expiry_date') }}" type="date" name="expiry_date">
@@ -213,9 +226,18 @@
             </div>
         `,
         completed_cols = `
-            <div class="col-12">
+            <div class="col-12 col-md-6">
                 <div class="form-group">
-                    <label for="submission">تاريخ الأنتهاء</label>
+                    <label for="submission"> تاريخ ارسال التنبيه بالتجديدات (أختيارى)</label>
+                    <input class="form-control" value="{{ old('expiry_date_notify') }}" type="date" name="expiry_date_notify">
+                    @error('expiry_date_notify')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="form-group">
+                    <label for="submission">تاريخ الأنتهاء (أختيارى)</label>
                     <input class="form-control" type="date" name="expiry_date">
                     @error('expiry_date')
                         <div class="text-danger">{{ $message }}</div>

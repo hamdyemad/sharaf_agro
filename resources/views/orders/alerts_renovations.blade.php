@@ -40,11 +40,6 @@
                             </thead>
                             <tbody>
                                 @foreach ($orders as $order)
-                                    @php
-                                        $expiry_date =  new \Carbon\Carbon($order->expiry_date);
-                                        $now =  new \Carbon\Carbon();
-                                    @endphp
-                                    @if($expiry_date->subDays(get_setting('expiry_date'))->lte($now))
                                         <tr id="{{ $order->id }}" data-value="{{ $order }}">
                                             <td scope="row">{{ $order->id }}</td>
                                             <td><span class="max badge badge-primary">{{ $order->status->name }}</span></td>
@@ -70,7 +65,7 @@
                                                 </ul>
                                             </td>
                                             <td>
-                                                {{ $order->expiry_date }}
+                                                <span class="max">{{ $order->expiry_date }}</span>
                                             </td>
                                             <td>
                                                 <span class="max">{{ $order->created_at->diffForHumans() }}</span>
@@ -80,7 +75,7 @@
                                             </td>
                                             <td>
                                                 <div class="options d-flex">
-                                                    @if(Auth::user()->type == 'user' || Auth::user()->can('orders.alerts.show'))
+                                                    @if(Auth::user()->type == 'user' || Auth::user()->can('orders.show'))
                                                         <a class="btn btn-success mr-1" href="{{ route('orders.show', $order) }}">
                                                             <span>عرض</span>
                                                             <span class="mdi mdi-eye ml-1"></span>
@@ -88,11 +83,10 @@
                                                     @endif
                                             </td>
                                         </tr>
-                                    @endif
                                 @endforeach
                             </tbody>
                         </table>
-                        {{ $orders->links() }}
+                        {{ $orders->appends(request()->all())->links() }}
                     </div>
                 @else
                     <div class="alert alert-info">لا يوجد تنبيهات حاليا</div>

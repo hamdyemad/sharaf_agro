@@ -44,6 +44,18 @@
                         </div>
                         <div class="col-12 col-md-6">
                             <div class="form-group">
+                                <label for="name">أسم الراسل</label>
+                                <input class="form-control" name="sender_name" type="text" value="{{ request('sender_name') }}">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-group">
+                                <label for="name">رقم موبيل الراسل</label>
+                                <input class="form-control" name="sender_phone" type="text" value="{{ request('sender_phone') }}">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-group">
                                 <label for="name">الأقسام الرئيسية</label>
                                 <select class="form-control select2 select_main_category" name="category_id">
                                     <option value="">أختر</option>
@@ -65,16 +77,24 @@
                                 <input type="submit" value="بحث" class="form-control btn btn-primary mt-1">
                             </div>
                         </div>
+                        <div class="col-12 col-md-6">
+                            <a class="btn btn-info mt-1" href="{{ route('orders_under_work.export', request()->all()) }}">تصدير ملف اكسل</a>
+                        </div>
                     </div>
                 </form>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table mb-0">
+                    <table class="table table-hover mb-0">
                         <thead>
                             <tr>
                                 <th><span class="max">#</span></th>
+                                @if (Auth::user()->type == 'admin' || Auth::user()->can('orders_under_work.show_histories'))
+                                    <th><span class="max">تاريخ التعديلات</span></th>
+                                @endif
                                 <th><span class="max">الشركة</span></th>
+                                <th><span class="max">أسم الراسل</span></th>
+                                <th><span class="max">رقم موبيل الراسل</span></th>
                                 <th><span class="max">أسم المركب</span></th>
                                 <th><span class="max">تفاصيل المركب</span></th>
                                 <th><span class="max">القسم</span></th>
@@ -89,7 +109,35 @@
                             @foreach ($orders as $order)
                                 <tr id="{{ $order->id }}" data-value="{{ $order }}">
                                     <td scope="row">{{ $order->id }}</td>
+                                @if (Auth::user()->type == 'admin' || Auth::user()->can('orders_under_work.show_histories'))
+                                    <td scope="row">
+                                        @if (count($order->histories) > 0)
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <td><span class="max font-weight-bold">من عدل على الطلب</span></td>
+                                                        <td><span class="max font-weight-bold">الحالة</span></td>
+                                                        <td><span class="max font-weight-bold">التوقيت</span></td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($order->histories()->latest()->get() as $history)
+                                                        <tr>
+                                                            <td><span class="max">{{ $history->user->name }}</span></td>
+                                                            <td><span class="max">{{ $history->status->name }}</span></td>
+                                                            <td><span class="max">{{ $history->created_at }}</span></td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        @else
+                                        <span class="max">لا يوجد تعديلات بعد</span>
+                                        @endif
+                                    </td>
+                                @endif
                                     <th><span class="max">{{ $order->customer->name }}</span></th>
+                                    <th><span class="max">{{ $order->sender_name }}</span></th>
+                                    <th><span class="max">{{ $order->sender_phone }}</span></th>
                                     <td><span class="max">{{ $order->name }}</span></td>
                                     <td>
                                         @if(strlen($order->details) > 30)
@@ -197,7 +245,7 @@
                         </tbody>
                     </table>
                 </div>
-                {{ $orders->links() }}
+                {{ $orders->appends(request()->all())->links() }}
             </div>
         </div>
     </div>

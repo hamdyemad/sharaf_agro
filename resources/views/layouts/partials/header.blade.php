@@ -219,12 +219,17 @@
                                                 </div>
                                                 <div class="media-body">
                                                     <h6 class="mt-0 mb-1">الشركة : {{ $inquire->customer->name }}</h6>
-                                                    <h6 class="mt-0 mb-1">الأستفسار : {{ $inquire->details }}</h6>
+                                                    <h6 class="mt-0 mb-1">الأستفسار :
+                                                        @if (strlen($inquire->details) > 20)
+                                                        {{ mb_substr($inquire->details, 0, 20) . '...' }}
+                                                        @else
+                                                        {{ $inquire->details }}
+                                                        @endif
+                                                    </h6>
                                                     <h6 class="mt-0 mb-1">القسم الرئيسى : {{ $inquire->category->name }}</h6>
                                                     @if($inquire->sub_category)
                                                         <h6 class="mt-0 mb-1">القسم الفرعى : {{ $inquire->sub_category->name }}</h6>
                                                     @endif
-                                                    <h6 class="mt-0 mb-1">الحالة : <span class="badge badge-primary p-1">{{ $inquire->status->name }}</span></h6>
                                                 </div>
                                             </div>
                                         </a>

@@ -89,7 +89,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        {{ $categories->links() }}
+                        {{ $categories->appends(request()->all())->links() }}
                     </div>
                 @else
                     <div class="alert alert-info">لا يوجد أقسام</div>

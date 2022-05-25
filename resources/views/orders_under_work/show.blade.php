@@ -75,6 +75,30 @@
                                 @endforeach
                             </ul>
                         @endif
+                        @if (Auth::user()->type == 'admin' || Auth::user()->can('orders_under_work.show_histories'))
+                            @if (count($order->histories) > 0)
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <td><span class="max font-weight-bold">من عدل على الطلب</span></td>
+                                            <td><span class="max font-weight-bold">الحالة</span></td>
+                                            <td><span class="max font-weight-bold">التوقيت</span></td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($order->histories()->latest()->get() as $history)
+                                            <tr>
+                                                <td><span class="max">{{ $history->user->name }}</span></td>
+                                                <td><span class="max">{{ $history->status->name }}</span></td>
+                                                <td><span class="max">{{ $history->created_at }}</span></td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @else
+                                <span class="max">لا يوجد تعديلات بعد</span>
+                            @endif
+                        @endif
                         <a class="btn btn-info" href="{{ route('orders_under_work.index') }}">الرجوع الى رسائل الطلبات</a>
                     </div>
                 </div>

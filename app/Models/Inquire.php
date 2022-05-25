@@ -12,8 +12,10 @@ class Inquire extends Model
         'category_id',
         'sub_category_id',
         'customer_id',
-        'status_id',
+        'reply',
         'details',
+        'sender_name',
+        'sender_phone'
     ];
 
     public function category() {
@@ -24,10 +26,12 @@ class Inquire extends Model
         return $this->belongsTo(SubCategory::class);
     }
 
-    public function status() {
-        return $this->belongsTo(Status::class);
-    }
+
     public function customer() {
         return $this->belongsTo(User::class, 'customer_id');
+    }
+
+    public function histories() {
+        return $this->hasMany(InquireHistory::class, 'inquire_id');
     }
 }

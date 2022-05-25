@@ -33,8 +33,12 @@
                                 </li>
                             @endif
                             <li class="d-flex align-items-center">
-                                <h3>الحالة: </h4>
-                                <h4 class="ml-2 bg-primary p-2 rounded">{{ $inquire->status->name }}</h4>
+                                <h3>أسم الراسل: </h4>
+                                <h4 class="ml-2 bg-primary p-2 rounded">{{ $inquire->sender_name }}</h4>
+                            </li>
+                            <li class="d-flex align-items-center">
+                                <h3>رقم موبيل الراسل: </h4>
+                                <h4 class="ml-2 bg-primary p-2 rounded">{{ $inquire->sender_phone }}</h4>
                             </li>
                         </ul>
                         <div class="card">
@@ -43,6 +47,38 @@
                                 {{ $inquire->details }}
                             </div>
                         </div>
+                        @if($inquire->reply)
+                            <div class="card">
+                                <div class="card-header"><h2>رد على الأستفسار</h2></div>
+                                <div class="card-body">
+                                    {{ $inquire->reply }}
+                                </div>
+                            </div>
+                        @endif
+                        @if (Auth::user()->type == 'admin' || Auth::user()->can('inquires.show_histories'))
+                            <td scope="row">
+                                @if (count($inquire->histories) > 0)
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <td><span class="max font-weight-bold">من عدل على الطلب</span></td>
+                                                <td><span class="max font-weight-bold">التوقيت</span></td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($inquire->histories()->latest()->get() as $history)
+                                                <tr>
+                                                    <td><span class="max">{{ $history->user->name }}</span></td>
+                                                    <td><span class="max">{{ $history->created_at }}</span></td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                @else
+                                <span class="max">لا يوجد تعديلات بعد</span>
+                                @endif
+                            </td>
+                        @endif
                         <a class="btn btn-info" href="{{ route('inquires.index', ['page' => request('page')]) }}">الرجوع الى الأستفسارات </a>
                     </div>
                 </div>

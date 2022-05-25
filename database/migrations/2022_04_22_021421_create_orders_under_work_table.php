@@ -20,6 +20,8 @@ class CreateOrdersUnderWorkTable extends Migration
             $table->unsignedBigInteger('customer_id');
             $table->unsignedBigInteger('status_id');
             $table->string('name');
+            $table->string('sender_name');
+            $table->string('sender_phone');
             $table->text('details')->nullable();
             $table->text('files')->nullable();
             $table->text('reason')->nullable();

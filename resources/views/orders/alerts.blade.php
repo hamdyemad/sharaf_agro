@@ -82,7 +82,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        {{ $orders->links() }}
+                        {{ $orders->appends(request()->all())->links() }}
                     </div>
                 @else
                     <div class="alert alert-info">لا يوجد تنبيهات حاليا</div>

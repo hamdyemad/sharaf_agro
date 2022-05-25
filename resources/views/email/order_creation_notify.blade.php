@@ -23,6 +23,14 @@
       <tr>
           <td style="padding:20px;vertical-align:top; justify-content: space-between;">
             <ul  style="list-style-type: none; margin:0;padding:0;">
+                @if (isset($data['user']))
+                    <li style="display:flex; align-items:center; margin-bottom:10px">
+                        <h2 style="background-color:#e7e7e7;margin:0;border-radius: 10px;padding: 5px 10px;font-size: 16px;">تعديل بواسطة</h2>
+                        <h3 style="background: #4d4e4e;
+                        color: #fff;
+                        border-radius: 10px;margin:0;margin-right:10px;padding: 5px 10px;font-size:16px;">{{ $data['user'] }}</h3>
+                    </li>
+                @endif
                 <li style="display:flex; align-items:center">
                     <h2 style="background-color:#e7e7e7;margin:0;border-radius: 10px;padding: 5px 10px;font-size: 16px;">أسم المركب</h2>
                     <h3 style="background: #4d4e4e;

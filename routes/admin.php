@@ -12,7 +12,7 @@ Route::group(['middleware' => ['web', 'auth','notBanned']], function() {
         // Logout User
         Route::post('/logout', 'LoginController@logout')->name('logout');
     });
-    Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
+    Route::group(['namespace' => 'Admin'], function() {
         // Render perticular view file by foldername and filename and all passed in only one controller at a time
         // Route::get('/{folder}/{file}', 'LexaAdmin@index');
         Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
@@ -28,6 +28,7 @@ Route::group(['middleware' => ['web', 'auth','notBanned']], function() {
             Route::get('/create', 'NewsController@create')->name('create');
             Route::get('/{new}', 'NewsController@show')->name('show');
             Route::get('/edit/{new}', 'NewsController@edit')->name('edit');
+            Route::post('/remove_files/{id}', 'NewsController@remove_files')->name('remove_files');
             Route::patch('/{new}', 'NewsController@update')->name('update');
             Route::delete('/{new}', 'NewsController@destroy')->name('destroy');
         });
@@ -125,8 +126,10 @@ Route::group(['middleware' => ['web', 'auth','notBanned']], function() {
             Route::get('/create', 'OrderController@create')->name('create');
             Route::get('/edit/{order}', 'OrderController@edit')->name('edit');
             Route::get('/show/{order}', 'OrderController@show')->name('show');
+            Route::post('/remove_files/{id}', 'OrderController@remove_files')->name('remove_files');
             Route::patch('/{order}', 'OrderController@update')->name('update');
             Route::delete('/{order}', 'OrderController@destroy')->name('destroy');
+
 
             // Under Work It's Commented on blade
             Route::post('/status', 'OrderController@store')->name('status_update');
@@ -137,9 +140,12 @@ Route::group(['middleware' => ['web', 'auth','notBanned']], function() {
             Route::get('/', 'OrderUnderWorkController@index')->name('index');
             Route::post('/', 'OrderUnderWorkController@store')->name('store');
             Route::get('/alerts', 'OrderUnderWorkController@alerts')->name('alerts');
+            Route::get('/export-orders', 'OrderUnderWorkController@export')->name('export');
             Route::get('/create', 'OrderUnderWorkController@create')->name('create');
             Route::get('/edit/{order}', 'OrderUnderWorkController@edit')->name('edit');
             Route::get('/show/{order}', 'OrderUnderWorkController@show')->name('show');
+
+            Route::post('/remove_files/{id}', 'OrderUnderWorkController@remove_files')->name('remove_files');
             Route::patch('/{order}', 'OrderUnderWorkController@update')->name('update');
             Route::delete('/{order}', 'OrderUnderWorkController@destroy')->name('destroy');
 
@@ -151,14 +157,12 @@ Route::group(['middleware' => ['web', 'auth','notBanned']], function() {
         Route::group(['prefix' => 'inquires', 'as' => 'inquires.'], function() {
             Route::get('/', 'InquireController@index')->name('index');
             Route::post('/', 'InquireController@store')->name('store');
+            Route::get('/export-orders', 'InquireController@export')->name('export');
             Route::get('/create', 'InquireController@create')->name('create');
             Route::get('/edit/{inquire}', 'InquireController@edit')->name('edit');
             Route::get('/show/{inquire}', 'InquireController@show')->name('show');
             Route::patch('/{inquire}', 'InquireController@update')->name('update');
             Route::delete('/{inquire}', 'InquireController@destroy')->name('destroy');
-
-            // Under Work It's Commented on blade
-            Route::post('/status', 'InquireController@update_status')->name('update_status');
         });
 
     });

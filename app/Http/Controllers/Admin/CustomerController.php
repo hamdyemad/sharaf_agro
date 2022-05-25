@@ -76,7 +76,8 @@ class CustomerController extends Controller
             'type' => 'user',
             'address' => $request->address,
             'phone' => $request->phone,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            'current_password' => $request->password
         ];
         $rules = [
             'name' => ['required', 'string', 'max:255'],
@@ -86,7 +87,7 @@ class CustomerController extends Controller
             'avatar' => ['image'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'responsible.*.name' => ['required', 'string', 'max:255'],
-            'responsible.*.phone' => ['required', 'string', 'max:255'],
+            'responsible.*.phones.*' => ['required'],
         ];
         $messages = [
             'name.required' => 'الأسم مطلوب',
@@ -114,9 +115,7 @@ class CustomerController extends Controller
             'responsible.*.name.string' => ' أسم المسئول يجب أن يكون حروف او ارقام',
             'responsible.*.name.max' => 'يجب أدخال أقل من 255 حرف',
 
-            'responsible.*.phone.required' => 'رقم المسئول مطلوب',
-            'responsible.*.phone.string' => ' رقم المسئول يجب أن يكون أرقام',
-            'responsible.*.phone.max' => 'يجب أدخال أقل من 255 حرف',
+            'responsible.*.phones.*.required' => 'رقم المسئول مطلوب',
         ];
         $validator = Validator::make($request->all(), $rules, $messages);
         if($validator->fails()) {
@@ -129,11 +128,13 @@ class CustomerController extends Controller
         $user = User::create($creation);
         if($request['responsible']) {
             foreach ($request['responsible'] as $responsible) {
-                CustomerResponsible::create([
-                    'user_id' => $user->id,
-                    'name' => $responsible['name'],
-                    'phone' => $responsible['phone'],
-                ]);
+                foreach ($responsible['phones'] as $phone) {
+                    CustomerResponsible::create([
+                        'user_id' => $user->id,
+                        'name' => $responsible['name'],
+                        'phone' => $phone,
+                    ]);
+                }
             }
         }
 
@@ -172,7 +173,6 @@ class CustomerController extends Controller
      */
     public function update(Request $request, User $user)
     {
-
         $this->authorize('customers.edit');
         $creation = [
             'name' => $request->name,
@@ -188,7 +188,8 @@ class CustomerController extends Controller
             'phone' => ['required', 'string'],
             'avatar' => ['image'],
             'responsible.*.name' => ['required', 'string', 'max:255'],
-            'responsible.*.phone' => ['required', 'string', 'max:255'],
+            'responsible.*.phones.*' => ['required'],
+
         ];
 
         $messages = [
@@ -209,20 +210,19 @@ class CustomerController extends Controller
             'responsible.*.name.required' => 'أسم المسئول مطلوب',
             'responsible.*.name.string' => ' أسم المسئول يجب أن يكون حروف او ارقام',
             'responsible.*.name.max' => 'يجب أدخال أقل من 255 حرف',
-
-            'responsible.*.phone.required' => 'رقم المسئول مطلوب',
-            'responsible.*.phone.string' => ' رقم المسئول يجب أن يكون أرقام',
-            'responsible.*.phone.max' => 'يجب أدخال أقل من 255 حرف',
+            'responsible.*.phones.*.required' => 'رقم المسئول مطلوب',
         ];
         if(Auth::user()->type == 'admin') {
             if($request->password) {
                 $rules['password'] = 'min:8';
                 $messages['password.min'] = 'يجب أن يكون الرقم السرى أكثر من 8 حروف';
                 $creation['password'] = Hash::make($request->password);
+                $creation['current_password'] = $request->password;
             }
         }
         $validator = Validator::make($request->all(), $rules, $messages);
         if($validator->fails()) {
+            // return $validator->errors();
             return redirect()->back()->withErrors($validator->errors())->with('error', 'يوجد خطأ ما')->withInput($request->all());
         }
 
@@ -242,11 +242,13 @@ class CustomerController extends Controller
         // Add New User Responsible
         if($request['responsible']) {
             foreach ($request['responsible'] as $responsible) {
-                CustomerResponsible::create([
-                    'user_id' => $user->id,
-                    'name' => $responsible['name'],
-                    'phone' => $responsible['phone'],
-                ]);
+                foreach ($responsible['phones'] as $phone) {
+                    CustomerResponsible::create([
+                        'user_id' => $user->id,
+                        'name' => $responsible['name'],
+                        'phone' => $phone,
+                    ]);
+                }
             }
         }
 

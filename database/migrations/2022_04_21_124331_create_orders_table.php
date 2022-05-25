@@ -26,7 +26,9 @@ class CreateOrdersTable extends Migration
             $table->date('submission_date')->nullable();
             $table->date('expected_date')->nullable();
             $table->date('expiry_date')->nullable();
+            $table->date('expiry_date_notify')->nullable();
             $table->boolean('expected_notify')->default(0);
+            $table->boolean('show_details')->default(0);
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->foreign('sub_category_id')->references('id')->on('sub_categories')->onDelete('cascade');
             $table->foreign('customer_id')->references('id')->on('users')->onDelete('cascade');

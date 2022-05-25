@@ -46,6 +46,24 @@
                                     @enderror
                                 </div>
                             </div>
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="customer">أسم الراسل</label>
+                                    <input class="form-control" name="sender_name" type="text">
+                                    @error('sender_name')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="customer">رقم الموبيل</label>
+                                    <input class="form-control" name="sender_phone" type="text">
+                                    @error('sender_phone')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
                             <div class="col-12">
                                 <div class="form-group">
                                     <label for="customer">الأستفسار</label>

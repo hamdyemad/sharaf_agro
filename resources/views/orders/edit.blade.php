@@ -113,6 +113,10 @@
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
                                     <label for="customer">تفاصيل المركب</label>
+                                    <div>
+                                        <input type="checkbox" name="show_details" id="switch1" switch="none" @if($order->show_details) checked @endif />
+                                        <label for="switch1" data-on-label="ظهور" data-off-label="اخفاء"></label>
+                                    </div>
                                     <textarea class="form-control" name="details" cols="30" rows="10">{{ $order->details }}</textarea>
                                     @error('details')
                                         <div class="text-danger">{{ $message }}</div>
@@ -130,11 +134,7 @@
                                                     <input type="file" class="form-control input_files" multiple accept="application/pdf,image/*" hidden
                                                         name="files[]" data-img="3" data-pdf="3">
                                                     <button type="button" class="btn btn-primary form-control files">
-                                                        @if($order->files)
-                                                            {{ count(json_decode($order->files)) }}
-                                                        @else
-                                                            <span class="mdi mdi-plus btn-lg"></span>
-                                                        @endif
+                                                        <span class="mdi mdi-plus btn-lg"></span>
                                                     </button>
                                                     <div class="alert alert-secondary mt-1">( يمكن إضافة 3 صور او3 ملفات PDF بحد اقصي 2 ميجا بايت/ملف)</div>
                                                     <div class="text-danger file_error pdf-error" hidden>يجب أختيار أقل من 3 من ملفات ال pdf</div>
@@ -142,6 +142,20 @@
                                                     @error('files')
                                                         <div class="text-danger">{{ $message }}</div>
                                                     @enderror
+                                                    @if ($order->files)
+                                                        <div class="current_files">
+                                                            <ul class="list-unstyled">
+                                                                @foreach (json_decode($order->files) as $file)
+                                                                    <li class="mb-2 d-flex align-items-center">
+                                                                        <a class="mr-2" href="{{ asset($file) }}">{{ $file }}</a>
+                                                                        <button type="button" data-order_id="{{ $order->id }}" data-index="{{ $loop->index }}" class="remove_files btn-{{ $loop->index }} btn btn-danger rounded">
+                                                                            <i class="fas fa-times"></i>
+                                                                        </button>
+                                                                    </li>
+                                                                @endforeach
+                                                            </ul>
+                                                        </div>
+                                                    @endif
                                                 </div>
                                             </div>
                                             {{-- Addition --}}
@@ -187,7 +201,16 @@
             </div>
         `,
         completed_cols = `
-            <div class="col-12">
+            <div class="col-12 col-md-6">
+                <div class="form-group">
+                    <label for="submission"> تاريخ ارسال التنبيه بالتجديدات (أختيارى)</label>
+                    <input class="form-control" value="{{ $order->expiry_date_notify }}"  type="date" name="expiry_date_notify">
+                    @error('expiry_date_notify')
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
                 <div class="form-group">
                     <label for="submission">تاريخ الأنتهاء (أختيارى)</label>
                     <input class="form-control" type="date" value="{{ $order->expiry_date }}" name="expiry_date">
@@ -253,6 +276,32 @@
             }
             categories_ids = [];
         }
+
+        // Remove Files From Order
+        $(".remove_files").on('click', function() {
+            let index = $(this).data('index'),
+            order_id = $(this).data('order_id');
+            $.ajax({
+                'method': 'POST',
+                'data': {
+                    '_token': token,
+                    index: index
+                },
+                'url' : `/orders/remove_files/` + order_id,
+                'success': function(res) {
+                    if(res.status) {
+                        toastr.success(res.message);
+                        $(`.btn-${index}`).parent().fadeOut(500);
+                        setTimeout(() => {
+                            $(`.btn-${index}`).parent().remove()
+                        }, 500);
+                    }
+                },
+                'erorr' : function(err) {
+                    console.log(err);
+                }
+            });
+        });
 
         function getSubByCategoryIdAjax(categories_ids) {
             $.ajax({

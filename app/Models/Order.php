@@ -18,8 +18,10 @@ class Order extends Model
         'files',
         'submission_date',
         'expected_date',
+        'expected_notify',
         'expiry_date',
-        'expected_notify'
+        'expiry_date_notify',
+        'show_details'
     ];
 
     public function category() {
@@ -38,6 +40,10 @@ class Order extends Model
     }
     public function employee() {
         return $this->belongsTo(User::class, 'employee_id');
+    }
+
+    public function histories() {
+        return $this->hasMany(OrderHistory::class, 'order_id');
     }
 
 

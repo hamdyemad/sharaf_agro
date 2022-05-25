@@ -17,7 +17,6 @@
         <div class="container">
             <div class="card">
                 <div class="card-header">
-                    {{-- <h1>{{ auth()->user()->name }}</h1> --}}
                 </div>
                 <div class="card-body">
                     <form action="{{ route('orders_under_work.update', $order) }}" method="POST" enctype="multipart/form-data">
@@ -49,6 +48,24 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="form-group">
+                                    <label for="customer">أسم الراسل</label>
+                                    <input class="form-control" name="sender_name" value="{{ $order->sender_name }}" type="text">
+                                    @error('sender_name')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="customer">رقم الموبيل</label>
+                                    <input class="form-control" name="sender_phone" value="{{ $order->sender_phone }}" type="text">
+                                    @error('sender_phone')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
                                     <label for="customer">أسم المركب</label>
                                     <input class="form-control" type="text" name="name" value="{{ $order->name }}">
                                     @error('name')
@@ -71,11 +88,7 @@
                                     <input type="file" class="form-control input_files" multiple accept="application/pdf,image/*" hidden
                                         name="files[]" data-img="3" data-pdf="3">
                                     <button type="button" class="btn btn-primary form-control files">
-                                        @if($order->files)
-                                            {{ count(json_decode($order->files)) }}
-                                        @else
-                                            <span class="mdi mdi-plus btn-lg"></span>
-                                        @endif
+                                        <span class="mdi mdi-plus btn-lg"></span>
                                     </button>
                                     <div class="text-danger file_error pdf-error" hidden>يجب أختيار أقل من 3 من ملفات ال pdf</div>
                                     <div class="text-danger file_error img-error" hidden>يجب أختيار أقل من 3 من الصور</div>
@@ -83,6 +96,20 @@
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
+                                @if ($order->files)
+                                    <div class="current_files">
+                                        <ul class="list-unstyled">
+                                            @foreach (json_decode($order->files) as $file)
+                                                <li class="mb-2 d-flex align-items-center">
+                                                    <a class="mr-2" href="{{ asset($file) }}">{{ $file }}</a>
+                                                    <button type="button" data-order_id="{{ $order->id }}" data-index="{{ $loop->index }}" class="remove_files btn-{{ $loop->index }} btn btn-danger rounded">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
                             </div>
                             <div class="col-12">
                                 <div class="form-group">
@@ -121,6 +148,33 @@
             }
             categories_ids = [];
         }
+
+
+        // Remove Files From Order
+        $(".remove_files").on('click', function() {
+            let index = $(this).data('index'),
+            order_id = $(this).data('order_id');
+            $.ajax({
+                'method': 'POST',
+                'data': {
+                    '_token': token,
+                    index: index
+                },
+                'url' : `/orders_under_work/remove_files/` + order_id,
+                'success': function(res) {
+                    if(res.status) {
+                        toastr.success(res.message);
+                        $(`.btn-${index}`).parent().fadeOut(500);
+                        setTimeout(() => {
+                            $(`.btn-${index}`).parent().remove()
+                        }, 500);
+                    }
+                },
+                'erorr' : function(err) {
+                    console.log(err);
+                }
+            });
+        });
 
         function getSubByCategoryIdAjax(categories_ids) {
             $.ajax({

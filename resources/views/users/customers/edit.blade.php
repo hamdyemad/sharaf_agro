@@ -91,22 +91,27 @@
                                         </thead>
                                         <tbody>
                                             @if($user->responsibles->count() > 0)
-                                                @foreach ($user->responsibles as $responsible)
+                                                @foreach ($user->responsibles->groupBy('name') as $key => $responsible)
                                                     <tr>
                                                         <td>{{ $loop->index + 1 }}</td>
                                                         <td>
-                                                            <input class="form-control" type="text" value="{{ $responsible['name'] }}" name="responsible[{{ $loop->index }}][name]">
-                                                            @error("responsible.$loop->index.name")
+                                                            <input class="form-control" type="text" value="{{ $key }}" name="responsible[{{ $loop->index }}][name]">
+                                                            @error("responsible.*.name")
                                                                 <div class="text-danger">{{ $message }}</div>
                                                             @enderror
                                                         </td>
-                                                        <td>
-                                                            <input class="form-control" type="text" value="{{ $responsible['phone'] }}" name="responsible[{{ $loop->index }}][phone]">
-                                                            @error("responsible.$loop->index.phone")
-                                                                <div class="text-danger">{{ $message }}</div>
-                                                            @enderror
+                                                        <td class="phones_td">
+                                                            @foreach ($responsible as $responsibleItem)
+                                                                <div class="mb-1">
+                                                                    <input class="form-control" type="text" value="{{ $responsibleItem->phone }}" name="responsible[{{ $loop->parent->index }}][phones][]">
+                                                                    @error("responsible.*.phones.$loop->index")
+                                                                        <div class="text-danger">{{ $message }}</div>
+                                                                    @enderror
+                                                                </div>
+                                                            @endforeach
                                                         </td>
                                                         <td>
+                                                            <button type="button" class="btn btn-success add_phone ml-2" data-index="{{ $loop->index }}">اضافة رقم جديد</button>
                                                             <button type="button" class="btn btn-danger remove_responsible">ازالة</button>
                                                         </td>
                                                     </tr>
@@ -120,7 +125,7 @@
                         <div class="col-12 col-md-6">
                             <div class="form-group">
                                 <label for="username">رقم التليفون</label>
-                                <input type="text" name="phone" value="{{ old('phone') }}"
+                                <input type="text" name="phone" value="{{ $user->phone }}"
                                     class="form-control">
                                 @error('phone')
                                     <div class="text-danger">{{ $message }}</div>
@@ -130,7 +135,7 @@
                         <div class="col-12 col-md-6">
                             <div class="form-group">
                                 <label for="username">العنوان (أختيارى)</label>
-                                <input type="text" name="address" value="{{ old('address') }}"
+                                <input type="text" name="address" value="{{ $user->address }}"
                                     class="form-control">
                             </div>
                         </div>
@@ -143,6 +148,11 @@
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
+                                @if($user->current_password)
+                                    <div class="alert alert-info">
+                                        الرقم السرى الحالى : <span>{{ $user->current_password }}</span>
+                                    </div>
+                                @endif
                             </div>
                         @endif
                         <div class="col-12">
@@ -162,6 +172,16 @@
 <script>
 
     let index = 0;
+    function phone_div(index) {
+        return `
+        <div class="mb-1">
+            <input class="form-control" type="text" name="responsible[${index}][phones][]">
+            @error("responsible.*.phones.*")
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
+        </div>
+    `;
+    }
     function tr(index) {
         return `
             <tr>
@@ -172,13 +192,16 @@
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </td>
-                <td>
-                    <input class="form-control" type="text" name="responsible[${index}][phone]">
-                    @error("responsible.*.phone")
-                        <div class="text-danger">{{ $message }}</div>
-                    @enderror
+                <td class="phones_td">
+                    <div class="mt-1">
+                        <input class="form-control" type="text" name="responsible[${index}][phones][]">
+                        @error("responsible.*.phones.*")
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </td>
                 <td>
+                    <button type="button" class="btn btn-success add_phone ml-2">اضافة رقم جديد</button>
                     <button type="button" class="btn btn-danger remove_responsible">ازالة</button>
                 </td>
             </tr>
@@ -188,8 +211,22 @@
         index++
         $(".responsible_table").parent().removeClass('d-none');
         $(".responsible_table tbody").append(tr(index));
+        add_phone(index);
         remove_tr();
     });
+
+    function add_phone(index) {
+        $(".add_phone").on('click', function() {
+            console.log($(this).data('index'));
+            if(index !== undefined) {
+                index = index;
+            } else {
+                index = $(this).data('index');
+            }
+            $(this).parent().parent().find('.phones_td').prepend(phone_div(index));
+        });
+    }
+    add_phone();
 
     function remove_tr() {
         $(".remove_responsible").on('click', function() {

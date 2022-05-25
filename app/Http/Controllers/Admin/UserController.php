@@ -152,7 +152,8 @@ class UserController extends Controller
             'type' => 'sub-admin',
             'address' => $request->address,
             'phone' => $request->phone,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            'current_password' => $request->password
         ];
         $rules = [
             'roles' => 'required|exists:roles,id',
@@ -206,7 +207,6 @@ class UserController extends Controller
         }
         if($request['categories']) {
             foreach ($request['categories'] as $category) {
-                $subCategories = SubCategory::where('category_id', $category)->get();
                 UserCategory::create([
                     'user_id' => $user->id,
                     'category_id' => $category
@@ -299,6 +299,10 @@ class UserController extends Controller
             'avatar.image' => 'يجب أن يكون الحقل فى هيئة صورة',
             'categories.required' => 'الأقسام مطلوبة',
         ];
+        if($request->password) {
+            $rules['password'] = 'min:8|string';
+            $messages['password.min'] = 'الرقم السرى يجب ان يكون اكثر من 8 حروف';
+        }
         if($request['categories']) {
             $sub_categories = SubCategory::whereIn('category_id', $request['categories'])->get();
             if($sub_categories->count() > 0) {
@@ -309,6 +313,10 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), $rules, $messages);
         if($validator->fails()) {
             return redirect()->back()->withErrors($validator->errors())->with('error', 'يوجد خطأ ما')->withInput($request->all());
+        }
+        if($request->password) {
+            $creation['password'] = Hash::make($request->password);
+            $creation['current_password'] = $request->password;
         }
         if($request->has('avatar')) {
             $creation['avatar'] = $this->uploadFile($request, $this->usersPath, 'avatar');

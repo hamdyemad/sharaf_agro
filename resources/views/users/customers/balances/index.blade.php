@@ -98,7 +98,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        {{ $balances->links() }}
+                        {{ $balances->appends(request()->all())->links() }}
                     </div>
                 @else
                 <div class="alert alert-info">لا يوجد شركات</div>

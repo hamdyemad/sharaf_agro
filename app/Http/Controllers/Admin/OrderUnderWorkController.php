@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Events\RealOrderUnderWork;
+use App\Exports\OrderUnderWorkExport;
 use App\Http\Controllers\Controller;
 use App\Mail\SendOrderUnderWork;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\OrderUnderWork;
+use App\Models\OrderUnderWorkHistory;
 use App\Models\OrderUnderWorkView;
 use App\Models\Status;
 use App\Models\SubCategory;
@@ -20,6 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OrderUnderWorkController extends Controller
 {
@@ -57,6 +60,12 @@ class OrderUnderWorkController extends Controller
         if($request->name) {
             $orders->where('name', 'like', '%'. $request->name . '%');
         }
+        if($request->sender_name) {
+            $orders->where('sender_name', 'like', '%'. $request->sender_name . '%');
+        }
+        if($request->sender_phone) {
+            $orders->where('sender_phone', 'like', '%'. $request->sender_phone . '%');
+        }
         if($request->customer_id) {
             $orders->where('customer_id', $request->customer_id);
         }
@@ -71,6 +80,47 @@ class OrderUnderWorkController extends Controller
         }
         $orders = $orders->paginate(10);
         return view('orders_under_work.index', compact('orders', 'categories', 'statuses'));
+    }
+    public function export(Request $request)
+    {
+        if(Auth::user()->type == 'user') {
+            $orders = OrderUnderWork::where('customer_id', Auth::id())->latest();
+        } else if(Auth::user()->type == 'sub-admin' && Auth::user()->can('orders_under_work.index') == true) {
+            $user_categories = UserCategory::where('user_id', Auth::id())->pluck('category_id');
+            $user_sub_categories = UserSubCategory::where('user_id', Auth::id())->pluck('sub_category_id');
+            $orders = OrderUnderWork::
+            whereIn('category_id', $user_categories)
+            ->whereIn('sub_category_id', $user_sub_categories)
+            ->latest();
+        } else if(Auth::user()->type == 'admin') {
+            $orders = OrderUnderWork::latest();
+        } else {
+            return abort(401);
+        }
+        if($request->name) {
+            $orders->where('name', 'like', '%'. $request->name . '%');
+        }
+        if($request->sender_name) {
+            $orders->where('sender_name', 'like', '%'. $request->sender_name . '%');
+        }
+        if($request->sender_phone) {
+            $orders->where('sender_phone', 'like', '%'. $request->sender_phone . '%');
+        }
+        if($request->customer_id) {
+            $orders->where('customer_id', $request->customer_id);
+        }
+        if($request->status_id) {
+            $orders->where('status_id', $request->status_id);
+        }
+        if($request->category_id) {
+            $orders->where('category_id', $request->category_id);
+        }
+        if($request->sub_category_id) {
+            $orders->where('sub_category_id', $request->sub_category_id);
+        }
+        $orders = $orders->get();
+        // return $orders;
+        return Excel::download(new OrderUnderWorkExport($orders), 'orders_under_work.xlsx');
     }
 
     public function alerts(Request $request)
@@ -125,12 +175,16 @@ class OrderUnderWorkController extends Controller
                 'status_id' => $status->id,
                 'name' => $request->name,
                 'details' => $request->details,
+                'sender_name' => $request->sender_name,
+                'sender_phone' => $request->sender_phone,
             ];
             if($status) {
                 $rules = [
                     'category_id' => 'required|exists:categories,id|max:255',
                     'name' => 'required|string|max:255',
                     'details' => 'required|string',
+                    'sender_name' => 'required|string',
+                'sender_phone' => 'required|string',
                 ];
                 $messages = [
                     'category_id.required' => 'القسم الرئيسى مطلوب',
@@ -140,6 +194,8 @@ class OrderUnderWorkController extends Controller
                     'name.max' => 'أسم المركب يجب أن يكون أقل من 255 حرف',
                     'details.required' => 'تفاصيل المركب مطلوبة',
                     'details.string' => 'تفاصيل المركب يجب أن يكون من نوع string',
+                    'sender_name.required' => 'أسم الراسل مطلوب',
+                    'sender_phone.required' => 'رقم موبيل الراسل مطلوب',
                 ];
                 $subs = SubCategory::where('category_id', $request['category_id'])->get();
                 if($subs->count() > 0) {
@@ -296,6 +352,12 @@ class OrderUnderWorkController extends Controller
                     'status_id' => $request->status_id,
                     'reason' => $request->reason,
                 ]);
+                // Make Order History
+                OrderUnderWorkHistory::create([
+                    'order_id' => $order_under_work->id,
+                    'status_id' => $order_under_work->status_id,
+                    'user_id' => Auth::id()
+                ]);
                 $orders_view = OrderUnderWorkView::
                 where('order_under_work_id', $order_under_work->id)
                 ->get();
@@ -342,11 +404,15 @@ class OrderUnderWorkController extends Controller
                 'sub_category_id' => $request->sub_category_id,
                 'name' => $request->name,
                 'details' => $request->details,
+                'sender_name' => $request->sender_name,
+            'sender_phone' => $request->sender_phone,
             ];
             $rules = [
                 'category_id' => 'required|exists:categories,id|max:255',
                 'name' => 'required|string|max:255',
                 'details' => 'required|string',
+                'sender_name' => 'required|string',
+                'sender_phone' => 'required|string',
             ];
             $messages = [
                 'category_id.required' => 'القسم الرئيسى مطلوب',
@@ -355,7 +421,9 @@ class OrderUnderWorkController extends Controller
                 'name.string' => 'أسم المركب يجب أن يكون من نوع string',
                 'name.max' => 'أسم المركب يجب أن يكون أقل من 255 حرف',
                 'details.required' => 'تفاصيل المركب مطلوبة',
-                'details.string' => 'تفاصيل المركب يجب أن يكون من نوع string'
+                'details.string' => 'تفاصيل المركب يجب أن يكون من نوع string',
+                'sender_name.required' => 'أسم الراسل مطلوب',
+                'sender_phone.required' => 'رقم موبيل الراسل مطلوب',
             ];
             $subs = SubCategory::where('category_id', $request['category_id'])->get();
             if($subs->count() > 0) {
@@ -368,22 +436,24 @@ class OrderUnderWorkController extends Controller
                 return redirect()->back()->withErrors($validator->errors())->with('error', 'يوجد خطأ ما')->withInput($request->all());
             }
             if($request['files']) {
-                // Remove Old Files First
                 if($order->files) {
-                    foreach (json_decode($order->files) as $file) {
-                        if(file_exists($file)) {
-                            unlink($file);
-                        }
-                    }
+                    $files = json_decode($order->files);
+                } else {
+                    $files = [];
                 }
-                // Add New Files
                 foreach ($request->file('files') as $file) {
-                    $files[] = $this->uploadFiles($file, $this->ordersUnderWorkPath);
+                    array_push($files, $this->uploadFiles($file, $this->ordersUnderWorkPath));
                 }
                 $creation['files'] = json_encode($files);
             }
             $main_category = Category::find($request->category_id);
             $order->update($creation);
+            // Make Order History
+            OrderUnderWorkHistory::create([
+                'order_id' => $order->id,
+                'status_id' => $order->status_id,
+                'user_id' => Auth::id()
+            ]);
             $data = [
                 'name' => $request->name,
                 'customer_name' => $order->customer->name,
@@ -451,6 +521,21 @@ class OrderUnderWorkController extends Controller
             return redirect()->to(route('orders_under_work.index'))->with('success', 'تم تعديل الرسالة بنجاح');
         }
     }
+
+
+    public function remove_files(Request $request, $id) {
+        $order = OrderUnderWork::find($id);
+        if(file_exists(json_decode($order->files)[$request->index])) {
+            $files = json_decode($order->files, true);
+            array_splice($files, $request->index, 1);
+            unlink($files[$request->index]);
+            $order->update([
+                'files' => json_encode($files)
+            ]);
+        }
+        return $this->sendRes('تم ازالة الملف بنجاح', true);
+    }
+
 
     /**
      * Remove the specified resource from storage.

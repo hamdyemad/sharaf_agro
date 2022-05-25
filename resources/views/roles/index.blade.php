@@ -98,7 +98,7 @@
                             @endforeach
                         </tbody>
                     </table>
-                    {{ $roles->links() }}
+                    {{ $roles->appends(request()->all())->links() }}
                 </div>
             @else
             <div class="alert alert-info">لا يوجد صلاحيات</div>

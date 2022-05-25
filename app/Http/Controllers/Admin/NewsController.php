@@ -8,6 +8,7 @@ use App\Mail\SendNew;
 use App\Models\News;
 use App\Models\NewsView;
 use App\Traits\File;
+use App\Traits\Res;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\Validator;
 
 class NewsController extends Controller
 {
-    use File;
+    use File, Res;
     /**
      * Display a listing of the resource.
      *
@@ -193,20 +194,33 @@ class NewsController extends Controller
         }
         if($request['images']) {
             if($new->images) {
-                foreach (json_decode($new->images) as $image) {
-                    if(file_exists($image)) {
-                        unlink($image);
-                    }
-                }
+                $images = json_decode($new->images);
+            } else {
+                $images = [];
             }
             foreach ($request->file('images') as $image) {
-                $images[] = $this->uploadFiles($image, $this->newsPath);
+                array_push($images, $this->uploadFiles($image, $this->newsPath));
             }
             $creation['images'] = json_encode($images);
         }
         $new->update($creation);
         return redirect()->back()->with('success', 'تم تعديل الخبر بنجاح');
     }
+
+    public function remove_files(Request $request, $id) {
+        $new = News::find($id);
+        if(file_exists(json_decode($new->images)[$request->index])) {
+            $images = json_decode($new->images, true);
+            unlink($images[$request->index]);
+            array_splice($images, $request->index, 1);
+            $new->update([
+                'images' => json_encode($images)
+            ]);
+        }
+        return $this->sendRes('تم ازالة الملف بنجاح', true);
+    }
+
+
 
     /**
      * Remove the specified resource from storage.

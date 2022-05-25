@@ -38,7 +38,7 @@
                             <div class="col-12 col-md-4 mb-3">
                                 <a href="{{ route('news.show', $new) }}">
                                     <div class="item">
-                                        @if($new->images)
+                                        @if($new->images && is_array($new->images))
                                             <img src="{{ asset(json_decode($new->images)[0]) }}" alt="">
                                         @else
                                             <img src="{{ asset('/images/default.jpg') }}" alt="">
@@ -58,7 +58,7 @@
                 @else
                     <div class="alert alert-info">لا يوجد أخبار</div>
                 @endif
-                {{ $news->links() }}
+                {{ $news->appends(request()->all())->links() }}
             </div>
         </div>
     </div>

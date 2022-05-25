@@ -23,7 +23,6 @@ orderChannel.bind("App\\Events\\RealInquire", function(data) {
                         <h6 class="mt-0 mb-1">الأستفسار : ${data.inquire.details}</h6>
                         <h6 class="mt-0 mb-1">القسم الرئيسى : ${data.main_category}</h6>
                         <h6 class="mt-0 mb-1">القسم الفرعى : ${data.sub_category}</h6>
-                        <h6 class="mt-0 mb-1">الحالة : <span class="badge badge-primary p-1">${data.status}</span></h6>
                     </div>
                 </div>
             </a>

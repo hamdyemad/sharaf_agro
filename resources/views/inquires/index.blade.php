@@ -26,20 +26,20 @@
                     <div class="row">
                         <div class="col-12 col-md-6">
                             <div class="form-group">
-                                <label for="name">الأستفسار</label>
-                                <input class="form-control" name="details" type="text" value="{{ request('details') }}">
+                                <label for="name">أسم الراسل</label>
+                                <input class="form-control" name="sender_name" type="text" value="{{ request('sender_name') }}">
                             </div>
                         </div>
                         <div class="col-12 col-md-6">
                             <div class="form-group">
-                                <label for="name">الحالة</label>
-                                <select class="form-control select2" name="status_id">
-                                    <option value="">أختر</option>
-                                    @foreach ($statuses as $status)
-                                        <option value="{{ $status->id }}" @if ($status->id == request('status_id')) selected @endif>
-                                            {{ $status->name }}</option>
-                                    @endforeach
-                                </select>
+                                <label for="name">رقم موبيل الراسل</label>
+                                <input class="form-control" name="sender_phone" type="text" value="{{ request('sender_phone') }}">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-group">
+                                <label for="name">الأستفسار</label>
+                                <input class="form-control" name="details" type="text" value="{{ request('details') }}">
                             </div>
                         </div>
                         <div class="col-12 col-md-6">
@@ -65,6 +65,9 @@
                                 <input type="submit" value="بحث" class="form-control btn btn-primary mt-1">
                             </div>
                         </div>
+                        <div class="col-12 col-md-6">
+                            <a class="btn btn-info mt-1" href="{{ route('inquires.export', request()->all()) }}">تصدير ملف اكسل</a>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -74,10 +77,15 @@
                         <thead>
                             <tr>
                                 <th><span class="max">#</span></th>
+                                @if (Auth::user()->type == 'admin' || Auth::user()->can('inquires.show_histories'))
+                                    <th><span class="max">تاريخ التعديلات</span></th>
+                                @endif
                                 <th><span class="max">الشركة</span></th>
+                                <th><span class="max">أسم الراسل</span></th>
+                                <th><span class="max">رقم موبيل الراسل</span></th>
                                 <th><span class="max">الأستفسار</span></th>
                                 <th><span class="max">القسم</span></th>
-                                <th><span class="max">الحالة</span></th>
+                                <th><span class="max">رد على الأستفسار</span></th>
                                 <th><span class="max">وقت الأنشاء</span></th>
                                 <th><span class="max">وقت أخر تعديل</span></th>
                                 <th><span class="max">الأعدادات</span></th>
@@ -87,7 +95,33 @@
                             @foreach ($inquires as $inquire)
                                 <tr id="{{ $inquire->id }}" data-value="{{ $inquire }}">
                                     <td scope="row">{{ $inquire->id }}</td>
+                                    @if (Auth::user()->type == 'admin' || Auth::user()->can('inquires.show_histories'))
+                                        <td scope="row">
+                                            @if (count($inquire->histories) > 0)
+                                                <table>
+                                                    <thead>
+                                                        <tr>
+                                                            <td><span class="max font-weight-bold">من عدل على الطلب</span></td>
+                                                            <td><span class="max font-weight-bold">التوقيت</span></td>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach ($inquire->histories()->latest()->get() as $history)
+                                                            <tr>
+                                                                <td><span class="max">{{ $history->user->name }}</span></td>
+                                                                <td><span class="max">{{ $history->created_at }}</span></td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            @else
+                                                <span class="max">لا يوجد تعديلات بعد</span>
+                                            @endif
+                                        </td>
+                                    @endif
                                     <th><span class="max">{{ $inquire->customer->name }}</span></th>
+                                    <th><span class="max">{{ $inquire->sender_name }}</span></th>
+                                    <th><span class="max">{{ $inquire->sender_phone }}</span></th>
                                     <td>
                                         @if(strlen($inquire->details) > 30)
                                             <p class="m-0">{{ mb_substr($inquire->details, 0, 30) . '...' }}</p>
@@ -110,14 +144,48 @@
                                         </ul>
                                     </td>
                                     <td>
-                                        @if(Auth::user()->type !== 'user' && Auth::user()->can('inquires.update_status'))
-                                            <select class="form-control change_status select2">
-                                                @foreach ($statuses as $status)
-                                                    <option value="{{ $status->id }}" @if($inquire->status_id == $status->id) selected @endif>{{ $status->name }}</option>
-                                                @endforeach
-                                            </select>
+                                        @if($inquire->reply)
+                                            <span class="badge badge-secondary d-block">{{ $inquire->reply }}</span>
+                                        @elseif(Auth::user()->type == 'admin' || Auth::user()->can('inquires.update_reply'))
+                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_change_{{ $inquire->id }}">
+                                                أضافة رد
+                                            </button>
+                                            {{-- Status Change Modal --}}
+                                            <div class="modal fade" id="modal_change_{{ $inquire->id }}" tabindex="-1" role="dialog"
+                                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">
+                                                                اضافة رد
+                                                                </h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <form action="{{ route('inquires.update', $inquire) }}" method="POST">
+                                                                <input type="hidden" name="page" value="{{ request('page') }}">
+                                                                <input type="hidden" name="add_reply" value="add_reply">
+                                                                @method("PATCH")
+                                                                @csrf
+                                                                <div class="modal-body">
+                                                                    <textarea class="form-control" name="reply" cols="30" rows="10" placeholder="السبب"></textarea>
+                                                                    @error('reply')
+                                                                        <div class="text-danger">{{ $message }}</div>
+                                                                    @enderror
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">لا</button>
+                                                                        <input type="submit" class="btn btn-danger" value="نعم">
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         @else
-                                        <div class="badge badge-primary">{{ $inquire->status->name }}</div>
+                                        <span class="max">لا يوجد رد حتى الأن</span>
                                         @endif
                                     </td>
                                     <td>
@@ -158,7 +226,7 @@
                         </tbody>
                     </table>
                 </div>
-                {{ $inquires->links() }}
+                {{ $inquires->appends(request()->all())->links() }}
             </div>
         </div>
     </div>
@@ -167,6 +235,10 @@
 
 @section('footerScript')
     <script>
+
+        @if(Session::has('error'))
+            $(`#modal_change_${"{{ request('inquire_id') }}"}`).modal();
+        @endif
 
 let categories_ids = [];
         function getSubCategoryById() {
@@ -212,55 +284,10 @@ let categories_ids = [];
             });
         }
 
-        // orderChannel.bind('App\\Events\\newOrder', function(data) {
-        //     if(data) {
-        //         if(data.order.branch_id == "{{ Auth::user()->branch_id }}" || "{{Auth::user()->type}}" == 'admin') {
-        //             window.location.reload();
-        //         }
-        //     }
-        // });
-
-        // let statusChannel = pusher.subscribe('changeOrderStatus');
-        // statusChannel.bind('App\\Events\\changeOrderStatus', function(data) {
-        //     if(data) {
-        //         if(data.order.branch_id == "{{ Auth::user()->branch_id }}") {
-        //             window.location.reload();
-        //         }
-        //         // $(`#${data.order.id} .status`).select2("val", data.status_id);
-        //     }
-        // });
 
         @if(Session::has('error'))
             $(`#modal_change_${"{{ request('order_id') }}"} form`).append(`<input type="hidden" name="status_id" value="${"{{ Session::get('status_id') }}"}">`);
             $(`#modal_change_${"{{ request('order_id') }}"}`).modal();
         @endif
-
-        $(".change_status").on('change', function () {
-            order_id = $(this).parent().parent().attr('id'),
-            user_id = "{{ Auth::id() }}",
-            status_id = $(this).val();
-            $("#preloader_all").removeClass('d-none');
-            $.ajax({
-                "method": "POST",
-                "data": {
-                    "_token": token,
-                    "order_id" : order_id,
-                    "status_id": status_id
-                },
-                "url": "{{ route('inquires.update_status') }}",
-                "success": function(res) {
-                    console.log(res);
-                    if(res.status) {
-                        toastr.success(res.message);
-                    }
-                    $("#preloader_all").addClass('d-none');
-                },
-                "error": function(err) {
-                    console.log(err);
-                }
-            });
-
-
-        })
     </script>
 @endsection

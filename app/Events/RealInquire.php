@@ -18,7 +18,6 @@ class RealInquire implements ShouldBroadcast
     public $customer_name;
     public $main_category;
     public $sub_category;
-    public $status;
 
     /**
      * Create a new event instance.
@@ -31,7 +30,6 @@ class RealInquire implements ShouldBroadcast
         $this->customer_name = $data['customer_name'];
         $this->main_category = $data['main_category'];
         $this->sub_category = $data['sub_category'];
-        $this->status = $data['status'];
     }
 
     /**

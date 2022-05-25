@@ -23,17 +23,35 @@
       <tr>
           <td style="padding:20px;vertical-align:top; justify-content: space-between;">
             <ul  style="list-style-type: none; margin:0;padding:0;">
+                @if (isset($data['user']))
+                    <li style="display:flex; align-items:center; margin-bottom:10px">
+                        <h2 style="background-color:#e7e7e7;margin:0;border-radius: 10px;padding: 5px 10px;font-size: 16px;">تعديل بواسطة</h2>
+                        <h3 style="background: #4d4e4e;
+                        color: #fff;
+                        border-radius: 10px;margin:0;margin-right:10px;padding: 5px 10px;font-size:16px;">{{ $data['user'] }}</h3>
+                    </li>
+                @endif
+                @if (isset($data['sender_name']))
+                    <li style="display:flex; align-items:center; margin-bottom:10px">
+                        <h2 style="background-color:#e7e7e7;margin:0;border-radius: 10px;padding: 5px 10px;font-size: 16px;">أسم الراسل</h2>
+                        <h3 style="background: #4d4e4e;
+                        color: #fff;
+                        border-radius: 10px;margin:0;margin-right:10px;padding: 5px 10px;font-size:16px;">{{ $data['sender_name'] }}</h3>
+                    </li>
+                @endif
+                @if (isset($data['sender_phone']))
+                    <li style="display:flex; align-items:center; margin-bottom:10px">
+                        <h2 style="background-color:#e7e7e7;margin:0;border-radius: 10px;padding: 5px 10px;font-size: 16px;">رقم موبيل الراسل الراسل</h2>
+                        <h3 style="background: #4d4e4e;
+                        color: #fff;
+                        border-radius: 10px;margin:0;margin-right:10px;padding: 5px 10px;font-size:16px;">{{ $data['sender_phone'] }}</h3>
+                    </li>
+                @endif
                 <li style="display:flex; align-items:center">
                     <h2 style="background-color:#e7e7e7;margin:0;border-radius: 10px;padding: 5px 10px;font-size: 16px;">أسم الشركة</h2>
                     <h3 style="background: #4d4e4e;
                     color: #fff;
                     border-radius: 10px;margin:0;margin-right:10px;padding: 5px 10px;font-size:16px;">{{ $data['name'] }}</h3>
-                </li>
-                <li style="display:flex; align-items:center; margin-top:10px">
-                    <h2 style="background-color:#e7e7e7;margin:0;border-radius: 10px;padding: 5px 10px;font-size: 16px;">الحالة</h2>
-                    <h3 style="background: #4d4e4e;
-                    color: #fff;
-                    border-radius: 10px;margin:0;margin-right:10px;padding: 5px 10px;font-size:16px;">{{ $data['status_name'] }}</h3>
                 </li>
                 <li style="display:flex; align-items:center; margin-top:10px">
                     <h2 style="background-color:#e7e7e7;margin:0;border-radius: 10px;padding: 5px 10px;font-size: 16px;">القسم الرئيسى</h2>
@@ -58,6 +76,16 @@
             <p style="font-size:14px;margin:0 0 6px 0;">
                 <span style="font-weight:bold;display:inline-block;min-width:150px">الأستفسار</span>
                 <b style="color:green;font-weight:normal;margin:0">{{ $data['details'] }}</b>
+                </p>
+            </td>
+        </tr>
+      @endif
+      @if(isset($data['reply']))
+        <tr>
+            <td colspan="2" style="border: solid 1px #ddd; padding:10px 20px;">
+            <p style="font-size:14px;margin:0 0 6px 0;">
+                <span style="font-weight:bold;display:inline-block;min-width:150px">رد الأستفسار</span>
+                <b style="color:green;font-weight:normal;margin:0">{{ $data['reply'] }}</b>
                 </p>
             </td>
         </tr>

@@ -60,10 +60,10 @@
                                         <th scope="row">{{ $new->id }}</th>
                                         <td>
                                             <div class="d-flex">
-                                                @if ($new->images)
+                                                @if ($new->images && is_array($new->images))
                                                     <img src="{{ asset(json_decode($new->images)[0]) }}" alt="">
                                                 @else
-                                                    <img src="{{ asset('images/avatar.jpg') }}" alt="">
+                                                    <img src="{{ asset('images/default.jpg') }}" alt="">
                                                 @endif
                                                 <h3 class="max ml-3">
                                                     @if(strlen($new->name) > 30)
@@ -77,9 +77,9 @@
                                         <td>
                                             <p>
                                                 @if(strlen($new->details) > 60)
-                                                {{ mb_substr($new->details, 0, 60) . '...' }}
+                                                {{ mb_substr(strip_tags($new->details), 0, 60) . '...' }}
                                                 @else
-                                                {{ $new->details }}
+                                                {{ strip_tags($new->details) }}
                                                 @endif
                                             </p>
                                         </td>
@@ -117,7 +117,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        {{ $news->links() }}
+                        {{ $news->appends(request()->all())->links() }}
                     </div>
                 @else
                     <div class="alert alert-info">لا يوجد أخبار</div>
