@@ -118,19 +118,19 @@
                             <thead>
                                 <tr>
                                     <th><span class="max">#</span></th>
-                                    @if (Auth::user()->type == 'admin' || Auth::user()->can('orders.show_histories'))
-                                        <th><span class="max">تاريخ التعديلات</span></th>
-                                    @endif
                                     <th><span class="max">الأعدادات</span></th>
                                     <th><span class="max">الشركة</span></th>
                                     <th><span class="max">أسم المركب</span></th>
-                                    <th><span class="max">تفاصيل المركب</span></th>
+                                    <th><span class="max">الحالة</span></th>
                                     @if(Auth::user()->type == 'admin')
-                                        <th><span class="max">انشاء بواسطة</span></th>
+                                    <th><span class="max">انشاء بواسطة</span></th>
                                     @endif
                                     <th><span class="max">القسم</span></th>
-                                    <th><span class="max">الحالة</span></th>
+                                    <th><span class="max">تفاصيل المركب</span></th>
                                     <th><span class="max">التواريخ المضافة</span></th>
+                                    @if (Auth::user()->type == 'admin' || Auth::user()->can('orders.show_histories'))
+                                        <th><span class="max">تاريخ التعديلات</span></th>
+                                    @endif
                                     <th><span class="max">وقت الأنشاء</span></th>
                                     <th><span class="max">وقت أخر تعديل</span></th>
                                 </tr>
@@ -140,31 +140,6 @@
                                     <tr id="{{ $order->id }}" data-value="{{ $order }}">
                                         <td scope="row">{{ $order->id }}</td>
                                         @if (Auth::user()->type == 'admin' || Auth::user()->can('orders.show_histories'))
-                                        <td scope="row">
-                                            @if (count($order->histories) > 0)
-                                                        <table>
-                                                            <thead>
-                                                                <tr>
-                                                                    <td><span class="max font-weight-bold">من عدل على الطلب</span></td>
-                                                                    <td><span class="max font-weight-bold">الحالة</span></td>
-                                                                    <td><span class="max font-weight-bold">التوقيت</span></td>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                @foreach ($order->histories()->latest()->get() as $history)
-                                                                    <tr>
-                                                                        <td><span class="max">{{ $history->user->name }}</span></td>
-                                                                        <td><span class="max">{{ $history->status->name }}</span></td>
-                                                                        <td><span class="max">{{ $history->created_at }}</span></td>
-                                                                    </tr>
-                                                                @endforeach
-                                                            </tbody>
-                                                        </table>
-                                            @else
-                                                    <span class="max">لا يوجد تعديلات بعد</span>
-                                                    @endif
-                                            @endif
-                                        </td>
                                         <td>
                                             <div class="options d-flex">
                                                 @if(Auth::user()->type == 'user' || Auth::user()->can('orders.show'))
@@ -194,24 +169,7 @@
                                         </td>
                                         <th><span class="max">{{ $order->customer->name }}</span></th>
                                         <td><span class="max">{{ $order->name }}</span></td>
-                                        <td>
-                                            @if(Auth::user()->type == 'user')
-                                                @if ($order->show_details)
-                                                    @if(strlen($order->details) > 30)
-                                                        <p class="m-0">{{ mb_substr($order->details, 0, 30) . '...' }}</p>
-                                                    @else
-                                                        <p class="m-0">{{ $order->details }}</p>
-                                                    @endif
-                                                @endif
-                                            @endif
-                                            @if (Auth::user()->type !== 'user')
-                                                @if(strlen($order->details) > 30)
-                                                    <p class="m-0">{{ mb_substr($order->details, 0, 30) . '...' }}</p>
-                                                @else
-                                                    <p class="m-0">{{ $order->details }}</p>
-                                                @endif
-                                            @endif
-                                        </td>
+                                        <td><span class="max badge badge-primary">{{ $order->status->name }}</span></td>
                                         @if(Auth::user()->type == 'admin')
                                             <td>
                                                 <span class="max">{{ $order->employee->name }}</span>
@@ -231,7 +189,24 @@
                                                 @endif
                                             </ul>
                                         </td>
-                                        <td><span class="max badge badge-primary">{{ $order->status->name }}</span></td>
+                                        <td>
+                                            @if(Auth::user()->type == 'user')
+                                                @if ($order->show_details)
+                                                    @if(strlen($order->details) > 30)
+                                                        <p class="m-0">{{ mb_substr($order->details, 0, 30) . '...' }}</p>
+                                                    @else
+                                                        <p class="m-0">{{ $order->details }}</p>
+                                                    @endif
+                                                @endif
+                                            @endif
+                                            @if (Auth::user()->type !== 'user')
+                                                @if(strlen($order->details) > 30)
+                                                    <p class="m-0">{{ mb_substr($order->details, 0, 30) . '...' }}</p>
+                                                @else
+                                                    <p class="m-0">{{ $order->details }}</p>
+                                                @endif
+                                            @endif
+                                        </td>
                                         <td>
                                             <ul>
                                                 @if($order->submission_date)
@@ -259,6 +234,31 @@
                                                 @endif
                                             </ul>
                                         </td>
+                                        <td scope="row">
+                                            @if (count($order->histories) > 0)
+                                                        <table>
+                                                            <thead>
+                                                                <tr>
+                                                                    <td><span class="max font-weight-bold">من عدل على الطلب</span></td>
+                                                                    <td><span class="max font-weight-bold">الحالة</span></td>
+                                                                    <td><span class="max font-weight-bold">التوقيت</span></td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach ($order->histories()->latest()->get() as $history)
+                                                                    <tr>
+                                                                        <td><span class="max">{{ $history->user->name }}</span></td>
+                                                                        <td><span class="max">{{ $history->status->name }}</span></td>
+                                                                        <td><span class="max">{{ $history->created_at }}</span></td>
+                                                                    </tr>
+                                                                @endforeach
+                                                            </tbody>
+                                                        </table>
+                                            @else
+                                                    <span class="max">لا يوجد تعديلات بعد</span>
+                                                    @endif
+                                            @endif
+                                        </td>
                                         <td>
                                             <span class="max">{{ $order->created_at->diffForHumans() }}</span>
                                         </td>
@@ -283,7 +283,7 @@
 @section('footerScript')
     <script>
 
-let categories_ids = [];
+    let categories_ids = [];
         function getSubCategoryById() {
             $(".select_main_category").on('change', function() {
                 $(".select_sub_categories").select2().html('');

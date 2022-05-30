@@ -37,6 +37,13 @@
                          </a>
                      </li>
                  @endcan
+                <li class="@if(activeRoute('entry_and_exit.index')) mm-active @endif">
+                    <a href="{{ route('entry_and_exit.index') }}" class="@if(activeRoute('entry_and_exit.index')) active @endif waves-effect">
+                        <i class="mdi mdi-format-horizontal-align-center"></i>
+                        <span>الحضور والأنصراف</span>
+                    </a>
+                </li>
+
                  @can('categories.index')
                     <li class="@if(activeRoute(['categories.index', 'sub_categories.index'])) mm-active @endif">
                         <a href="javascript: void(0);" class="has-arrow waves-effect">

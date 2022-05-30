@@ -1,5 +1,4 @@
 @php
-
     $orders = App\Models\Order::where('expected_notify', 0)->get();
     if($orders->count() > 0) {
         foreach ($orders as $order) {

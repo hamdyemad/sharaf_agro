@@ -34,6 +34,13 @@ Route::group(['middleware' => ['web', 'auth','notBanned']], function() {
         });
 
 
+        // entry_and_exit
+        Route::group(['prefix' => 'entry_and_exit', 'as' => 'entry_and_exit.'], function() {
+            Route::get('/', 'EntryAndExitController@index')->name('index');
+            Route::get('/export-entries_and_exists', 'EntryAndExitController@export')->name('export');
+        });
+
+
 
         // Categories
         Route::group(['prefix' => 'categories', 'as' => 'categories.'], function() {
@@ -54,6 +61,7 @@ Route::group(['middleware' => ['web', 'auth','notBanned']], function() {
             Route::patch('/{sub_category}', 'SubCategoryController@update')->name('update');
             Route::delete('/{sub_category}', 'SubCategoryController@destroy')->name('destroy');
             Route::post('/all', 'SubCategoryController@all')->name('all');
+            Route::post('/user_sub_categories', 'SubCategoryController@user_sub_categories')->name('user_sub_categories');
         });
 
         // Statuses

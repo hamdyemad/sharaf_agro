@@ -197,7 +197,7 @@ File: Table editable
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\new\resources\js\pages\table-editable.int.js */"./resources/js/pages/table-editable.int.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\sharaf_agro\resources\js\pages\table-editable.int.js */"./resources/js/pages/table-editable.int.js");
 
 
 /***/ })

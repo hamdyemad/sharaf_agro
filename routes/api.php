@@ -35,6 +35,11 @@ Route::group(['middleware' => 'jwt'], function() {
         Route::get('/{id}', 'Api\OrderUnderWorkController@show');
     });
 
+    // entry_and_exit
+    Route::group(['prefix' => 'entry_and_exit'], function() {
+        Route::post('/', 'Api\EntryAndExitController@store');
+    });
+
     // Categories
     Route::get('/categories', 'Api\CategoryController@index');
 

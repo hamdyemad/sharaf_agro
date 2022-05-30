@@ -26,6 +26,7 @@
                                 <tr>
                                     <th><span class="max">#</span></th>
                                     <th><span class="max">الحالة</span></th>
+                                    <th><span class="max">التواريخ المضافة</span></th>
                                     <th><span class="max">الشركة</span></th>
                                     @if(Auth::user()->type == 'admin')
                                         <th><span class="max">الموظف المختص</span></th>
@@ -42,7 +43,34 @@
                                     <tr id="{{ $order->id }}" data-value="{{ $order }}">
                                         <td scope="row">{{ $order->id }}</td>
                                         <td><span class="max badge badge-primary">{{ $order->status->name }}</span></td>
-                                        <th><span class="max">{{ $order->customer->name }}</span></th>
+                                        <td>
+                                            <ul>
+                                                @if($order->submission_date)
+                                                    <li>
+                                                        <span>تاريخ التقديم: </span>
+                                                        <p>{{ $order->submission_date }}</p>
+                                                    </li>
+                                                @endif
+                                                @if($order->expected_date && Auth::user()->type !== 'user')
+                                                    <li>
+                                                        <span>تاريخ متوقع: </span>
+                                                        <p>{{ $order->expected_date }}</p>
+                                                    </li>
+                                                @endif
+                                                @if($order->expiry_date)
+                                                    <li>
+                                                        <span>تاريخ الأنتهاء: </span>
+                                                        <p>{{ $order->expiry_date }}</p>
+                                                    </li>
+                                                @endif
+                                                @if(Auth::user()->type !== 'user' && $order->expected_notify)
+                                                    <li>
+                                                        <span class="badge badge-success">تم ارسال تنبيه للموظف المختص</span>
+                                                    </li>
+                                                @endif
+                                            </ul>
+                                        </td>
+                                        <td><span class="max">{{ $order->customer->name }}</span></td>
                                         @if(Auth::user()->type == 'admin')
                                             <td>
                                                 <span class="max">{{ $order->employee->name }}</span>

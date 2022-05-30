@@ -184,19 +184,31 @@
             },
             'url' : `{{ route('sub_categories.all') }}`,
             'success': function(res) {
+                console.log(res);
                 if(res.status) {
                     res.data.forEach((obj) => {
                         $(".select_sub_categories").append(`<option value="${obj.id}">${obj.name}</option>`);
                     });
-                    let user_sub_categories = {{ $user->sub_categories->pluck('sub_category_id') }};
-
-                    $('.select_sub_categories').children().each((index, child) => {
-                        user_sub_categories.find((obj) => {
-                            if($(child).attr('value') == obj) {
-                                $(child).attr('selected', '')
+                    $.ajax({
+                        'method': 'POST',
+                        'data': {
+                            '_token': token,
+                            user_id: "{{ $user->id }}",
+                        },
+                        'url' : `{{ route('sub_categories.user_sub_categories') }}`,
+                        'success': function(res) {
+                            if(res.status) {
+                                user_sub_categories = res.data;
+                                let filtered = user_sub_categories.map((obj) => {
+                                    return obj.sub_category_id;
+                                })
+                                $('.select_sub_categories').val(filtered).trigger('change');
                             }
-                        });
-                    })
+                        },
+                        'erorr' : function(err) {
+                            console.log(err);
+                        }
+                    });
                 }
             },
             'erorr' : function(err) {

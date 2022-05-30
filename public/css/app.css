@@ -3852,6 +3852,12 @@ body {
   background-color: var(--primary);
 }
 
+.admin .all_entries_and_exits .bg-danger,
+.admin .all_entries_and_exits .bg-info,
+.admin .all_entries_and_exits .bg-success {
+  color: #fff;
+}
+
 .admin .create_category img {
   width: 100%;
   height: 200px;

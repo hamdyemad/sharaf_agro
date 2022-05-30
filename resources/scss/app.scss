@@ -117,6 +117,9 @@ body {
     // Cities
     @import "./admin/cities/index";
 
+    @import "./admin/all_entries_and_exits";
+
+
     // Categories
     @import "./admin/categories/create";
     @import "./admin/categories/edit";

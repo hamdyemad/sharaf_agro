@@ -131,6 +131,12 @@ class SubCategoryController extends Controller
         return $this->sendRes('تم استرجاع البيانات ',true, $sub_categories);
     }
 
+
+    public function user_sub_categories(Request $request) {
+        $user_sub_categories = UserSubCategory::where('user_id', $request->user_id)->latest()->get()->toArray();
+        return $this->sendRes('', true, $user_sub_categories);
+    }
+
     /**
      * Remove the specified resource from storage.
      *

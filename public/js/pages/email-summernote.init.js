@@ -122,7 +122,7 @@ $(document).ready(function () {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\new\resources\js\pages\email-summernote.init.js */"./resources/js/pages/email-summernote.init.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\sharaf_agro\resources\js\pages\email-summernote.init.js */"./resources/js/pages/email-summernote.init.js");
 
 
 /***/ })

@@ -3,6 +3,9 @@
 use App\Models\Permession;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection;
 
 function activeRoute($routeNames) {
     if(is_array($routeNames)) {
@@ -39,4 +42,10 @@ function permession_maker($name, $key, $groupBy) {
             'group_by' => $groupBy
         ]);
     }
+}
+
+function paginate($items, $perPage=5, $page=null, $options = []) {
+    $page = $page ? : (Paginator::resolveCurrentPage()) ? : 1;
+    $items = $items instanceof Collection ? $items : Collection::make($items);
+    return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
 }

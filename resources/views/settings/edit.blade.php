@@ -41,7 +41,7 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-12 col-md-6">
+                            <div class="col-12">
                                 <div class="form-group">
                                     <label for="name">اللوجو</label>
                                     <input type="file" class="form-control input_files" accept="image/*" hidden name="logo">
@@ -59,6 +59,36 @@
                                         <img src="{{ asset('/images/default.jpg') }}" alt="">
                                         @endif
                                     </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="name">توقيت الحضور</label>
+                                    <input type="time" class="form-control" value="{{ get_setting('entry') }}"
+                                        name="type[entry]">
+                                    @error('entry')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="name">توقيت الأنصراف</label>
+                                    <input type="time" class="form-control" value="{{ get_setting('exit') }}"
+                                        name="type[exit]">
+                                    @error('exit')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="name">توقيت السماح للتأخيرات</label>
+                                    <input type="time" class="form-control" value="{{ get_setting('delay_allowed') }}"
+                                        name="type[delay_allowed]">
+                                    @error('delay_allowed')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="col-12">
