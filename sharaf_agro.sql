@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 25, 2022 at 01:39 PM
+-- Generation Time: May 30, 2022 at 04:08 PM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.1
 
@@ -217,6 +217,39 @@ INSERT INTO `customers_responsible` (`id`, `user_id`, `name`, `phone`, `created_
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `entry_and_exit`
+--
+
+CREATE TABLE `entry_and_exit` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` bigint(20) UNSIGNED NOT NULL,
+  `current_date` date DEFAULT NULL,
+  `entry` datetime DEFAULT NULL,
+  `exit` datetime DEFAULT NULL,
+  `is_enter` tinyint(1) NOT NULL DEFAULT 0,
+  `is_exit` tinyint(1) NOT NULL DEFAULT 0,
+  `latitude` varchar(225) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `longitude` varchar(225) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `entry_and_exit`
+--
+
+INSERT INTO `entry_and_exit` (`id`, `user_id`, `current_date`, `entry`, `exit`, `is_enter`, `is_exit`, `latitude`, `longitude`, `created_at`, `updated_at`) VALUES
+(2, 152, '2022-05-28', '2022-05-28 06:00:00', NULL, 1, 0, '29.9772568', '31.2511796', '2022-05-28 04:00:31', '2022-05-28 04:00:31'),
+(3, 152, '2022-05-28', NULL, '2022-05-28 14:00:00', 0, 1, '29.9772568', '31.2511796', '2022-05-28 12:00:52', '2022-05-28 12:00:52'),
+(4, 151, '2022-05-28', '2022-05-28 06:05:00', NULL, 1, 0, '29.9772568', '31.2511796', '2022-05-28 04:05:20', '2022-05-28 04:05:20'),
+(5, 151, '2022-05-28', NULL, '2022-05-28 13:31:00', 0, 1, '29.9772568', '31.2511796', '2022-05-28 11:31:37', '2022-05-28 11:31:37'),
+(6, 152, '2022-05-29', '2022-05-29 07:30:00', NULL, 1, 0, '29.9772568', '31.2511796', '2022-05-29 05:30:32', '2022-05-29 05:30:32'),
+(7, 152, '2022-05-29', NULL, '2022-05-29 14:31:00', 0, 1, '29.9772568', '31.2511796', '2022-05-29 12:31:08', '2022-05-29 12:31:08'),
+(8, 151, '2022-05-30', '2022-05-30 00:00:00', NULL, 1, 0, '29.9772568', '31.123456456', '2022-05-29 22:00:03', '2022-05-29 22:00:03');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `failed_jobs`
 --
 
@@ -371,7 +404,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (48, '2022_04_26_172836_create_firebase_tokens_table', 12),
 (49, '2022_05_22_114443_create_orders_under_work_histories_table', 13),
 (50, '2022_05_22_121143_create_inquires_histories_table', 14),
-(52, '2022_05_22_122532_create_orders_histories_table', 15);
+(52, '2022_05_22_122532_create_orders_histories_table', 15),
+(59, '2022_05_26_121513_create_entry_and_exit_table', 16);
 
 -- --------------------------------------------------------
 
@@ -1736,50 +1770,6 @@ INSERT INTO `roles_permessions` (`id`, `role_id`, `permession_id`, `created_at`,
 (777, 13, 95, '2022-05-11 13:10:46', '2022-05-11 13:10:46'),
 (778, 13, 97, '2022-05-11 13:10:46', '2022-05-11 13:10:46'),
 (779, 13, 100, '2022-05-11 13:10:46', '2022-05-11 13:10:46'),
-(780, 16, 34, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(781, 16, 35, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(782, 16, 36, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(783, 16, 37, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(784, 16, 61, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(785, 16, 62, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(786, 16, 63, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(787, 16, 64, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(788, 16, 65, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(789, 16, 66, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(790, 16, 67, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(791, 16, 68, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(792, 16, 69, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(793, 16, 70, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(794, 16, 71, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(795, 16, 72, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(796, 16, 73, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(797, 16, 74, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(798, 16, 75, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(799, 16, 76, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(800, 16, 77, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(801, 16, 78, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(802, 16, 79, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(803, 16, 80, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(804, 16, 81, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(805, 16, 82, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(806, 16, 102, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(807, 16, 104, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(808, 16, 85, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(809, 16, 86, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(810, 16, 88, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(811, 16, 99, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(812, 16, 101, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(813, 16, 105, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(814, 16, 89, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(815, 16, 90, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(816, 16, 91, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(817, 16, 92, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(818, 16, 93, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(819, 16, 94, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(820, 16, 95, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(821, 16, 96, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(822, 16, 97, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
-(823, 16, 100, '2022-05-11 13:16:51', '2022-05-11 13:16:51'),
 (835, 15, 69, '2022-05-18 18:37:05', '2022-05-18 18:37:05'),
 (836, 15, 70, '2022-05-18 18:37:05', '2022-05-18 18:37:05'),
 (837, 15, 71, '2022-05-18 18:37:05', '2022-05-18 18:37:05'),
@@ -1795,7 +1785,51 @@ INSERT INTO `roles_permessions` (`id`, `role_id`, `permession_id`, `created_at`,
 (847, 15, 89, '2022-05-18 18:37:05', '2022-05-18 18:37:05'),
 (848, 15, 90, '2022-05-18 18:37:05', '2022-05-18 18:37:05'),
 (849, 15, 91, '2022-05-18 18:37:05', '2022-05-18 18:37:05'),
-(850, 15, 93, '2022-05-18 18:37:05', '2022-05-18 18:37:05');
+(850, 15, 93, '2022-05-18 18:37:05', '2022-05-18 18:37:05'),
+(894, 16, 34, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(895, 16, 35, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(896, 16, 36, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(897, 16, 37, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(898, 16, 61, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(899, 16, 62, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(900, 16, 63, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(901, 16, 64, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(902, 16, 65, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(903, 16, 66, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(904, 16, 67, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(905, 16, 68, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(906, 16, 69, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(907, 16, 70, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(908, 16, 71, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(909, 16, 72, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(910, 16, 73, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(911, 16, 74, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(912, 16, 75, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(913, 16, 76, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(914, 16, 77, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(915, 16, 78, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(916, 16, 79, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(917, 16, 80, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(918, 16, 81, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(919, 16, 82, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(920, 16, 102, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(921, 16, 104, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(922, 16, 85, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(923, 16, 86, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(924, 16, 88, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(925, 16, 99, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(926, 16, 101, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(927, 16, 105, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(928, 16, 89, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(929, 16, 90, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(930, 16, 91, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(931, 16, 92, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(932, 16, 93, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(933, 16, 94, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(934, 16, 95, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(935, 16, 96, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(936, 16, 97, '2022-05-28 08:41:26', '2022-05-28 08:41:26'),
+(937, 16, 100, '2022-05-28 08:41:26', '2022-05-28 08:41:26');
 
 -- --------------------------------------------------------
 
@@ -1819,7 +1853,10 @@ INSERT INTO `settings` (`id`, `type`, `value`, `created_at`, `updated_at`) VALUE
 (1, 'logo', 'uploads/settings/logo-1650806313.png', '2022-04-24 11:18:03', '2022-04-24 11:18:33'),
 (2, 'project_name', 'Sharaf Agro Consult', '2022-04-24 11:18:03', '2022-05-13 11:40:06'),
 (3, 'expected_date', '15', '2022-04-25 00:03:03', '2022-05-13 11:40:06'),
-(4, 'expiry_date', '15', '2022-05-01 10:08:15', '2022-05-01 10:08:15');
+(4, 'expiry_date', '15', '2022-05-01 10:08:15', '2022-05-01 10:08:15'),
+(5, 'entry', '06:00', '2022-05-26 09:19:54', '2022-05-26 09:20:10'),
+(6, 'exit', '14:00', '2022-05-26 09:19:54', '2022-05-26 09:20:19'),
+(7, 'delay_allowed', '06:30', '2022-05-26 09:19:54', '2022-05-28 11:25:25');
 
 -- --------------------------------------------------------
 
@@ -1937,7 +1974,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `type`, `phone`, `address`, `email`, `username`, `avatar`, `banned`, `email_verified_at`, `password`, `current_password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'أحمد شرف', 'admin', '01004813784', NULL, 'ahmed_sharaf_ash@hotmail.com', 'admin', 'uploads/users/02196C15-459E-4114-BB1E-95BF001DAA35-1652426755.jpeg', 0, NULL, '$2y$10$5xBFzkXPM7OeVzo92RK.QuEvubM/TnqZJkHIkulP.6IxH3581YLdy', '', 'e7q1uH4RVmaMqMU5ucjxZPPHJnhEgKAIJioTnZjS5FjmWmT48fOF7QuoZtbH', NULL, '2022-05-13 11:25:55'),
+(1, 'أحمد شرف', 'admin', '01004813784', NULL, 'ahmed_sharaf_ash@hotmail.com', 'admin', 'uploads/users/02196C15-459E-4114-BB1E-95BF001DAA35-1652426755.jpeg', 0, NULL, '$2y$10$5xBFzkXPM7OeVzo92RK.QuEvubM/TnqZJkHIkulP.6IxH3581YLdy', '', '0zhZUV6oOGWxyIYAMokCU4HWlWXzCnaVr2ynyPe6qhDIxY0iE2HgsIKphnyP', NULL, '2022-05-13 11:25:55'),
 (34, 'المصرية للتنميه الزراعية', 'user', '01116702170', 'كفر صقر- الشرقيه', 'agrialmasrya@hotmail.com', 'almasrya', NULL, 0, NULL, '$2y$10$PEwoR7CV7KdXpl7QRhXLYOUCxl1PyrQdOK1QYCABi58t75abBI/WC', '', 'kQ3ulvte1SznDCebgBjSvJRzclkd23QWTcph1JLwm6jcs9yuZRMlnnx2zFqW', '2022-05-08 17:56:12', '2022-05-14 20:47:13'),
 (35, 'استرا كيم ايجيبت', 'user', '01144997000', NULL, 'y@gmail.com', 'astra', NULL, 0, NULL, '$2y$10$tjSwN7achfWKRuhg86wL8.75uTOUToYf.xiO2ZJ2wxVECXQ82r9Ku', '', NULL, '2022-05-08 18:03:14', '2022-05-15 01:24:21'),
 (37, 'محمد النوبي', 'sub-admin', NULL, NULL, 'mohamedelnobey98@gmail.com', 'm.elnobey', 'uploads/users/IMG-20220512-WA0003-1652358299.jpg', 0, NULL, '$2y$10$OmLaPpyNi/paId11qPTPA.kfLP0Q48APeV.ZsW2r931VWaVPt7YdO', '', 'Vtshx81W0XESUucO3f4nPu1hhj4cXhKSZFvXFRIeAIUSSmhoXo1IM2PUD5NA', '2022-05-08 18:08:39', '2022-05-12 16:24:59'),
@@ -2052,7 +2089,8 @@ INSERT INTO `users` (`id`, `name`, `type`, `phone`, `address`, `email`, `usernam
 (148, 'كيمسترى شادو', 'user', '01112287962', NULL, '6i@gmail.com', 'i8@gmail.com', NULL, 0, NULL, '$2y$10$MC0RUQS2jTIg48PQFgAKJOh84cVfQRQ0nEesQ6NQU2Iq4lj3ZbUlq', '', NULL, '2022-05-19 20:25:16', '2022-05-19 20:45:08'),
 (149, 'elhamd company', 'user', '045064560456', NULL, 'elhamd@gmail.com', 'elhamd', NULL, 0, NULL, '$2y$10$dxyaFMJUCRumJQHe/ic8JOOM2QvI4hir0ELzFVSjvVhttxVsQOC6.', '123456789', NULL, '2022-05-21 15:12:14', '2022-05-21 15:12:14'),
 (150, 'matgar', 'user', '02405640564056', NULL, 'asd@asdas.com', 'matgar', NULL, 0, NULL, '$2y$10$7oWele8YL.TgHks7yd558eks873SYFadidmhqfRpqZ/ZC3I9EJJea', '123456789', NULL, '2022-05-22 11:30:14', '2022-05-22 11:30:14'),
-(151, 'mozam', 'sub-admin', 'asjkldaj', NULL, 'moza@gmail.com', 'moza', NULL, 0, NULL, '$2y$10$uPL9O6PDCfda3omL4PaMLuziKuC4MJl/DsFu7bSv2Hyl6Ly0BEDae', '123456789', NULL, '2022-05-23 08:50:52', '2022-05-23 08:50:52');
+(151, 'mozam', 'sub-admin', 'asjkldaj', NULL, 'moza@gmail.com', 'moza', NULL, 0, NULL, '$2y$10$uPL9O6PDCfda3omL4PaMLuziKuC4MJl/DsFu7bSv2Hyl6Ly0BEDae', '123456789', NULL, '2022-05-23 08:50:52', '2022-05-23 08:50:52'),
+(152, 'kareem', 'sub-admin', NULL, NULL, 'kareem@gmail.com', 'kareem', NULL, 0, NULL, '$2y$10$/Sx5glUyDC.HCrJCptwIre5puJGOXDZbZ3PtJXEWRKgh16M8Pq6nO', '123456789', NULL, '2022-05-28 11:53:43', '2022-05-28 11:53:43');
 
 -- --------------------------------------------------------
 
@@ -2081,7 +2119,8 @@ INSERT INTO `users_roles` (`id`, `user_id`, `role_id`, `created_at`, `updated_at
 (73, 41, 13, '2022-05-18 18:27:02', '2022-05-18 18:27:02'),
 (74, 44, 14, '2022-05-18 18:31:19', '2022-05-18 18:31:19'),
 (75, 46, 15, '2022-05-18 18:33:55', '2022-05-18 18:33:55'),
-(78, 151, 16, '2022-05-23 08:57:20', '2022-05-23 08:57:20');
+(78, 151, 16, '2022-05-23 08:57:20', '2022-05-23 08:57:20'),
+(79, 152, 16, '2022-05-28 11:53:43', '2022-05-28 11:53:43');
 
 -- --------------------------------------------------------
 
@@ -2113,7 +2152,8 @@ INSERT INTO `user_categories` (`id`, `user_id`, `category_id`, `created_at`, `up
 (64, 44, 23, '2022-05-18 18:31:19', '2022-05-18 18:31:19'),
 (65, 44, 25, '2022-05-18 18:31:19', '2022-05-18 18:31:19'),
 (66, 46, 25, '2022-05-18 18:33:55', '2022-05-18 18:33:55'),
-(69, 151, 21, '2022-05-23 08:57:20', '2022-05-23 08:57:20');
+(69, 151, 21, '2022-05-23 08:57:20', '2022-05-23 08:57:20'),
+(70, 152, 23, '2022-05-28 11:53:43', '2022-05-28 11:53:43');
 
 -- --------------------------------------------------------
 
@@ -2235,7 +2275,8 @@ INSERT INTO `user_sub_categories` (`id`, `user_id`, `sub_category_id`, `created_
 (222, 46, 73, '2022-05-18 18:33:55', '2022-05-18 18:33:55'),
 (223, 46, 74, '2022-05-18 18:33:55', '2022-05-18 18:33:55'),
 (230, 151, 34, '2022-05-23 08:57:20', '2022-05-23 08:57:20'),
-(231, 151, 42, '2022-05-23 08:57:20', '2022-05-23 08:57:20');
+(231, 151, 42, '2022-05-23 08:57:20', '2022-05-23 08:57:20'),
+(232, 152, 49, '2022-05-28 11:53:43', '2022-05-28 11:53:43');
 
 --
 -- Indexes for dumped tables
@@ -2261,6 +2302,13 @@ ALTER TABLE `customers_balance`
 ALTER TABLE `customers_responsible`
   ADD PRIMARY KEY (`id`),
   ADD KEY `customers_responsible_user_id_foreign` (`user_id`);
+
+--
+-- Indexes for table `entry_and_exit`
+--
+ALTER TABLE `entry_and_exit`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `entry_and_exit_user_id_foreign` (`user_id`);
 
 --
 -- Indexes for table `failed_jobs`
@@ -2479,6 +2527,12 @@ ALTER TABLE `customers_responsible`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=181;
 
 --
+-- AUTO_INCREMENT for table `entry_and_exit`
+--
+ALTER TABLE `entry_and_exit`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
 -- AUTO_INCREMENT for table `failed_jobs`
 --
 ALTER TABLE `failed_jobs`
@@ -2512,7 +2566,7 @@ ALTER TABLE `inquiries`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT for table `news`
@@ -2578,13 +2632,13 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `roles_permessions`
 --
 ALTER TABLE `roles_permessions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=851;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=938;
 
 --
 -- AUTO_INCREMENT for table `settings`
 --
 ALTER TABLE `settings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `statuses`
@@ -2602,25 +2656,25 @@ ALTER TABLE `sub_categories`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=152;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=153;
 
 --
 -- AUTO_INCREMENT for table `users_roles`
 --
 ALTER TABLE `users_roles`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
 
 --
 -- AUTO_INCREMENT for table `user_categories`
 --
 ALTER TABLE `user_categories`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
 
 --
 -- AUTO_INCREMENT for table `user_sub_categories`
 --
 ALTER TABLE `user_sub_categories`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=232;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=233;
 
 --
 -- Constraints for dumped tables
@@ -2637,6 +2691,12 @@ ALTER TABLE `customers_balance`
 --
 ALTER TABLE `customers_responsible`
   ADD CONSTRAINT `customers_responsible_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `entry_and_exit`
+--
+ALTER TABLE `entry_and_exit`
+  ADD CONSTRAINT `entry_and_exit_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `firebase_tokens`
