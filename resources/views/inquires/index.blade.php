@@ -145,7 +145,7 @@
                                 <td>
                                     @if($inquire->reply)
                                         <span class="badge badge-secondary d-block">{{ $inquire->reply }}</span>
-                                    @elseif(Auth::user()->type == 'admin' || Auth::user()->can('inquires.update_reply'))
+                                    @elseif(Auth::user()->can('inquires.update_reply'))
                                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_change_{{ $inquire->id }}">
                                             أضافة رد
                                         </button>
