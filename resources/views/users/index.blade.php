@@ -74,110 +74,108 @@
             </div>
             <div class="card-body">
                 @if($users->count() > 0)
-                    <div class="table-responsive">
-                        <table class="table mb-0">
-                            <thead>
+                    <table class="table table-hover d-block overflow-auto mb-0">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th><span class="max">الأسم</span></th>
+                                <th><span class="max">أسم المستخدم</span></th>
+                                <th><span class="max">البريد الألكترونى</span></th>
+                                <th><span class="max">الأقسام</span></th>
+                                <th><span class="max">الصلاحيات</span></th>
+                                <th><span class="max">العنوان</span></th>
+                                <th><span class="max">رقم التليفون</span></th>
+                                @if(Auth::user()->type == 'admin')
+                                    <th><span class="max">الحظر</span></th>
+                                @endif
+                                <th><span class="max">وقت الأنشاء</span></th>
+                                <th><span class="max">وقت أخر تعديل</span></th>
+                                <th><span class="max">الأعدادات</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($users as $user)
                                 <tr>
-                                    <th>#</th>
-                                    <th><span class="max">الأسم</span></th>
-                                    <th><span class="max">أسم المستخدم</span></th>
-                                    <th><span class="max">البريد الألكترونى</span></th>
-                                    <th><span class="max">الأقسام</span></th>
-                                    <th><span class="max">الصلاحيات</span></th>
-                                    <th><span class="max">العنوان</span></th>
-                                    <th><span class="max">رقم التليفون</span></th>
-                                    @if(Auth::user()->type == 'admin')
-                                        <th><span class="max">الحظر</span></th>
-                                    @endif
-                                    <th><span class="max">وقت الأنشاء</span></th>
-                                    <th><span class="max">وقت أخر تعديل</span></th>
-                                    <th><span class="max">الأعدادات</span></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($users as $user)
-                                    <tr>
-                                        <th scope="row">{{ $user->id }}</th>
-                                        <td>
-                                            <div class="d-flex">
-                                                @if ($user->avatar)
-                                                    <img src="{{ asset($user->avatar) }}" alt="">
-                                                @else
-                                                    <img src="{{ asset('images/avatar.jpg') }}" alt="">
-                                                @endif
-                                                <span class="max">{{ $user->name }}</span>
-                                            </div>
-                                        </td>
-                                        <td>{{ $user->username }}</td>
-                                        <td>{{ $user->email }}</td>
-                                        <td>
-                                            <div>
-                                                @foreach ($user->main_categories as $userCategory)
-                                                    <span class="badge badge-primary d-block">{{ $userCategory->category->name}}</span>
-                                                    @foreach ($userCategory->category->sub_categories->whereIn('id', $user->sub_categories->pluck('sub_category_id')->toArray()) as $userSubCategory)
-                                                        <span class="badge badge-secondary d-block">{{ $userSubCategory->name}}</span>
-                                                    @endforeach
+                                    <th scope="row">{{ $user->id }}</th>
+                                    <td>
+                                        <div class="d-flex">
+                                            @if ($user->avatar)
+                                                <img src="{{ asset($user->avatar) }}" alt="">
+                                            @else
+                                                <img src="{{ asset('images/avatar.jpg') }}" alt="">
+                                            @endif
+                                            <span class="max">{{ $user->name }}</span>
+                                        </div>
+                                    </td>
+                                    <td>{{ $user->username }}</td>
+                                    <td>{{ $user->email }}</td>
+                                    <td>
+                                        <div>
+                                            @foreach ($user->main_categories as $userCategory)
+                                                <span class="badge badge-primary d-block">{{ $userCategory->category->name}}</span>
+                                                @foreach ($userCategory->category->sub_categories->whereIn('id', $user->sub_categories->pluck('sub_category_id')->toArray()) as $userSubCategory)
+                                                    <span class="badge badge-secondary d-block">{{ $userSubCategory->name}}</span>
                                                 @endforeach
-                                            </div>
-                                        </td>
+                                            @endforeach
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            @forelse ($user->roles as $role)
+                                                <span class="badge badge-primary d-block">{{ $role->name }}</span>
+                                            @empty
+                                            <div class="alert alert-info max">لا يوجد صلاحيات</div>
+                                            @endforelse
+                                        </div>
+                                    </td>
+                                    <td><p>{{ $user->address }}</p></td>
+                                    <td>{{ $user->phone }}</td>
+                                    @if(Auth::user()->type == 'admin')
                                         <td>
-                                            <div>
-                                                @forelse ($user->roles as $role)
-                                                    <span class="badge badge-primary d-block">{{ $role->name }}</span>
-                                                @empty
-                                                <div class="alert alert-info max">لا يوجد صلاحيات</div>
-                                                @endforelse
-                                            </div>
+                                            <form action="{{ route('users.banned', $user) }}" method="POST">
+                                                @csrf
+                                                <div class="form-group">
+                                                    <input type="checkbox" onchange="this.form.submit()" name="active" id="switch-{{ $loop->index }}" switch="bool"
+                                                    @if($user->banned)
+                                                    checked
+                                                    @endif />
+                                                    <label for="switch-{{ $loop->index }}" data-on-label="نعم" data-off-label="لا"></label>
+                                                </div>
+                                            </form>
                                         </td>
-                                        <td><p>{{ $user->address }}</p></td>
-                                        <td>{{ $user->phone }}</td>
-                                        @if(Auth::user()->type == 'admin')
-                                            <td>
-                                                <form action="{{ route('users.banned', $user) }}" method="POST">
-                                                    @csrf
-                                                    <div class="form-group">
-                                                        <input type="checkbox" onchange="this.form.submit()" name="active" id="switch-{{ $loop->index }}" switch="bool"
-                                                        @if($user->banned)
-                                                        checked
-                                                        @endif />
-                                                        <label for="switch-{{ $loop->index }}" data-on-label="نعم" data-off-label="لا"></label>
-                                                    </div>
-                                                </form>
-                                            </td>
-                                        @endif
-                                        <td>
-                                            {{ $user->created_at->diffForHumans() }}
-                                        </td>
-                                        <td>
-                                            {{ $user->updated_at->diffForHumans() }}
-                                        </td>
-                                        <td>
-                                            <div class="options d-flex">
-                                                @can('users.edit')
-                                                    <a class="btn btn-info mr-1" href="{{ route('users.edit', $user) }}">
-                                                        <span>تعديل</span>
-                                                        <span class="mdi mdi-circle-edit-outline"></span>
-                                                    </a>
-                                                @endcan
-                                                @can('users.destroy')
-                                                    <button class="btn btn-danger" data-toggle="modal"
-                                                        data-target="#modal_{{ $user->id }}">
-                                                        <span>ازالة</span>
-                                                        <span class="mdi mdi-delete-outline"></span>
-                                                    </button>
-                                                    <!-- Modal -->
-                                                    @include('layouts.partials.modal', [
-                                                    'id' => $user->id,
-                                                    'route' => route('users.destroy', $user->id)
-                                                    ])
-                                                @endcan
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        {{ $users->appends(request()->all())->links() }}
-                    </div>
+                                    @endif
+                                    <td>
+                                        {{ $user->created_at->diffForHumans() }}
+                                    </td>
+                                    <td>
+                                        {{ $user->updated_at->diffForHumans() }}
+                                    </td>
+                                    <td>
+                                        <div class="options d-flex">
+                                            @can('users.edit')
+                                                <a class="btn btn-info mr-1" href="{{ route('users.edit', $user) }}">
+                                                    <span>تعديل</span>
+                                                    <span class="mdi mdi-circle-edit-outline"></span>
+                                                </a>
+                                            @endcan
+                                            @can('users.destroy')
+                                                <button class="btn btn-danger" data-toggle="modal"
+                                                    data-target="#modal_{{ $user->id }}">
+                                                    <span>ازالة</span>
+                                                    <span class="mdi mdi-delete-outline"></span>
+                                                </button>
+                                                <!-- Modal -->
+                                                @include('layouts.partials.modal', [
+                                                'id' => $user->id,
+                                                'route' => route('users.destroy', $user->id)
+                                                ])
+                                            @endcan
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    {{ $users->appends(request()->all())->links() }}
                 @else
                 <div class="alert alert-info">لا يوجد موظفين</div>
                 @endif

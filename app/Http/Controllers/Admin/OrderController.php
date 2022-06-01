@@ -544,7 +544,7 @@ class OrderController extends Controller
             }
         }
         Order::destroy($order->id);
-        return redirect()->back()->with('success', 'تم ازالة الطلب بنجاح');
+        return redirect()->to(route('orders.index'))->with('success', 'تم ازالة الطلب بنجاح');
 
     }
 }

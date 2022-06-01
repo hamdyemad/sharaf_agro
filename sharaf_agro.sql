@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 30, 2022 at 04:08 PM
+-- Generation Time: Jun 01, 2022 at 02:37 PM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.1
 
@@ -423,6 +423,13 @@ CREATE TABLE `news` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `news`
+--
+
+INSERT INTO `news` (`id`, `name`, `images`, `details`, `send_notify`, `created_at`, `updated_at`) VALUES
+(30, 'adasdas', '[\"uploads\\/news\\/\\u202b\\u0627\\u0644\\u0637\\u0644\\u0628\\u0627\\u062a _ \\u0633\\u0644\\u0629 - Google Chrome\\u202c 6_1_2022 11_48_15 AM-1654083808.png\"]', '<p>asdasdasdasdadas</p>', 1, '2022-06-01 09:43:28', '2022-06-01 09:43:28');
+
 -- --------------------------------------------------------
 
 --
@@ -534,8 +541,8 @@ INSERT INTO `orders` (`id`, `category_id`, `sub_category_id`, `customer_id`, `em
 (151, 21, 58, 34, 37, 2, 'شيستر', '500سم + 1لتر لصالح ايفرجرين', '[\"uploads\\/orders\\/ \\u0634\\u064a\\u0633\\u062a\\u0631 1 \\u0644\\u062a\\u0631-1652718586.pdf\",\"uploads\\/orders\\/ \\u0634\\u064a\\u0633\\u062a\\u0631 500\\u0633\\u0645-1652718586.pdf\"]', NULL, NULL, '2023-01-04', NULL, 0, 0, '2022-05-16 20:29:46', '2022-05-16 20:29:46'),
 (152, 21, 59, 34, 37, 2, 'شيستر', 'اجتياز', '[\"uploads\\/orders\\/ \\u0634\\u064a\\u0633\\u062a\\u0631 (2)-1652718659.pdf\"]', NULL, NULL, '2024-01-04', NULL, 0, 0, '2022-05-16 20:30:59', '2022-05-16 20:30:59'),
 (153, 21, 44, 34, 37, 2, 'كينوراك', 'تجريب سنة اولي 21-22', '[\"uploads\\/orders\\/ \\u0643\\u064a\\u0646\\u0648\\u0631\\u0627\\u0643 21-22-1652719291.pdf\",\"uploads\\/orders\\/ \\u0643\\u064a\\u0646\\u0648\\u0631\\u0627\\u0643 21-22-1652719291.pdf\"]', NULL, NULL, NULL, NULL, 0, 0, '2022-05-16 20:41:31', '2022-05-16 20:41:31'),
-(154, 21, 44, 34, 37, 3, 'يوروسبتر', 'تجريب سنة اولي 21-22', '[\"uploads\\/orders\\/ \\u064a\\u0648\\u0631\\u0648\\u0633\\u064a\\u0628\\u062a\\u0631 21-22-1652719380.pdf\",\"uploads\\/orders\\/ \\u062a\\u062c\\u0631\\u064a\\u0628 \\u064a\\u0648\\u0631\\u0648\\u0633\\u0628\\u062a\\u0631-1652719380.pdf\"]', '2022-04-01', '2022-06-15', NULL, NULL, 0, 0, '2022-05-16 20:43:00', '2022-05-16 20:46:55'),
-(155, 21, 44, 34, 37, 3, 'يوروتيرنا', 'تجريب 21-22', '[\"uploads\\/orders\\/ \\u064a\\u0648\\u0631\\u0648\\u062a\\u064a\\u0631\\u0646\\u0627 21-22-1652719555.pdf\",\"uploads\\/orders\\/ \\u062a\\u062c\\u0631\\u064a\\u0628 \\u064a\\u0648\\u0631\\u0648\\u062a\\u064a\\u0631\\u0646\\u0627-1652719555.pdf\"]', '2022-03-01', '2022-06-15', NULL, NULL, 0, 0, '2022-05-16 20:45:55', '2022-05-16 20:45:55'),
+(154, 21, 44, 34, 37, 3, 'يوروسبتر', 'تجريب سنة اولي 21-22', '[\"uploads\\/orders\\/ \\u064a\\u0648\\u0631\\u0648\\u0633\\u064a\\u0628\\u062a\\u0631 21-22-1652719380.pdf\",\"uploads\\/orders\\/ \\u062a\\u062c\\u0631\\u064a\\u0628 \\u064a\\u0648\\u0631\\u0648\\u0633\\u0628\\u062a\\u0631-1652719380.pdf\"]', '2022-04-01', '2022-06-15', NULL, NULL, 1, 0, '2022-05-16 20:43:00', '2022-06-01 09:13:17'),
+(155, 21, 44, 34, 37, 3, 'يوروتيرنا', 'تجريب 21-22', '[\"uploads\\/orders\\/ \\u064a\\u0648\\u0631\\u0648\\u062a\\u064a\\u0631\\u0646\\u0627 21-22-1652719555.pdf\",\"uploads\\/orders\\/ \\u062a\\u062c\\u0631\\u064a\\u0628 \\u064a\\u0648\\u0631\\u0648\\u062a\\u064a\\u0631\\u0646\\u0627-1652719555.pdf\"]', '2022-03-01', '2022-06-15', NULL, NULL, 1, 0, '2022-05-16 20:45:55', '2022-06-01 09:13:21'),
 (156, 21, 59, 34, 37, 2, 'يوروستار', 'اجتياز', '[\"uploads\\/orders\\/ \\u064a\\u0648\\u0631\\u0648\\u0633\\u062a\\u0627\\u0631-1652722592.pdf\"]', NULL, NULL, '2023-11-03', NULL, 0, 0, '2022-05-16 21:36:32', '2022-05-16 21:36:32'),
 (157, 24, 38, 94, 42, 2, 'سيثرين برو', 'شهادة تسجيل', '[\"uploads\\/orders\\/ \\u062a\\u0633\\u062c\\u064a\\u0644-1652786293.pdf\"]', NULL, NULL, '2024-03-20', NULL, 0, 0, '2022-05-17 15:18:13', '2022-05-17 15:18:13'),
 (158, 24, 38, 76, 42, 2, 'الفاثرين فيت', 'شهادة تسجيل', '[\"uploads\\/orders\\/ \\u0641\\u064a\\u062a \\u0634\\u0647\\u0627\\u062f\\u0629-1652787953.pdf\"]', NULL, NULL, '2023-07-08', NULL, 0, 0, '2022-05-17 15:45:53', '2022-05-17 15:45:53'),
@@ -800,7 +807,7 @@ INSERT INTO `orders` (`id`, `category_id`, `sub_category_id`, `customer_id`, `em
 (416, 22, 54, 65, 40, 2, 'ريناتون 0.5', '0', '[\"uploads\\/orders\\/-1652878079.jpg\"]', NULL, NULL, '2028-03-18', NULL, 0, 0, '2022-05-18 16:47:59', '2022-05-18 16:47:59'),
 (417, 22, 54, 65, 40, 2, 'زينيت', '0', '[\"uploads\\/orders\\/-1652878125.jpg\"]', NULL, NULL, '2028-06-25', NULL, 0, 0, '2022-05-18 16:48:45', '2022-05-18 16:48:45'),
 (418, 22, 54, 65, 40, 2, 'ميلو', '0', '[\"uploads\\/orders\\/ \\u0645\\u064a\\u0644\\u0648-1652878174.jpg\"]', NULL, NULL, '2028-01-24', NULL, 0, 0, '2022-05-18 16:49:34', '2022-05-18 16:49:34'),
-(419, 23, 52, 35, 41, 3, 'كلاش', 'م استلام نتيجة فعالة في 30/8/2021 + تم استلام سمية في 15/12/2021+ متبقى الاختبار الحقلى', NULL, '2021-03-08', '2022-06-15', NULL, NULL, 0, 0, '2022-05-18 16:49:56', '2022-05-18 16:57:54'),
+(419, 23, 52, 35, 41, 3, 'كلاش', 'م استلام نتيجة فعالة في 30/8/2021 + تم استلام سمية في 15/12/2021+ متبقى الاختبار الحقلى', NULL, '2021-03-08', '2022-06-15', NULL, NULL, 1, 0, '2022-05-18 16:49:56', '2022-06-01 09:13:24'),
 (420, 22, 54, 65, 40, 2, 'كابري حديد', '0', '[\"uploads\\/orders\\/ \\u062d\\u062f\\u064a\\u062f-1652878215.jpg\"]', NULL, NULL, '2028-12-09', NULL, 0, 0, '2022-05-18 16:50:15', '2022-05-18 16:50:15'),
 (421, 22, 54, 65, 40, 2, 'كابري زنك', '0', '[\"uploads\\/orders\\/ \\u0632\\u0646\\u0643-1652878266.jpg\"]', NULL, NULL, '2027-08-14', NULL, 0, 0, '2022-05-18 16:51:06', '2022-05-18 16:51:06'),
 (422, 23, 51, 35, 41, 2, 'كلاش', 'تم استلام مطابقة فى 1/6/2021', '[\"uploads\\/orders\\/ \\u0646\\u0648\\u062f\\u0643\\u0627\\u0631-1652878283.pdf\"]', NULL, NULL, NULL, NULL, 0, 0, '2022-05-18 16:51:23', '2022-05-18 16:51:23'),
@@ -1221,9 +1228,8 @@ INSERT INTO `orders` (`id`, `category_id`, `sub_category_id`, `customer_id`, `em
 (835, 22, 54, 80, 40, 2, 'ماتشو كي 2', '0', '[\"uploads\\/orders\\/ \\u0643\\u0649 20-1652980954.jpg\"]', NULL, NULL, '2028-11-04', NULL, 0, 0, '2022-05-19 21:22:34', '2022-05-19 21:22:34'),
 (836, 22, 54, 80, 40, 2, 'ماتشو منجنيز 13%', '0', '[\"uploads\\/orders\\/ \\u0645\\u0646\\u062c\\u0646\\u064a\\u0632-1652981000.jpg\"]', NULL, NULL, '2029-01-08', NULL, 0, 0, '2022-05-19 21:23:20', '2022-05-19 21:23:20'),
 (837, 22, 54, 80, 40, 1, 'ماتشو هيومكa', '0', '[\"uploads\\/orders\\/ \\u0647\\u064a\\u0648\\u0645\\u064a\\u0643-1652981051.jpg\"]', NULL, NULL, NULL, NULL, 0, 0, '2022-05-19 21:24:11', '2022-05-22 10:35:36'),
-(838, 23, 48, 149, 1, 2, 'مركب جديد', 'kdasjkldakldaskdasklda', '[\"uploads\\/orders\\/;;;-1653230645.jpg\",\"uploads\\/orders\\/1 Will and Going to-1653230645.jpg\",\"uploads\\/orders\\/1 Will and Going tocc-1653230645.jpg\"]', NULL, NULL, '2022-04-30', '2022-05-01', 0, 0, '2022-05-22 12:44:05', '2022-05-22 13:03:31'),
-(839, 23, 48, 149, 1, 1, 'al', 'as;ldkas;ldkasldas;kldas;kldask;ldas;kldas;dkas;dkas;lkd;asdaks;ld', NULL, NULL, NULL, NULL, NULL, 0, 1, '2022-05-25 09:18:29', '2022-05-25 09:25:34'),
-(840, 24, 38, 149, 1, 1, 'das', 'daskda;lsdklasdjklasklasldjaskljasdklas', NULL, NULL, NULL, NULL, NULL, 0, 1, '2022-05-25 09:19:08', '2022-05-25 09:19:08');
+(840, 24, 38, 149, 1, 1, 'das', 'daskda;lsdklasdjklasklasldjaskljasdklas', NULL, NULL, NULL, NULL, NULL, 0, 1, '2022-05-25 09:19:08', '2022-05-25 09:19:08'),
+(841, 22, 35, 150, 1, 1, 'slakdkas', ';klasd;klaskd;klasd;klasd;klas', NULL, NULL, NULL, NULL, NULL, 0, 1, '2022-06-01 09:22:58', '2022-06-01 09:22:58');
 
 -- --------------------------------------------------------
 
@@ -1246,10 +1252,7 @@ CREATE TABLE `orders_histories` (
 
 INSERT INTO `orders_histories` (`id`, `order_id`, `user_id`, `status_id`, `created_at`, `updated_at`) VALUES
 (1, 837, 1, 1, '2022-05-22 10:33:59', '2022-05-22 10:33:59'),
-(2, 837, 1, 1, '2022-05-22 10:35:36', '2022-05-22 10:35:36'),
-(3, 838, 1, 2, '2022-05-22 13:02:43', '2022-05-22 13:02:43'),
-(4, 838, 1, 2, '2022-05-22 13:03:31', '2022-05-22 13:03:31'),
-(5, 839, 1, 1, '2022-05-25 09:25:35', '2022-05-25 09:25:35');
+(2, 837, 1, 1, '2022-05-22 10:35:36', '2022-05-22 10:35:36');
 
 -- --------------------------------------------------------
 
@@ -1464,8 +1467,8 @@ INSERT INTO `orders_view` (`id`, `order_id`, `user_id`, `viewed`, `created_at`, 
 (164, 135, 37, 1, '2022-05-16 21:36:58', '2022-05-16 21:36:58'),
 (165, 136, 37, 1, '2022-05-16 21:37:09', '2022-05-16 21:37:09'),
 (166, 156, 37, 1, '2022-05-16 21:37:24', '2022-05-16 21:37:24'),
-(167, 155, 37, 1, '2022-05-16 21:37:25', '2022-05-16 21:37:25'),
-(168, 154, 37, 1, '2022-05-16 21:37:27', '2022-05-16 21:37:27'),
+(167, 155, 37, 0, '2022-05-16 21:37:25', '2022-06-01 09:13:21'),
+(168, 154, 37, 0, '2022-05-16 21:37:27', '2022-06-01 09:13:17'),
 (169, 153, 37, 1, '2022-05-16 21:37:28', '2022-05-16 21:37:28'),
 (170, 152, 37, 1, '2022-05-16 21:37:30', '2022-05-16 21:37:30'),
 (171, 151, 37, 1, '2022-05-16 21:37:32', '2022-05-16 21:37:32'),
@@ -1603,7 +1606,8 @@ INSERT INTO `orders_view` (`id`, `order_id`, `user_id`, `viewed`, `created_at`, 
 (303, 747, 43, 1, '2022-05-19 19:34:01', '2022-05-19 19:34:01'),
 (304, 837, 1, 1, '2022-05-22 10:36:48', '2022-05-22 10:36:48'),
 (305, 840, 149, 1, '2022-05-25 09:22:59', '2022-05-25 09:22:59'),
-(306, 839, 149, 0, '2022-05-25 09:25:03', '2022-05-25 09:25:35');
+(308, 574, 152, 1, '2022-06-01 10:31:38', '2022-06-01 10:31:38'),
+(309, 569, 152, 1, '2022-06-01 10:31:43', '2022-06-01 10:31:43');
 
 -- --------------------------------------------------------
 
@@ -1683,7 +1687,8 @@ INSERT INTO `permessions` (`id`, `group_by`, `name`, `key`, `created_at`, `updat
 (105, 'الرسائل', 'التنبيهات اليومية', 'orders_under_work.alerts', '2022-05-01 10:29:32', '2022-05-01 10:29:32'),
 (107, 'الرسائل', 'اظهار تواريخ التعديلات', 'orders_under_work.show_histories', '2022-05-22 10:06:57', '2022-05-22 10:06:57'),
 (108, 'الأستفسارات', 'اظهار تواريخ التعديلات', 'inquires.show_histories', '2022-05-22 10:23:32', '2022-05-22 10:23:32'),
-(109, 'الطلبات', 'اظهار تواريخ التعديلات', 'orders.show_histories', '2022-05-22 10:33:32', '2022-05-22 10:33:32');
+(109, 'الطلبات', 'اظهار تواريخ التعديلات', 'orders.show_histories', '2022-05-22 10:33:32', '2022-05-22 10:33:32'),
+(110, 'الحضور والأنصراف', 'الكل', 'entry_and_exit.index', '2022-06-01 09:58:05', '2022-06-01 09:58:05');
 
 -- --------------------------------------------------------
 
@@ -1974,7 +1979,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `type`, `phone`, `address`, `email`, `username`, `avatar`, `banned`, `email_verified_at`, `password`, `current_password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'أحمد شرف', 'admin', '01004813784', NULL, 'ahmed_sharaf_ash@hotmail.com', 'admin', 'uploads/users/02196C15-459E-4114-BB1E-95BF001DAA35-1652426755.jpeg', 0, NULL, '$2y$10$5xBFzkXPM7OeVzo92RK.QuEvubM/TnqZJkHIkulP.6IxH3581YLdy', '', '0zhZUV6oOGWxyIYAMokCU4HWlWXzCnaVr2ynyPe6qhDIxY0iE2HgsIKphnyP', NULL, '2022-05-13 11:25:55'),
+(1, 'أحمد شرف', 'admin', '01004813784', NULL, 'ahmed_sharaf_ash@hotmail.com', 'admin', 'uploads/users/02196C15-459E-4114-BB1E-95BF001DAA35-1652426755.jpeg', 0, NULL, '$2y$10$5xBFzkXPM7OeVzo92RK.QuEvubM/TnqZJkHIkulP.6IxH3581YLdy', '', 'PX0lf34wR2o2CZOQDb3ku3PiJChSd9qN138z9wgWtYWYibwXmBmkQjytOpU4', NULL, '2022-05-13 11:25:55'),
 (34, 'المصرية للتنميه الزراعية', 'user', '01116702170', 'كفر صقر- الشرقيه', 'agrialmasrya@hotmail.com', 'almasrya', NULL, 0, NULL, '$2y$10$PEwoR7CV7KdXpl7QRhXLYOUCxl1PyrQdOK1QYCABi58t75abBI/WC', '', 'kQ3ulvte1SznDCebgBjSvJRzclkd23QWTcph1JLwm6jcs9yuZRMlnnx2zFqW', '2022-05-08 17:56:12', '2022-05-14 20:47:13'),
 (35, 'استرا كيم ايجيبت', 'user', '01144997000', NULL, 'y@gmail.com', 'astra', NULL, 0, NULL, '$2y$10$tjSwN7achfWKRuhg86wL8.75uTOUToYf.xiO2ZJ2wxVECXQ82r9Ku', '', NULL, '2022-05-08 18:03:14', '2022-05-15 01:24:21'),
 (37, 'محمد النوبي', 'sub-admin', NULL, NULL, 'mohamedelnobey98@gmail.com', 'm.elnobey', 'uploads/users/IMG-20220512-WA0003-1652358299.jpg', 0, NULL, '$2y$10$OmLaPpyNi/paId11qPTPA.kfLP0Q48APeV.ZsW2r931VWaVPt7YdO', '', 'Vtshx81W0XESUucO3f4nPu1hhj4cXhKSZFvXFRIeAIUSSmhoXo1IM2PUD5NA', '2022-05-08 18:08:39', '2022-05-12 16:24:59'),
@@ -2090,7 +2095,8 @@ INSERT INTO `users` (`id`, `name`, `type`, `phone`, `address`, `email`, `usernam
 (149, 'elhamd company', 'user', '045064560456', NULL, 'elhamd@gmail.com', 'elhamd', NULL, 0, NULL, '$2y$10$dxyaFMJUCRumJQHe/ic8JOOM2QvI4hir0ELzFVSjvVhttxVsQOC6.', '123456789', NULL, '2022-05-21 15:12:14', '2022-05-21 15:12:14'),
 (150, 'matgar', 'user', '02405640564056', NULL, 'asd@asdas.com', 'matgar', NULL, 0, NULL, '$2y$10$7oWele8YL.TgHks7yd558eks873SYFadidmhqfRpqZ/ZC3I9EJJea', '123456789', NULL, '2022-05-22 11:30:14', '2022-05-22 11:30:14'),
 (151, 'mozam', 'sub-admin', 'asjkldaj', NULL, 'moza@gmail.com', 'moza', NULL, 0, NULL, '$2y$10$uPL9O6PDCfda3omL4PaMLuziKuC4MJl/DsFu7bSv2Hyl6Ly0BEDae', '123456789', NULL, '2022-05-23 08:50:52', '2022-05-23 08:50:52'),
-(152, 'kareem', 'sub-admin', NULL, NULL, 'kareem@gmail.com', 'kareem', NULL, 0, NULL, '$2y$10$/Sx5glUyDC.HCrJCptwIre5puJGOXDZbZ3PtJXEWRKgh16M8Pq6nO', '123456789', NULL, '2022-05-28 11:53:43', '2022-05-28 11:53:43');
+(152, 'kareem', 'sub-admin', NULL, NULL, 'kareem@gmail.com', 'kareem', NULL, 0, NULL, '$2y$10$/Sx5glUyDC.HCrJCptwIre5puJGOXDZbZ3PtJXEWRKgh16M8Pq6nO', '123456789', NULL, '2022-05-28 11:53:43', '2022-05-28 11:53:43'),
+(153, 'asd', 'sub-admin', NULL, NULL, 'asd@asd.com', 'asd', NULL, 0, NULL, '$2y$10$iQ9f7s3jqwsjt14bqZS8Xe0jgl5XAVg.2n5ru1WK.V/PHzTc44CB.', '123456789', NULL, '2022-06-01 10:09:56', '2022-06-01 10:09:56');
 
 -- --------------------------------------------------------
 
@@ -2119,8 +2125,9 @@ INSERT INTO `users_roles` (`id`, `user_id`, `role_id`, `created_at`, `updated_at
 (73, 41, 13, '2022-05-18 18:27:02', '2022-05-18 18:27:02'),
 (74, 44, 14, '2022-05-18 18:31:19', '2022-05-18 18:31:19'),
 (75, 46, 15, '2022-05-18 18:33:55', '2022-05-18 18:33:55'),
-(78, 151, 16, '2022-05-23 08:57:20', '2022-05-23 08:57:20'),
-(79, 152, 16, '2022-05-28 11:53:43', '2022-05-28 11:53:43');
+(80, 151, 16, '2022-06-01 10:02:42', '2022-06-01 10:02:42'),
+(81, 152, 16, '2022-06-01 10:03:08', '2022-06-01 10:03:08'),
+(82, 153, 16, '2022-06-01 10:09:56', '2022-06-01 10:09:56');
 
 -- --------------------------------------------------------
 
@@ -2152,8 +2159,9 @@ INSERT INTO `user_categories` (`id`, `user_id`, `category_id`, `created_at`, `up
 (64, 44, 23, '2022-05-18 18:31:19', '2022-05-18 18:31:19'),
 (65, 44, 25, '2022-05-18 18:31:19', '2022-05-18 18:31:19'),
 (66, 46, 25, '2022-05-18 18:33:55', '2022-05-18 18:33:55'),
-(69, 151, 21, '2022-05-23 08:57:20', '2022-05-23 08:57:20'),
-(70, 152, 23, '2022-05-28 11:53:43', '2022-05-28 11:53:43');
+(71, 151, 23, '2022-06-01 10:02:42', '2022-06-01 10:02:42'),
+(72, 152, 23, '2022-06-01 10:03:08', '2022-06-01 10:03:08'),
+(73, 153, 23, '2022-06-01 10:09:56', '2022-06-01 10:09:56');
 
 -- --------------------------------------------------------
 
@@ -2274,9 +2282,10 @@ INSERT INTO `user_sub_categories` (`id`, `user_id`, `sub_category_id`, `created_
 (221, 46, 72, '2022-05-18 18:33:55', '2022-05-18 18:33:55'),
 (222, 46, 73, '2022-05-18 18:33:55', '2022-05-18 18:33:55'),
 (223, 46, 74, '2022-05-18 18:33:55', '2022-05-18 18:33:55'),
-(230, 151, 34, '2022-05-23 08:57:20', '2022-05-23 08:57:20'),
-(231, 151, 42, '2022-05-23 08:57:20', '2022-05-23 08:57:20'),
-(232, 152, 49, '2022-05-28 11:53:43', '2022-05-28 11:53:43');
+(233, 151, 48, '2022-06-01 10:02:42', '2022-06-01 10:02:42'),
+(234, 152, 48, '2022-06-01 10:03:08', '2022-06-01 10:03:08'),
+(235, 152, 49, '2022-06-01 10:03:08', '2022-06-01 10:03:08'),
+(236, 153, 48, '2022-06-01 10:09:56', '2022-06-01 10:09:56');
 
 --
 -- Indexes for dumped tables
@@ -2572,7 +2581,7 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT for table `news`
 --
 ALTER TABLE `news`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `news_view`
@@ -2584,7 +2593,7 @@ ALTER TABLE `news_view`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=841;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=842;
 
 --
 -- AUTO_INCREMENT for table `orders_histories`
@@ -2614,13 +2623,13 @@ ALTER TABLE `orders_under_work_viewers`
 -- AUTO_INCREMENT for table `orders_view`
 --
 ALTER TABLE `orders_view`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=307;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=311;
 
 --
 -- AUTO_INCREMENT for table `permessions`
 --
 ALTER TABLE `permessions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=111;
 
 --
 -- AUTO_INCREMENT for table `roles`
@@ -2656,25 +2665,25 @@ ALTER TABLE `sub_categories`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=153;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=154;
 
 --
 -- AUTO_INCREMENT for table `users_roles`
 --
 ALTER TABLE `users_roles`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=83;
 
 --
 -- AUTO_INCREMENT for table `user_categories`
 --
 ALTER TABLE `user_categories`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
 
 --
 -- AUTO_INCREMENT for table `user_sub_categories`
 --
 ALTER TABLE `user_sub_categories`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=233;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=237;
 
 --
 -- Constraints for dumped tables

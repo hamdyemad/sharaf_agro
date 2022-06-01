@@ -42,55 +42,52 @@
             </div>
             <div class="card-body">
                 @if($categories->count() > 0)
-                    <div class="table-responsive">
-                        <table class="table mb-0">
-
-                            <thead>
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th><span class="max">أسم القسم</span></th>
+                                <th><span class="max">عدد الأقسام الفرعية</span></th>
+                                <th><span class="max">وقت الأنشاء</span></th>
+                                <th><span class="max">وقت أخر تعديل</span></th>
+                                <th><span class="max">الأعدادات</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($categories as $category)
                                 <tr>
-                                    <th>#</th>
-                                    <th><span class="max">أسم القسم</span></th>
-                                    <th><span class="max">عدد الأقسام الفرعية</span></th>
-                                    <th><span class="max">وقت الأنشاء</span></th>
-                                    <th><span class="max">وقت أخر تعديل</span></th>
-                                    <th><span class="max">الأعدادات</span></th>
+                                    <th scope="row">{{ $category->id }}</th>
+                                    <td><span class="max">{{ $category->name }}</span></td>
+                                    <td><a class="btn btn-primary" href="{{ route('sub_categories.index', ['category_id' => $category->id]) }}">{{ $category->sub_categories->count() }}</a></td>
+                                    <td>{{ $category->created_at->diffForHumans() }}</td>
+                                    <td>{{ $category->updated_at->diffForHumans() }}</td>
+                                    <td>
+                                        <div class="options d-flex">
+                                            @can('categories.edit')
+                                                <a class="btn btn-info mr-1"
+                                                    href="{{ route('categories.edit', $category) }}">
+                                                    <span>تعديل</span>
+                                                    <span class="mdi mdi-circle-edit-outline"></span>
+                                                </a>
+                                            @endcan
+                                            @can('categories.destroy')
+                                                <button class="btn btn-danger" data-toggle="modal"
+                                                    data-target="#modal_{{ $category->id }}">
+                                                    <span>ازالة</span>
+                                                    <span class="mdi mdi-delete-outline"></span>
+                                                </button>
+                                                <!-- Modal -->
+                                                @include('layouts.partials.modal', [
+                                                'id' => $category->id,
+                                                'route' => route('categories.destroy', $category->id)
+                                                ])
+                                            @endcan
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($categories as $category)
-                                    <tr>
-                                        <th scope="row">{{ $category->id }}</th>
-                                        <td><span class="max">{{ $category->name }}</span></td>
-                                        <td><a class="btn btn-primary" href="{{ route('sub_categories.index', ['category_id' => $category->id]) }}">{{ $category->sub_categories->count() }}</a></td>
-                                        <td>{{ $category->created_at->diffForHumans() }}</td>
-                                        <td>{{ $category->updated_at->diffForHumans() }}</td>
-                                        <td>
-                                            <div class="options d-flex">
-                                                @can('categories.edit')
-                                                    <a class="btn btn-info mr-1"
-                                                        href="{{ route('categories.edit', $category) }}">
-                                                        <span>تعديل</span>
-                                                        <span class="mdi mdi-circle-edit-outline"></span>
-                                                    </a>
-                                                @endcan
-                                                @can('categories.destroy')
-                                                    <button class="btn btn-danger" data-toggle="modal"
-                                                        data-target="#modal_{{ $category->id }}">
-                                                        <span>ازالة</span>
-                                                        <span class="mdi mdi-delete-outline"></span>
-                                                    </button>
-                                                    <!-- Modal -->
-                                                    @include('layouts.partials.modal', [
-                                                    'id' => $category->id,
-                                                    'route' => route('categories.destroy', $category->id)
-                                                    ])
-                                                @endcan
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        {{ $categories->appends(request()->all())->links() }}
-                    </div>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    {{ $categories->appends(request()->all())->links() }}
                 @else
                     <div class="alert alert-info">لا يوجد أقسام</div>
                 @endif

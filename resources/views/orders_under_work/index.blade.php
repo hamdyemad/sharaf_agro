@@ -84,167 +84,165 @@
                 </form>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th><span class="max">#</span></th>
-                                @if (Auth::user()->type == 'admin' || Auth::user()->can('orders_under_work.show_histories'))
-                                    <th><span class="max">تاريخ التعديلات</span></th>
-                                @endif
-                                <th><span class="max">الشركة</span></th>
-                                <th><span class="max">أسم الراسل</span></th>
-                                <th><span class="max">رقم موبيل الراسل</span></th>
-                                <th><span class="max">أسم المركب</span></th>
-                                <th><span class="max">تفاصيل المركب</span></th>
-                                <th><span class="max">القسم</span></th>
-                                <th><span class="max">الحالة</span></th>
-                                <th><span class="max">السبب</span></th>
-                                <th><span class="max">وقت الأنشاء</span></th>
-                                <th><span class="max">وقت أخر تعديل</span></th>
-                                <th><span class="max">الأعدادات</span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($orders as $order)
-                                <tr id="{{ $order->id }}" data-value="{{ $order }}">
-                                    <td scope="row">{{ $order->id }}</td>
-                                @if (Auth::user()->type == 'admin' || Auth::user()->can('orders_under_work.show_histories'))
-                                    <td scope="row">
-                                        @if (count($order->histories) > 0)
-                                            <table>
-                                                <thead>
+                <table class="table d-block overflow-auto table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th><span class="max">#</span></th>
+                            @if (Auth::user()->type == 'admin' || Auth::user()->can('orders_under_work.show_histories'))
+                                <th><span class="max">تاريخ التعديلات</span></th>
+                            @endif
+                            <th><span class="max">الشركة</span></th>
+                            <th><span class="max">أسم الراسل</span></th>
+                            <th><span class="max">رقم موبيل الراسل</span></th>
+                            <th><span class="max">أسم المركب</span></th>
+                            <th><span class="max">تفاصيل المركب</span></th>
+                            <th><span class="max">القسم</span></th>
+                            <th><span class="max">الحالة</span></th>
+                            <th><span class="max">السبب</span></th>
+                            <th><span class="max">وقت الأنشاء</span></th>
+                            <th><span class="max">وقت أخر تعديل</span></th>
+                            <th><span class="max">الأعدادات</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($orders as $order)
+                            <tr id="{{ $order->id }}" data-value="{{ $order }}">
+                                <td scope="row">{{ $order->id }}</td>
+                            @if (Auth::user()->type == 'admin' || Auth::user()->can('orders_under_work.show_histories'))
+                                <td scope="row">
+                                    @if (count($order->histories) > 0)
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <td><span class="max font-weight-bold">من عدل على الطلب</span></td>
+                                                    <td><span class="max font-weight-bold">الحالة</span></td>
+                                                    <td><span class="max font-weight-bold">التوقيت</span></td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($order->histories()->latest()->get() as $history)
                                                     <tr>
-                                                        <td><span class="max font-weight-bold">من عدل على الطلب</span></td>
-                                                        <td><span class="max font-weight-bold">الحالة</span></td>
-                                                        <td><span class="max font-weight-bold">التوقيت</span></td>
+                                                        <td><span class="max">{{ $history->user->name }}</span></td>
+                                                        <td><span class="max">{{ $history->status->name }}</span></td>
+                                                        <td><span class="max">{{ $history->created_at }}</span></td>
                                                     </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach ($order->histories()->latest()->get() as $history)
-                                                        <tr>
-                                                            <td><span class="max">{{ $history->user->name }}</span></td>
-                                                            <td><span class="max">{{ $history->status->name }}</span></td>
-                                                            <td><span class="max">{{ $history->created_at }}</span></td>
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                        @else
-                                        <span class="max">لا يوجد تعديلات بعد</span>
-                                        @endif
-                                    </td>
-                                @endif
-                                    <th><span class="max">{{ $order->customer->name }}</span></th>
-                                    <th><span class="max">{{ $order->sender_name }}</span></th>
-                                    <th><span class="max">{{ $order->sender_phone }}</span></th>
-                                    <td><span class="max">{{ $order->name }}</span></td>
-                                    <td>
-                                        @if(strlen($order->details) > 30)
-                                            <p class="m-0">{{ mb_substr($order->details, 0, 30) . '...' }}</p>
-                                        @else
-                                        <p class="m-0">{{ $order->details }}</p>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <ul>
-                                            <li>
-                                                <span>القسم الرئيسى: </span>
-                                                <p>{{ $order->category->name }}</p>
-                                            </li>
-                                            @if($order->sub_category)
-                                                <li>
-                                                    <span>القسم الفرعى: </span>
-                                                    <p>{{ $order->sub_category->name }}</p>
-                                                </li>
-                                            @endif
-                                        </ul>
-                                    </td>
-                                    <td>
-                                        @if(Auth::user()->type !== 'user' && Auth::user()->can('orders_under_work.update_status'))
-                                            <select class="form-control change_status select2">
-                                                @foreach ($statuses as $status)
-                                                    <option value="{{ $status->id }}" @if($order->status_id == $status->id) selected @endif>{{ $status->name }}</option>
                                                 @endforeach
-                                            </select>
-                                        @else
-                                        <div class="badge badge-primary">{{ $order->status->name }}</div>
+                                            </tbody>
+                                        </table>
+                                    @else
+                                    <span class="max">لا يوجد تعديلات بعد</span>
+                                    @endif
+                                </td>
+                            @endif
+                                <th><span class="max">{{ $order->customer->name }}</span></th>
+                                <th><span class="max">{{ $order->sender_name }}</span></th>
+                                <th><span class="max">{{ $order->sender_phone }}</span></th>
+                                <td><span class="max">{{ $order->name }}</span></td>
+                                <td>
+                                    @if(strlen($order->details) > 30)
+                                        <p class="m-0">{{ mb_substr($order->details, 0, 30) . '...' }}</p>
+                                    @else
+                                    <p class="m-0">{{ $order->details }}</p>
+                                    @endif
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>
+                                            <span>القسم الرئيسى: </span>
+                                            <p>{{ $order->category->name }}</p>
+                                        </li>
+                                        @if($order->sub_category)
+                                            <li>
+                                                <span>القسم الفرعى: </span>
+                                                <p>{{ $order->sub_category->name }}</p>
+                                            </li>
                                         @endif
-                                    </td>
-                                    <td>
-                                        <p>{{ $order->reason }}</p>
-                                    </td>
-                                    <td>
-                                        <span class="max">{{ $order->created_at->diffForHumans() }}</span>
-                                    </td>
-                                    <td>
-                                        <span class="max">{{ $order->updated_at->diffForHumans() }}</span>
-                                    </td>
-                                    <td>
-                                        <div class="options d-flex">
-                                            {{-- Status Change Modal --}}
-                                            <div class="modal fade" id="modal_change_{{ $order->id }}" tabindex="-1" role="dialog"
-                                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    </ul>
+                                </td>
+                                <td>
+                                    @if(Auth::user()->type !== 'user' && Auth::user()->can('orders_under_work.update_status'))
+                                        <select class="form-control change_status select2">
+                                            @foreach ($statuses as $status)
+                                                <option value="{{ $status->id }}" @if($order->status_id == $status->id) selected @endif>{{ $status->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    @else
+                                    <div class="badge badge-primary">{{ $order->status->name }}</div>
+                                    @endif
+                                </td>
+                                <td>
+                                    <p>{{ $order->reason }}</p>
+                                </td>
+                                <td>
+                                    <span class="max">{{ $order->created_at->diffForHumans() }}</span>
+                                </td>
+                                <td>
+                                    <span class="max">{{ $order->updated_at->diffForHumans() }}</span>
+                                </td>
+                                <td>
+                                    <div class="options d-flex">
+                                        {{-- Status Change Modal --}}
+                                        <div class="modal fade" id="modal_change_{{ $order->id }}" tabindex="-1" role="dialog"
+                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
                                                 <div class="modal-dialog" role="document">
-                                                    <div class="modal-dialog" role="document">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title">
-                                                                   تغيير الحالة
-                                                                </h5>
-                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                    <span aria-hidden="true">&times;</span>
-                                                                </button>
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">
+                                                                تغيير الحالة
+                                                            </h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <form action="{{ route('orders_under_work.update_status') }}" method="POST">
+                                                            <input type="hidden" name="order_id" value="{{ $order->id }}">
+                                                            <input type="hidden" name="page" value="{{ request('page') }}">
+                                                            @csrf
+                                                            <div class="modal-body">
+                                                                <textarea class="form-control" name="reason" cols="30" rows="10" placeholder="السبب"></textarea>
+                                                                @error('reason')
+                                                                    <div class="text-danger">{{ $message }}</div>
+                                                                @enderror
                                                             </div>
-                                                            <form action="{{ route('orders_under_work.update_status') }}" method="POST">
-                                                                <input type="hidden" name="order_id" value="{{ $order->id }}">
-                                                                <input type="hidden" name="page" value="{{ request('page') }}">
-                                                                @csrf
-                                                                <div class="modal-body">
-                                                                    <textarea class="form-control" name="reason" cols="30" rows="10" placeholder="السبب"></textarea>
-                                                                    @error('reason')
-                                                                        <div class="text-danger">{{ $message }}</div>
-                                                                    @enderror
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">لا</button>
+                                                                    <input type="submit" class="btn btn-danger" value="نعم">
                                                                 </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">لا</button>
-                                                                        <input type="submit" class="btn btn-danger" value="نعم">
-                                                                    </div>
-                                                                </div>
-                                                            </form>
-                                                    </div>
+                                                            </div>
+                                                        </form>
                                                 </div>
                                             </div>
-                                            @if(Auth::user()->can('orders_under_work.show') || Auth::user()->type == 'user')
-                                                <a class="btn btn-success mr-1" href="{{ route('orders_under_work.show', $order) }}">
-                                                    <span>اظهار</span>
-                                                    <span class="mdi mdi-eye ml-1"></span>
-                                                </a>
-                                            @endif
-                                            @can('orders_under_work.edit')
-                                                <a class="btn btn-info mr-1" href="{{ route('orders_under_work.edit', $order) }}">
-                                                    <span>تعديل</span>
-                                                    <span class="mdi mdi-circle-edit-outline ml-1"></span>
-                                                </a>
-                                            @endcan
-                                            @can('orders_under_work.destroy')
-                                                <button class="btn btn-danger" data-toggle="modal"
-                                                    data-target="#modal_{{ $order->id }}">
-                                                    <span>ازالة</span>
-                                                    <span class="mdi mdi-delete-outline ml-1"></span>
-                                                </button>
-                                                <!-- Modal -->
-                                                @include('layouts.partials.modal', [
-                                                'id' => $order->id,
-                                                'route' => route('orders_under_work.destroy', $order->id)
-                                                ])
-                                            @endcan
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                                        </div>
+                                        @if(Auth::user()->can('orders_under_work.show') || Auth::user()->type == 'user')
+                                            <a class="btn btn-success mr-1" href="{{ route('orders_under_work.show', $order) }}">
+                                                <span>اظهار</span>
+                                                <span class="mdi mdi-eye ml-1"></span>
+                                            </a>
+                                        @endif
+                                        @can('orders_under_work.edit')
+                                            <a class="btn btn-info mr-1" href="{{ route('orders_under_work.edit', $order) }}">
+                                                <span>تعديل</span>
+                                                <span class="mdi mdi-circle-edit-outline ml-1"></span>
+                                            </a>
+                                        @endcan
+                                        @can('orders_under_work.destroy')
+                                            <button class="btn btn-danger" data-toggle="modal"
+                                                data-target="#modal_{{ $order->id }}">
+                                                <span>ازالة</span>
+                                                <span class="mdi mdi-delete-outline ml-1"></span>
+                                            </button>
+                                            <!-- Modal -->
+                                            @include('layouts.partials.modal', [
+                                            'id' => $order->id,
+                                            'route' => route('orders_under_work.destroy', $order->id)
+                                            ])
+                                        @endcan
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
                 {{ $orders->appends(request()->all())->links() }}
             </div>
         </div>

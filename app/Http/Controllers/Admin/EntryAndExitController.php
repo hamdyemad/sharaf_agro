@@ -24,6 +24,8 @@ class EntryAndExitController extends Controller
      */
     public function index(Request $request)
     {
+
+        $this->authorize('entry_and_exit.index');
         if(Auth::user()->type !== 'sub-admin') {
             $categories = Category::all();
         } else {

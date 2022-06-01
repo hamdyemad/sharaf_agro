@@ -52,54 +52,52 @@
             </div>
             <div class="card-body">
                 @if($balances->count() > 0)
-                    <div class="table-responsive">
-                        <table class="table mb-0">
-                            <thead>
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th><span class="max">أسم الشركة</span></th>
+                                <th><span class="max">رصيد الشركة</span></th>
+                                <th><span class="max">وقت أخر تعديل</span></th>
+                                <th><span class="max">الأعدادات</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($balances as $balance)
                                 <tr>
-                                    <th><span class="max">أسم الشركة</span></th>
-                                    <th><span class="max">رصيد الشركة</span></th>
-                                    <th><span class="max">وقت أخر تعديل</span></th>
-                                    <th><span class="max">الأعدادات</span></th>
+                                    <td><span class="max">{{ $balance->user->name }}</span></td>
+                                    <td>{{ $balance->balance }}</td>
+                                    <td>
+                                        {{ $balance->created_at->diffForHumans() }}
+                                    </td>
+                                    <td>
+                                        {{ $balance->updated_at->diffForHumans() }}
+                                    </td>
+                                    <td>
+                                        <div class="options d-flex">
+                                            @can('balances.edit')
+                                                <a class="btn btn-info mr-1" href="{{ route('balances.edit', $balance) }}">
+                                                    <span>تعديل</span>
+                                                    <span class="mdi mdi-circle-edit-outline"></span>
+                                                </a>
+                                            @endcan
+                                            @can('balances.destroy')
+                                                <button class="btn btn-danger" data-toggle="modal"
+                                                    data-target="#modal_{{ $balance->id }}">
+                                                    <span>ازالة</span>
+                                                    <span class="mdi mdi-delete-outline"></span>
+                                                </button>
+                                                <!-- Modal -->
+                                                @include('layouts.partials.modal', [
+                                                'id' => $balance->id,
+                                                'route' => route('balances.destroy', $balance->id)
+                                                ])
+                                            @endcan
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($balances as $balance)
-                                    <tr>
-                                        <td><span class="max">{{ $balance->user->name }}</span></td>
-                                        <td>{{ $balance->balance }}</td>
-                                        <td>
-                                            {{ $balance->created_at->diffForHumans() }}
-                                        </td>
-                                        <td>
-                                            {{ $balance->updated_at->diffForHumans() }}
-                                        </td>
-                                        <td>
-                                            <div class="options d-flex">
-                                                @can('balances.edit')
-                                                    <a class="btn btn-info mr-1" href="{{ route('balances.edit', $balance) }}">
-                                                        <span>تعديل</span>
-                                                        <span class="mdi mdi-circle-edit-outline"></span>
-                                                    </a>
-                                                @endcan
-                                                @can('balances.destroy')
-                                                    <button class="btn btn-danger" data-toggle="modal"
-                                                        data-target="#modal_{{ $balance->id }}">
-                                                        <span>ازالة</span>
-                                                        <span class="mdi mdi-delete-outline"></span>
-                                                    </button>
-                                                    <!-- Modal -->
-                                                    @include('layouts.partials.modal', [
-                                                    'id' => $balance->id,
-                                                    'route' => route('balances.destroy', $balance->id)
-                                                    ])
-                                                @endcan
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        {{ $balances->appends(request()->all())->links() }}
-                    </div>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    {{ $balances->appends(request()->all())->links() }}
                 @else
                 <div class="alert alert-info">لا يوجد شركات</div>
                 @endif

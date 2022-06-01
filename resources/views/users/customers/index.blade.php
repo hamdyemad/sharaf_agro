@@ -68,122 +68,120 @@
             </div>
             <div class="card-body">
                 @if($users->count() > 0)
-                    <div class="table-responsive">
-                        <table class="table mb-0">
-                            <thead>
+                    <table class="table table-hover d-block overflow-auto mb-0">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th><span class="max">الأسم</span></th>
+                                <th><span class="max">أسم المستخدم</span></th>
+                                <th><span class="max">الأشخاص المسئولة</span></th>
+                                <th><span class="max">البريد الألكترونى</span></th>
+                                <th><span class="max">العنوان</span></th>
+                                <th><span class="max">رقم التليفون</span></th>
+                                @if(Auth::user()->type == 'admin')
+                                    <th><span class="max">الحظر</span></th>
+                                @endif
+                                <th><span class="max">وقت الأنشاء</span></th>
+                                <th><span class="max">وقت أخر تعديل</span></th>
+                                <th><span class="max">الأعدادات</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($users as $user)
                                 <tr>
-                                    <th>#</th>
-                                    <th><span class="max">الأسم</span></th>
-                                    <th><span class="max">أسم المستخدم</span></th>
-                                    <th><span class="max">الأشخاص المسئولة</span></th>
-                                    <th><span class="max">البريد الألكترونى</span></th>
-                                    <th><span class="max">العنوان</span></th>
-                                    <th><span class="max">رقم التليفون</span></th>
-                                    @if(Auth::user()->type == 'admin')
-                                        <th><span class="max">الحظر</span></th>
-                                    @endif
-                                    <th><span class="max">وقت الأنشاء</span></th>
-                                    <th><span class="max">وقت أخر تعديل</span></th>
-                                    <th><span class="max">الأعدادات</span></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($users as $user)
-                                    <tr>
-                                        <th scope="row">{{ $user->id }}</th>
-                                        <td>
-                                            <div class="d-flex">
-                                                @if ($user->avatar)
-                                                    <img src="{{ asset($user->avatar) }}" alt="">
-                                                @else
-                                                    <img src="{{ asset('images/avatar.jpg') }}" alt="">
-                                                @endif
-                                                <span>{{ $user->name }}</span>
-                                            </div>
-                                        </td>
-                                        <td>{{ $user->username }}</td>
-                                        <td>
-                                            @if($user->responsibles->count() > 0)
-                                                <ul>
-                                                    @foreach ($user->responsibles->groupBy('name') as $key => $responsible)
-                                                        <li>
-                                                            <span>الأسم: </span>
-                                                            <p>{{ $key }}</p>
+                                    <th scope="row">{{ $user->id }}</th>
+                                    <td>
+                                        <div class="d-flex">
+                                            @if ($user->avatar)
+                                                <img src="{{ asset($user->avatar) }}" alt="">
+                                            @else
+                                                <img src="{{ asset('images/avatar.jpg') }}" alt="">
+                                            @endif
+                                            <span>{{ $user->name }}</span>
+                                        </div>
+                                    </td>
+                                    <td>{{ $user->username }}</td>
+                                    <td>
+                                        @if($user->responsibles->count() > 0)
+                                            <ul>
+                                                @foreach ($user->responsibles->groupBy('name') as $key => $responsible)
+                                                    <li>
+                                                        <span>الأسم: </span>
+                                                        <p>{{ $key }}</p>
+                                                    </li>
+                                                    <li>
+                                                        <span>أرقام الموبيل : </span>
+                                                        @foreach ($responsible as $responsibleItem)
+                                                            <span class="badge badge-secondary ml-1">{{ $responsibleItem->phone }}</span>
+                                                        @endforeach
                                                         </li>
-                                                        <li>
-                                                            <span>أرقام الموبيل : </span>
-                                                            @foreach ($responsible as $responsibleItem)
-                                                                <span class="badge badge-secondary ml-1">{{ $responsibleItem->phone }}</span>
-                                                            @endforeach
-                                                            </li>
-                                                    @endforeach
-                                                </ul>
-                                            @else
-                                            <div class="alert alert-info max">لا يوجد أشخاص مسئولة</div>
-                                            @endif
-                                        </td>
-                                        <td>{{ $user->email }}</td>
-                                        <td>
-                                            @if($user->address)
-                                            <p>{{ $user->address }}</p>
-                                            @else
-                                            <p class="alert alert-info">لا يوجد عنوان</p>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if($user->phone)
-                                            <p>{{ $user->phone }}</p>
-                                            @else
-                                            <p class="alert alert-info">لا يوجد رقم تليفون</p>
-                                            @endif
-                                        </td>
-                                        @if(Auth::user()->type == 'admin')
-                                            <td>
-                                                <form action="{{ route('users.banned', $user) }}" method="POST">
-                                                    @csrf
-                                                    <div class="form-group">
-                                                        <input type="checkbox" onchange="this.form.submit()" name="active" id="switch-{{ $loop->index }}" switch="bool"
-                                                        @if($user->banned)
-                                                        checked
-                                                        @endif />
-                                                        <label for="switch-{{ $loop->index }}" data-on-label="نعم" data-off-label="لا"></label>
-                                                    </div>
-                                                </form>
-                                            </td>
+                                                @endforeach
+                                            </ul>
+                                        @else
+                                        <div class="alert alert-info max">لا يوجد أشخاص مسئولة</div>
                                         @endif
+                                    </td>
+                                    <td>{{ $user->email }}</td>
+                                    <td>
+                                        @if($user->address)
+                                        <p>{{ $user->address }}</p>
+                                        @else
+                                        <p class="alert alert-info">لا يوجد عنوان</p>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($user->phone)
+                                        <p>{{ $user->phone }}</p>
+                                        @else
+                                        <p class="alert alert-info">لا يوجد رقم تليفون</p>
+                                        @endif
+                                    </td>
+                                    @if(Auth::user()->type == 'admin')
                                         <td>
-                                            {{ $user->created_at->diffForHumans() }}
+                                            <form action="{{ route('users.banned', $user) }}" method="POST">
+                                                @csrf
+                                                <div class="form-group">
+                                                    <input type="checkbox" onchange="this.form.submit()" name="active" id="switch-{{ $loop->index }}" switch="bool"
+                                                    @if($user->banned)
+                                                    checked
+                                                    @endif />
+                                                    <label for="switch-{{ $loop->index }}" data-on-label="نعم" data-off-label="لا"></label>
+                                                </div>
+                                            </form>
                                         </td>
-                                        <td>
-                                            {{ $user->updated_at->diffForHumans() }}
-                                        </td>
-                                        <td>
-                                            <div class="options d-flex">
-                                                @can('customers.edit')
-                                                    <a class="btn btn-info mr-1" href="{{ route('customers.edit', $user) }}">
-                                                        <span>تعديل</span>
-                                                        <span class="mdi mdi-circle-edit-outline"></span>
-                                                    </a>
-                                                @endcan
-                                                @can('customers.destroy')
-                                                    <button class="btn btn-danger" data-toggle="modal"
-                                                        data-target="#modal_{{ $user->id }}">
-                                                        <span>ازالة</span>
-                                                        <span class="mdi mdi-delete-outline"></span>
-                                                    </button>
-                                                    <!-- Modal -->
-                                                    @include('layouts.partials.modal', [
-                                                    'id' => $user->id,
-                                                    'route' => route('customers.destroy', $user->id)
-                                                    ])
-                                                @endcan
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        {{ $users->appends(request()->all())->links() }}
-                    </div>
+                                    @endif
+                                    <td>
+                                        {{ $user->created_at->diffForHumans() }}
+                                    </td>
+                                    <td>
+                                        {{ $user->updated_at->diffForHumans() }}
+                                    </td>
+                                    <td>
+                                        <div class="options d-flex">
+                                            @can('customers.edit')
+                                                <a class="btn btn-info mr-1" href="{{ route('customers.edit', $user) }}">
+                                                    <span>تعديل</span>
+                                                    <span class="mdi mdi-circle-edit-outline"></span>
+                                                </a>
+                                            @endcan
+                                            @can('customers.destroy')
+                                                <button class="btn btn-danger" data-toggle="modal"
+                                                    data-target="#modal_{{ $user->id }}">
+                                                    <span>ازالة</span>
+                                                    <span class="mdi mdi-delete-outline"></span>
+                                                </button>
+                                                <!-- Modal -->
+                                                @include('layouts.partials.modal', [
+                                                'id' => $user->id,
+                                                'route' => route('customers.destroy', $user->id)
+                                                ])
+                                            @endcan
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    {{ $users->appends(request()->all())->links() }}
                 @else
                 <div class="alert alert-info">لا يوجد شركات</div>
                 @endif

@@ -72,160 +72,158 @@
                 </form>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table mb-0">
-                        <thead>
-                            <tr>
-                                <th><span class="max">#</span></th>
+                <table class="table table-hover d-block overflow-auto mb-0">
+                    <thead>
+                        <tr>
+                            <th><span class="max">#</span></th>
+                            @if (Auth::user()->type == 'admin' || Auth::user()->can('inquires.show_histories'))
+                                <th><span class="max">تاريخ التعديلات</span></th>
+                            @endif
+                            <th><span class="max">الشركة</span></th>
+                            <th><span class="max">أسم الراسل</span></th>
+                            <th><span class="max">رقم موبيل الراسل</span></th>
+                            <th><span class="max">الأستفسار</span></th>
+                            <th><span class="max">القسم</span></th>
+                            <th><span class="max">رد على الأستفسار</span></th>
+                            <th><span class="max">وقت الأنشاء</span></th>
+                            <th><span class="max">وقت أخر تعديل</span></th>
+                            <th><span class="max">الأعدادات</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($inquires as $inquire)
+                            <tr id="{{ $inquire->id }}" data-value="{{ $inquire }}">
+                                <td scope="row">{{ $inquire->id }}</td>
                                 @if (Auth::user()->type == 'admin' || Auth::user()->can('inquires.show_histories'))
-                                    <th><span class="max">تاريخ التعديلات</span></th>
-                                @endif
-                                <th><span class="max">الشركة</span></th>
-                                <th><span class="max">أسم الراسل</span></th>
-                                <th><span class="max">رقم موبيل الراسل</span></th>
-                                <th><span class="max">الأستفسار</span></th>
-                                <th><span class="max">القسم</span></th>
-                                <th><span class="max">رد على الأستفسار</span></th>
-                                <th><span class="max">وقت الأنشاء</span></th>
-                                <th><span class="max">وقت أخر تعديل</span></th>
-                                <th><span class="max">الأعدادات</span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($inquires as $inquire)
-                                <tr id="{{ $inquire->id }}" data-value="{{ $inquire }}">
-                                    <td scope="row">{{ $inquire->id }}</td>
-                                    @if (Auth::user()->type == 'admin' || Auth::user()->can('inquires.show_histories'))
-                                        <td scope="row">
-                                            @if (count($inquire->histories) > 0)
-                                                <table>
-                                                    <thead>
+                                    <td scope="row">
+                                        @if (count($inquire->histories) > 0)
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <td><span class="max font-weight-bold">من عدل على الطلب</span></td>
+                                                        <td><span class="max font-weight-bold">التوقيت</span></td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($inquire->histories()->latest()->get() as $history)
                                                         <tr>
-                                                            <td><span class="max font-weight-bold">من عدل على الطلب</span></td>
-                                                            <td><span class="max font-weight-bold">التوقيت</span></td>
+                                                            <td><span class="max">{{ $history->user->name }}</span></td>
+                                                            <td><span class="max">{{ $history->created_at }}</span></td>
                                                         </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach ($inquire->histories()->latest()->get() as $history)
-                                                            <tr>
-                                                                <td><span class="max">{{ $history->user->name }}</span></td>
-                                                                <td><span class="max">{{ $history->created_at }}</span></td>
-                                                            </tr>
-                                                        @endforeach
-                                                    </tbody>
-                                                </table>
-                                            @else
-                                                <span class="max">لا يوجد تعديلات بعد</span>
-                                            @endif
-                                        </td>
-                                    @endif
-                                    <th><span class="max">{{ $inquire->customer->name }}</span></th>
-                                    <th><span class="max">{{ $inquire->sender_name }}</span></th>
-                                    <th><span class="max">{{ $inquire->sender_phone }}</span></th>
-                                    <td>
-                                        @if(strlen($inquire->details) > 30)
-                                            <p class="m-0">{{ mb_substr($inquire->details, 0, 30) . '...' }}</p>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
                                         @else
-                                        <p class="m-0">{{ $inquire->details }}</p>
+                                            <span class="max">لا يوجد تعديلات بعد</span>
                                         @endif
                                     </td>
-                                    <td>
-                                        <ul>
+                                @endif
+                                <th><span class="max">{{ $inquire->customer->name }}</span></th>
+                                <th><span class="max">{{ $inquire->sender_name }}</span></th>
+                                <th><span class="max">{{ $inquire->sender_phone }}</span></th>
+                                <td>
+                                    @if(strlen($inquire->details) > 30)
+                                        <p class="m-0">{{ mb_substr($inquire->details, 0, 30) . '...' }}</p>
+                                    @else
+                                    <p class="m-0">{{ $inquire->details }}</p>
+                                    @endif
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>
+                                            <span>القسم الرئيسى: </span>
+                                            <p>{{ $inquire->category->name }}</p>
+                                        </li>
+                                        @if($inquire->sub_category)
                                             <li>
-                                                <span>القسم الرئيسى: </span>
-                                                <p>{{ $inquire->category->name }}</p>
+                                                <span>القسم الفرعى: </span>
+                                                <p>{{ $inquire->sub_category->name }}</p>
                                             </li>
-                                            @if($inquire->sub_category)
-                                                <li>
-                                                    <span>القسم الفرعى: </span>
-                                                    <p>{{ $inquire->sub_category->name }}</p>
-                                                </li>
-                                            @endif
-                                        </ul>
-                                    </td>
-                                    <td>
-                                        @if($inquire->reply)
-                                            <span class="badge badge-secondary d-block">{{ $inquire->reply }}</span>
-                                        @elseif(Auth::user()->type == 'admin' || Auth::user()->can('inquires.update_reply'))
-                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_change_{{ $inquire->id }}">
-                                                أضافة رد
-                                            </button>
-                                            {{-- Status Change Modal --}}
-                                            <div class="modal fade" id="modal_change_{{ $inquire->id }}" tabindex="-1" role="dialog"
-                                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        @endif
+                                    </ul>
+                                </td>
+                                <td>
+                                    @if($inquire->reply)
+                                        <span class="badge badge-secondary d-block">{{ $inquire->reply }}</span>
+                                    @elseif(Auth::user()->type == 'admin' || Auth::user()->can('inquires.update_reply'))
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_change_{{ $inquire->id }}">
+                                            أضافة رد
+                                        </button>
+                                        {{-- Status Change Modal --}}
+                                        <div class="modal fade" id="modal_change_{{ $inquire->id }}" tabindex="-1" role="dialog"
+                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
                                                 <div class="modal-dialog" role="document">
-                                                    <div class="modal-dialog" role="document">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title">
-                                                                اضافة رد
-                                                                </h5>
-                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                    <span aria-hidden="true">&times;</span>
-                                                                </button>
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">
+                                                            اضافة رد
+                                                            </h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <form action="{{ route('inquires.update', $inquire) }}" method="POST">
+                                                            <input type="hidden" name="page" value="{{ request('page') }}">
+                                                            <input type="hidden" name="add_reply" value="add_reply">
+                                                            @method("PATCH")
+                                                            @csrf
+                                                            <div class="modal-body">
+                                                                <textarea class="form-control" name="reply" cols="30" rows="10" placeholder="السبب"></textarea>
+                                                                @error('reply')
+                                                                    <div class="text-danger">{{ $message }}</div>
+                                                                @enderror
                                                             </div>
-                                                            <form action="{{ route('inquires.update', $inquire) }}" method="POST">
-                                                                <input type="hidden" name="page" value="{{ request('page') }}">
-                                                                <input type="hidden" name="add_reply" value="add_reply">
-                                                                @method("PATCH")
-                                                                @csrf
-                                                                <div class="modal-body">
-                                                                    <textarea class="form-control" name="reply" cols="30" rows="10" placeholder="السبب"></textarea>
-                                                                    @error('reply')
-                                                                        <div class="text-danger">{{ $message }}</div>
-                                                                    @enderror
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">لا</button>
+                                                                    <input type="submit" class="btn btn-danger" value="نعم">
                                                                 </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">لا</button>
-                                                                        <input type="submit" class="btn btn-danger" value="نعم">
-                                                                    </div>
-                                                                </div>
-                                                            </form>
-                                                    </div>
+                                                            </div>
+                                                        </form>
                                                 </div>
                                             </div>
-                                        @else
-                                        <span class="max">لا يوجد رد حتى الأن</span>
+                                        </div>
+                                    @else
+                                    <span class="max">لا يوجد رد حتى الأن</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <span class="max">{{ $inquire->created_at->diffForHumans() }}</span>
+                                </td>
+                                <td>
+                                    <span class="max">{{ $inquire->updated_at->diffForHumans() }}</span>
+                                </td>
+                                <td>
+                                    <div class="options d-flex">
+                                        @if(Auth::user()->can('inquires.show') || Auth::user()->type == 'user')
+                                            <a class="btn btn-success mr-1" href="{{ route('inquires.show', $inquire) . '?page=' . request('page') }}">
+                                                <span>اظهار</span>
+                                                <span class="mdi mdi-eye ml-1"></span>
+                                            </a>
                                         @endif
-                                    </td>
-                                    <td>
-                                        <span class="max">{{ $inquire->created_at->diffForHumans() }}</span>
-                                    </td>
-                                    <td>
-                                        <span class="max">{{ $inquire->updated_at->diffForHumans() }}</span>
-                                    </td>
-                                    <td>
-                                        <div class="options d-flex">
-                                            @if(Auth::user()->can('inquires.show') || Auth::user()->type == 'user')
-                                                <a class="btn btn-success mr-1" href="{{ route('inquires.show', $inquire) . '?page=' . request('page') }}">
-                                                    <span>اظهار</span>
-                                                    <span class="mdi mdi-eye ml-1"></span>
-                                                </a>
-                                            @endif
-                                            @can('inquires.show')
-                                                <a class="btn btn-info mr-1" href="{{ route('inquires.edit', $inquire) . '?page=' . request('page') }}">
-                                                    <span>تعديل</span>
-                                                    <span class="mdi mdi-circle-edit-outline ml-1"></span>
-                                                </a>
-                                            @endcan
-                                            @can('inquires.destroy')
-                                                <button class="btn btn-danger" data-toggle="modal"
-                                                    data-target="#modal_{{ $inquire->id }}">
-                                                    <span>ازالة</span>
-                                                    <span class="mdi mdi-delete-outline ml-1"></span>
-                                                </button>
-                                                <!-- Modal -->
-                                                @include('layouts.partials.modal', [
-                                                'id' => $inquire->id,
-                                                'route' => route('inquires.destroy', $inquire->id)
-                                                ])
-                                            @endcan
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                                        @can('inquires.show')
+                                            <a class="btn btn-info mr-1" href="{{ route('inquires.edit', $inquire) . '?page=' . request('page') }}">
+                                                <span>تعديل</span>
+                                                <span class="mdi mdi-circle-edit-outline ml-1"></span>
+                                            </a>
+                                        @endcan
+                                        @can('inquires.destroy')
+                                            <button class="btn btn-danger" data-toggle="modal"
+                                                data-target="#modal_{{ $inquire->id }}">
+                                                <span>ازالة</span>
+                                                <span class="mdi mdi-delete-outline ml-1"></span>
+                                            </button>
+                                            <!-- Modal -->
+                                            @include('layouts.partials.modal', [
+                                            'id' => $inquire->id,
+                                            'route' => route('inquires.destroy', $inquire->id)
+                                            ])
+                                        @endcan
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
                 {{ $inquires->appends(request()->all())->links() }}
             </div>
         </div>

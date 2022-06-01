@@ -4513,3 +4513,10 @@ body {
   display: block;
 }
 
+@media (max-width: 991px) {
+  .table {
+    display: block;
+    overflow: auto;
+  }
+}
+

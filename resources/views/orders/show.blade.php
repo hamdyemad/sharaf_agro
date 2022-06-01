@@ -17,8 +17,28 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header d-md-flex align-items-center justify-content-between">
                         <h1>أسم الشركة : {{ $order->customer->name }}</h1>
+                        <div class="options d-flex">
+                            @can('orders.edit')
+                                <a class="btn btn-info mr-1" href="{{ route('orders.edit', $order) }}">
+                                    <span>تعديل</span>
+                                    <span class="mdi mdi-circle-edit-outline ml-1"></span>
+                                </a>
+                            @endcan
+                            @can('orders.destroy')
+                                <button class="btn btn-danger" data-toggle="modal"
+                                    data-target="#modal_{{ $order->id }}">
+                                    <span>ازالة</span>
+                                    <span class="mdi mdi-delete-outline ml-1"></span>
+                                </button>
+                                <!-- Modal -->
+                                @include('layouts.partials.modal', [
+                                'id' => $order->id,
+                                'route' => route('orders.destroy', $order->id)
+                                ])
+                            @endcan
+                        </div>
                     </div>
                     <div class="card-body">
                         <h2>أسم المركب : <span>{{ $order->name }}</span></h1>

@@ -113,164 +113,169 @@
             </div>
             <div class="card-body">
                 @if($orders->count() > 0)
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
-                                <tr>
-                                    <th><span class="max">#</span></th>
-                                    <th><span class="max">الأعدادات</span></th>
-                                    <th><span class="max">الشركة</span></th>
-                                    <th><span class="max">أسم المركب</span></th>
-                                    <th><span class="max">الحالة</span></th>
-                                    @if(Auth::user()->type == 'admin')
-                                    <th><span class="max">انشاء بواسطة</span></th>
-                                    @endif
-                                    <th><span class="max">القسم</span></th>
-                                    <th><span class="max">تفاصيل المركب</span></th>
-                                    <th><span class="max">التواريخ المضافة</span></th>
-                                    @if (Auth::user()->type == 'admin' || Auth::user()->can('orders.show_histories'))
-                                        <th><span class="max">تاريخ التعديلات</span></th>
-                                    @endif
-                                    <th><span class="max">وقت الأنشاء</span></th>
-                                    <th><span class="max">وقت أخر تعديل</span></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($orders as $order)
-                                    <tr id="{{ $order->id }}" data-value="{{ $order }}">
-                                        <td scope="row">{{ $order->id }}</td>
-                                        @if (Auth::user()->type == 'admin' || Auth::user()->can('orders.show_histories'))
-                                        <td>
-                                            <div class="options d-flex">
-                                                @if(Auth::user()->type == 'user' || Auth::user()->can('orders.show'))
-                                                    <a class="btn btn-success mr-1" href="{{ route('orders.show', $order) }}">
-                                                        <span>اظهار</span>
-                                                        <span class="mdi mdi-eye ml-1"></span>
-                                                    </a>
-                                                @endif
-                                                @can('orders.edit')
-                                                    <a class="btn btn-info mr-1" href="{{ route('orders.edit', $order) }}">
-                                                        <span>تعديل</span>
-                                                        <span class="mdi mdi-circle-edit-outline ml-1"></span>
-                                                    </a>
-                                                @endcan
-                                                @can('orders.destroy')
-                                                    <button class="btn btn-danger" data-toggle="modal"
-                                                        data-target="#modal_{{ $order->id }}">
-                                                        <span>ازالة</span>
-                                                        <span class="mdi mdi-delete-outline ml-1"></span>
-                                                    </button>
-                                                    <!-- Modal -->
-                                                    @include('layouts.partials.modal', [
-                                                    'id' => $order->id,
-                                                    'route' => route('orders.destroy', $order->id)
-                                                    ])
-                                                @endcan
-                                        </td>
-                                        <th><span class="max">{{ $order->customer->name }}</span></th>
-                                        <td><span class="max">{{ $order->name }}</span></td>
-                                        <td><span class="max badge badge-primary">{{ $order->status->name }}</span></td>
-                                        @if(Auth::user()->type == 'admin')
-                                            <td>
-                                                <span class="max">{{ $order->employee->name }}</span>
-                                            </td>
+                    <table class="table d-block overflow-auto table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th><span class="max">#</span></th>
+                                <th><span class="max">الأعدادات</span></th>
+                                <th><span class="max">الشركة</span></th>
+                                <th><span class="max">أسم المركب</span></th>
+                                <th><span class="max">الحالة</span></th>
+                                @if(Auth::user()->type == 'admin')
+                                <th><span class="max">انشاء بواسطة</span></th>
+                                @endif
+                                <th><span class="max">القسم</span></th>
+                                <th><span class="max">تفاصيل المركب</span></th>
+                                <th><span class="max">التواريخ المضافة</span></th>
+                                @if (Auth::user()->type == 'admin' || Auth::user()->can('orders.show_histories'))
+                                    <th><span class="max">تاريخ التعديلات</span></th>
+                                @endif
+                                <th><span class="max">وقت الأنشاء</span></th>
+                                <th><span class="max">وقت أخر تعديل</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($orders as $order)
+                            <tr class="table-tr" id="{{ $order->id }}" data-value="{{ $order }}">
+                                <td scope="row">{{ $order->id }}</td>
+                                <td>
+                                    <div class="options d-flex">
+                                        @if(Auth::user()->type == 'user' || Auth::user()->can('orders.show'))
+                                            <a class="btn btn-success mr-1" href="{{ route('orders.show', $order) }}">
+                                                <span>اظهار</span>
+                                                <span class="mdi mdi-eye ml-1"></span>
+                                            </a>
                                         @endif
-                                        <td>
-                                            <ul>
-                                                <li>
-                                                    <span>القسم الرئيسى: </span>
-                                                    <p>{{ $order->category->name }}</p>
-                                                </li>
-                                                @if($order->sub_category)
-                                                    <li>
-                                                        <span>القسم الفرعى: </span>
-                                                        <p>{{ $order->sub_category->name }}</p>
-                                                    </li>
-                                                @endif
-                                            </ul>
-                                        </td>
-                                        <td>
-                                            @if(Auth::user()->type == 'user')
-                                                @if ($order->show_details)
-                                                    @if(strlen($order->details) > 30)
-                                                        <p class="m-0">{{ mb_substr($order->details, 0, 30) . '...' }}</p>
-                                                    @else
-                                                        <p class="m-0">{{ $order->details }}</p>
-                                                    @endif
-                                                @endif
-                                            @endif
-                                            @if (Auth::user()->type !== 'user')
-                                                @if(strlen($order->details) > 30)
-                                                    <p class="m-0">{{ mb_substr($order->details, 0, 30) . '...' }}</p>
-                                                @else
-                                                    <p class="m-0">{{ $order->details }}</p>
-                                                @endif
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <ul>
-                                                @if($order->submission_date)
-                                                    <li>
-                                                        <span>تاريخ التقديم: </span>
-                                                        <p>{{ $order->submission_date }}</p>
-                                                    </li>
-                                                @endif
-                                                @if($order->expected_date && Auth::user()->type !== 'user')
-                                                    <li>
-                                                        <span>تاريخ متوقع: </span>
-                                                        <p>{{ $order->expected_date }}</p>
-                                                    </li>
-                                                @endif
-                                                @if($order->expiry_date)
-                                                    <li>
-                                                        <span>تاريخ الأنتهاء: </span>
-                                                        <p>{{ $order->expiry_date }}</p>
-                                                    </li>
-                                                @endif
-                                                @if(Auth::user()->type !== 'user' && $order->expected_notify)
-                                                    <li>
-                                                        <span class="badge badge-success">تم ارسال تنبيه للموظف المختص</span>
-                                                    </li>
-                                                @endif
-                                            </ul>
-                                        </td>
-                                        <td scope="row">
-                                            @if (count($order->histories) > 0)
-                                                        <table>
-                                                            <thead>
-                                                                <tr>
-                                                                    <td><span class="max font-weight-bold">من عدل على الطلب</span></td>
-                                                                    <td><span class="max font-weight-bold">الحالة</span></td>
-                                                                    <td><span class="max font-weight-bold">التوقيت</span></td>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                @foreach ($order->histories()->latest()->get() as $history)
-                                                                    <tr>
-                                                                        <td><span class="max">{{ $history->user->name }}</span></td>
-                                                                        <td><span class="max">{{ $history->status->name }}</span></td>
-                                                                        <td><span class="max">{{ $history->created_at }}</span></td>
-                                                                    </tr>
-                                                                @endforeach
-                                                            </tbody>
-                                                        </table>
+                                        @can('orders.edit')
+                                            <a class="btn btn-info mr-1" href="{{ route('orders.edit', $order) }}">
+                                                <span>تعديل</span>
+                                                <span class="mdi mdi-circle-edit-outline ml-1"></span>
+                                            </a>
+                                        @endcan
+                                        @can('orders.destroy')
+                                            <button class="btn btn-danger" data-toggle="modal"
+                                                data-target="#modal_{{ $order->id }}">
+                                                <span>ازالة</span>
+                                                <span class="mdi mdi-delete-outline ml-1"></span>
+                                            </button>
+                                            <!-- Modal -->
+                                            @include('layouts.partials.modal', [
+                                            'id' => $order->id,
+                                            'route' => route('orders.destroy', $order->id)
+                                            ])
+                                        @endcan
+                                    </div>
+                                </td>
+                                <th>
+                                    <span class="max">{{ $order->customer->name }}</span>
+                                </th>
+                                <td><span class="max">{{ $order->name }}</span></td>
+                                <td><span class="max badge badge-primary">{{ $order->status->name }}</span></td>
+                                @if(Auth::user()->type == 'admin')
+                                    <td>
+                                        <span class="max">{{ $order->employee->name }}</span>
+                                    </td>
+                                @endif
+                                <td>
+                                    <ul>
+                                        <li>
+                                            <span>القسم الرئيسى: </span>
+                                            <p>{{ $order->category->name }}</p>
+                                        </li>
+                                        @if($order->sub_category)
+                                            <li>
+                                                <span>القسم الفرعى: </span>
+                                                <p>{{ $order->sub_category->name }}</p>
+                                            </li>
+                                        @endif
+                                    </ul>
+                                </td>
+                                <td>
+                                    @if(Auth::user()->type == 'user')
+                                        @if ($order->show_details)
+                                            @if(strlen($order->details) > 30)
+                                                <p class="m-0">{{ mb_substr($order->details, 0, 30) . '...' }}</p>
                                             @else
-                                                    <span class="max">لا يوجد تعديلات بعد</span>
-                                                    @endif
+                                                <p class="m-0">{{ $order->details }}</p>
                                             @endif
-                                        </td>
-                                        <td>
-                                            <span class="max">{{ $order->created_at->diffForHumans() }}</span>
-                                        </td>
-                                        <td>
-                                            <span class="max">{{ $order->updated_at->diffForHumans() }}</span>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        {{ $orders->appends(request()->all())->links() }}
-                    </div>
+                                        @endif
+                                    @endif
+                                    @if (Auth::user()->type !== 'user')
+                                        @if(strlen($order->details) > 30)
+                                            <p class="m-0">{{ mb_substr($order->details, 0, 30) . '...' }}</p>
+                                        @else
+                                            <p class="m-0">{{ $order->details }}</p>
+                                        @endif
+                                    @endif
+                                </td>
+                                <td>
+                                    <ul>
+                                        @if($order->submission_date)
+                                            <li>
+                                                <span>تاريخ التقديم: </span>
+                                                <p>{{ $order->submission_date }}</p>
+                                            </li>
+                                        @endif
+                                        @if($order->expected_date && Auth::user()->type !== 'user')
+                                            <li>
+                                                <span>تاريخ متوقع: </span>
+                                                <p>{{ $order->expected_date }}</p>
+                                            </li>
+                                        @endif
+                                        @if($order->expiry_date)
+                                            <li>
+                                                <span>تاريخ الأنتهاء: </span>
+                                                <p>{{ $order->expiry_date }}</p>
+                                            </li>
+                                        @endif
+                                        @if(Auth::user()->type !== 'user' && $order->expected_notify)
+                                            <li>
+                                                <span class="badge badge-success">تم ارسال تنبيه للموظف المختص</span>
+                                            </li>
+                                        @endif
+                                    </ul>
+                                </td>
+                                @if (Auth::user()->can('orders.show_histories'))
+                                    <td scope="row">
+                                        @if (count($order->histories) > 0)
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <td><span class="max font-weight-bold">من عدل على الطلب</span></td>
+                                                        <td><span class="max font-weight-bold">الحالة</span></td>
+                                                        <td><span class="max font-weight-bold">التوقيت</span></td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($order->histories()->latest()->get() as $history)
+                                                        <tr>
+                                                            <td><span class="max">{{ $history->user->name }}</span></td>
+                                                            <td><span class="max">{{ $history->status->name }}</span></td>
+                                                            <td><span class="max">{{ $history->created_at }}</span></td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        @else
+                                            <span class="max">لا يوجد تعديلات بعد</span>
+                                        @endif
+                                    </td>
+                                @endif
+                                <td>
+                                    <span class="max">{{ $order->created_at->diffForHumans() }}</span>
+                                </td>
+                                <td>
+                                    <span class="max">{{ $order->updated_at->diffForHumans() }}</span>
+                                </td>
+                            </tr>
+                            @endforeach
+                            <tr>
+                                <td colspan="10">
+                                    {{ $orders->appends(request()->all())->links() }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 @else
                     <div class="alert alert-info">لا يوجد طلبات حاليا</div>
                 @endif
@@ -282,6 +287,10 @@
 
 @section('footerScript')
     <script>
+
+        $(".table-tr").on('dblclick', function() {
+            location.href = 'orders/show/' + $(this).attr('id');
+        });
 
     let categories_ids = [];
         function getSubCategoryById() {

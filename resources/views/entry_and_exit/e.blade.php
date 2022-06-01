@@ -17,32 +17,6 @@
             <div class="card-header">
                 <div class="d-flex flex-column flex-md-row text-center text-md-right justify-content-between">
                     <h2>تاريخ الحضور والأنصراف</h2>
-                    @if(Auth::user()->type == 'admin')
-                        <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#test">
-                            test modal
-                        </button>
-                        <!-- Modal -->
-                        <div class="modal fade" id="test" tabindex="-1" role="dialog" aria-labelledby="testLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                                </div>
-                                <div class="modal-body">
-                                ...
-                                </div>
-                                <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Save changes</button>
-                                </div>
-                            </div>
-                            </div>
-                        </div>
-                    @endif
                 </div>
                 <form action="{{ route('entry_and_exit.index') }}" method="GET">
                     <div class="row">
