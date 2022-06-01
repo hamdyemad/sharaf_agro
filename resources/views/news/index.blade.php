@@ -55,7 +55,7 @@
                         </thead>
                         <tbody>
                             @foreach ($news as $new)
-                                <tr>
+                                <tr id="{{ $new->id }}">
                                     <th scope="row">{{ $new->id }}</th>
                                     <td>
                                         <div class="d-flex">
@@ -124,4 +124,13 @@
         </div>
     </div>
 
+@endsection
+
+
+@section('footerScript')
+    <script>
+        $(".table tbody tr").on('dblclick', function() {
+            location.href = '/news/' + $(this).attr('id');
+        });
+    </script>
 @endsection

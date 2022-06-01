@@ -289,7 +289,7 @@
     <script>
 
         $(".table-tr").on('dblclick', function() {
-            location.href = 'orders/show/' + $(this).attr('id');
+            location.href = '/orders/show/' + $(this).attr('id');
         });
 
     let categories_ids = [];

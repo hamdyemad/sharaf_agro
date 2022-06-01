@@ -95,3 +95,12 @@
         </div>
     </div>
 @endsection
+
+
+@section('footerScript')
+    <script>
+        $(".table tbody tr").on('dblclick', function() {
+            location.href = '/orders/show/' + $(this).attr('id');
+        });
+    </script>
+@endsection

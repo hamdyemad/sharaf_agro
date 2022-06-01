@@ -230,9 +230,12 @@
     </div>
 @endsection
 
-
 @section('footerScript')
     <script>
+
+        $(".table tbody tr").on('dblclick', function() {
+            location.href = '/inquires/show/' + $(this).attr('id');
+        });
 
         @if(Session::has('error'))
             $(`#modal_change_${"{{ request('inquire_id') }}"}`).modal();

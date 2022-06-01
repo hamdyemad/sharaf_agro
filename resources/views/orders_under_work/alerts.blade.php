@@ -83,3 +83,12 @@
         </div>
     </div>
 @endsection
+
+
+@section('footerScript')
+    <script>
+        $(".table tbody tr").on('dblclick', function() {
+            location.href = '/orders_under_work/show/' + $(this).attr('id');
+        });
+    </script>
+@endsection
