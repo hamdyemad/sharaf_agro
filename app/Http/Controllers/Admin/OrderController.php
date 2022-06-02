@@ -22,6 +22,7 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
@@ -173,9 +174,9 @@ class OrderController extends Controller
         if(
             Auth::user()->type == 'sub-admin' && $this->authorize('orders.alerts.renovations')
             || Auth::user()->type == 'user' || Auth::user()->type == 'admin') {
-                $orders = Order::where('expiry_date', '!=', null)
-                ->orderBy('updated_at', 'DESC')->orderBy('expiry_date', 'DESC')
-                ->whereColumn('expiry_date', '<', 'expiry_date_notify');
+                $orders = Order::orderBy('updated_at', 'DESC')->orderBy('expiry_date', 'DESC')
+                ->whereDate('expiry_date_notify', '<=' ,  Carbon::now()->format('Y-m-d'))
+                ->orWhereDate('expiry_date', '<=' ,  Carbon::now()->format('Y-m-d'));
                 if(Auth::user()->type == 'admin') {
                     $orders = $orders->latest();
                 } else if(Auth::user()->type == 'sub-admin') {

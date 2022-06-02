@@ -32,7 +32,7 @@
                                     @endif
                                     <th><span class="max">أسم المركب</span></th>
                                     <th><span class="max">القسم</span></th>
-                                    <th><span class="max">تاريخ الأنتهاء</span></th>
+                                    <th><span class="max">التواريخ المضافة</span></th>
                                     <th><span class="max">وقت الأنشاء</span></th>
                                     <th><span class="max">وقت أخر تعديل</span></th>
                                     <th><span class="max">الأعدادات</span></th>
@@ -65,7 +65,20 @@
                                                 </ul>
                                             </td>
                                             <td>
-                                                <span class="max">{{ $order->expiry_date }}</span>
+                                                <ul>
+                                                    @if($order->expiry_date)
+                                                        <li>
+                                                            <span>تاريخ الأنتهاء: </span>
+                                                            <p>{{ $order->expiry_date }}</p>
+                                                        </li>
+                                                    @endif
+                                                    @if($order->expiry_date_notify)
+                                                        <li>
+                                                            <span>تاريخ ارسال التنبيه: </span>
+                                                            <p>{{ $order->expiry_date_notify }}</p>
+                                                        </li>
+                                                    @endif
+                                                </ul>
                                             </td>
                                             <td>
                                                 <span class="max">{{ $order->created_at->diffForHumans() }}</span>
