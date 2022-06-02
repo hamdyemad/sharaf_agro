@@ -149,7 +149,7 @@ class OrderController extends Controller
         if(
             Auth::user()->type == 'sub-admin' && $this->authorize('orders.alerts.index')
             || Auth::user()->type == 'user' || Auth::user()->type == 'admin') {
-                $orders = Order::orderBy('updated_at', 'DESC')->orderBy('expected_date', 'DESC');
+                $orders = Order::where('status_id', '!=', 1)->orderBy('updated_at', 'DESC')->orderBy('expected_date', 'DESC');
                 if(Auth::user()->type == 'admin') {
                     $orders = $orders->latest();
                 } else if(Auth::user()->type == 'sub-admin') {

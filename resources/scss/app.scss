@@ -131,6 +131,9 @@ body {
     @import "./admin/categories/products/index";
     @import "./admin/categories/products/show";
 
+    // Inquires
+    @import "./admin/inquires/index";
+
     // Orders
     @import "./admin/orders/create";
     @import "./admin/orders/show";
