@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\FirebaseToken;
+use App\Models\InquireView;
+use App\Models\NewsView;
+use App\Models\OrderUnderWorkView;
+use App\Models\OrderView;
 use App\Models\Setting;
 use App\Traits\File;
 use App\Traits\FirebaseNotify;
@@ -117,6 +121,15 @@ class SettingsController extends Controller
             return redirect()->back()->with('success', 'تم التعديل بنجاح');
 
         }
+    }
+
+    public function show_all_notify(Request $request) {
+        InquireView::where('viewed', 0)->update(['viewed' => 1]);
+        NewsView::where('viewed', 0)->update(['viewed' => 1]);
+        OrderUnderWorkView::where('viewed', 0)->update(['viewed' => 1]);
+        OrderView::where('viewed', 0)->update(['viewed' => 1]);
+        return redirect()->back()->with('success', 'تم التعديل بنجاح');
+
     }
 
     public function firebase_tokens(Request $request) {

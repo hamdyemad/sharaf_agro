@@ -17,6 +17,7 @@ Route::group(['middleware' => ['web', 'auth','notBanned']], function() {
         // Route::get('/{folder}/{file}', 'LexaAdmin@index');
         Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
 
+
         Route::post('/firebase_tokens', 'SettingsController@firebase_tokens')->name('firebase_tokens');
 
         // News
@@ -122,6 +123,7 @@ Route::group(['middleware' => ['web', 'auth','notBanned']], function() {
         Route::group(['prefix' => 'settings', 'as' => 'settings.'], function() {
             Route::get('/edit', 'SettingsController@edit')->name('edit');
             Route::patch('/update', 'SettingsController@update')->name('update');
+            Route::post('/show_all_notify', 'SettingsController@show_all_notify')->name('show_all_notify');
         });
 
         // Orders

@@ -17,6 +17,13 @@
                     الأعدادات العامة
                 </div>
                 <div class="card-body">
+                    <div class="form-group">
+                        <form action="{{ route('settings.show_all_notify') }}" method="POST">
+                            @csrf
+                            <label for=""></label>
+                            <input type="submit" value="رؤية كل الأشعارات" class="btn btn-block btn-success">
+                        </form>
+                    </div>
                     <form action="{{ route('settings.update') }}" method="POST" enctype="multipart/form-data">
                         @method('PATCH')
                         @csrf
