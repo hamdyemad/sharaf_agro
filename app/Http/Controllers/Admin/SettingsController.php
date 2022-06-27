@@ -124,10 +124,10 @@ class SettingsController extends Controller
     }
 
     public function show_all_notify(Request $request) {
-        InquireView::where('viewed', 0)->update(['viewed' => 1]);
-        NewsView::where('viewed', 0)->update(['viewed' => 1]);
-        OrderUnderWorkView::where('viewed', 0)->update(['viewed' => 1]);
-        OrderView::where('viewed', 0)->update(['viewed' => 1]);
+        InquireView::where(['viewed' => 0, 'user_id' => Auth::id()])->update(['viewed' => 1]);
+        NewsView::where(['viewed' => 0, 'user_id' => Auth::id()])->update(['viewed' => 1]);
+        OrderUnderWorkView::where(['viewed' => 0, 'user_id' => Auth::id()])->update(['viewed' => 1]);
+        OrderView::where(['viewed' => 0, 'user_id' => Auth::id()])->update(['viewed' => 1]);
         return redirect()->back()->with('success', 'تم التعديل بنجاح');
 
     }

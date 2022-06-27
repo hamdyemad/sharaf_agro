@@ -7,6 +7,15 @@
         </div>
 
         <div class="d-flex">
+            <div class="dropdown d-inline-block">
+                <div class="form-group">
+                    <form action="{{ route('settings.show_all_notify') }}" method="POST">
+                        @csrf
+                        <label for=""></label>
+                        <input type="submit" value="رؤية كل الأشعارات" class="btn btn-block btn-success">
+                    </form>
+                </div>
+            </div>
             <div class="dropdown d-none d-lg-inline-block">
                 <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="fullscreen">
                     <i class="mdi mdi-fullscreen font-size-24"></i>
@@ -286,7 +295,6 @@
                     </form>
                 </div>
             </div>
-
             <div class="dropdown d-inline-block">
                 <button type="button" class="btn header-item noti-icon right-bar-toggle waves-effect">
                     <i class="mdi mdi-spin mdi-settings"></i>
