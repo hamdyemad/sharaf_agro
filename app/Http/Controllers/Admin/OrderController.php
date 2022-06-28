@@ -174,20 +174,31 @@ class OrderController extends Controller
         if(
             Auth::user()->type == 'sub-admin' && $this->authorize('orders.alerts.renovations')
             || Auth::user()->type == 'user' || Auth::user()->type == 'admin') {
-                $orders = Order::orderBy('updated_at', 'DESC')->orderBy('expiry_date', 'DESC')
-                ->whereDate('expiry_date_notify', '<=' ,  Carbon::now()->format('Y-m-d'))
-                ->orWhereDate('expiry_date', '<=' ,  Carbon::now()->format('Y-m-d'));
                 if(Auth::user()->type == 'admin') {
+                    $orders = Order::orderBy('updated_at', 'DESC')->orderBy('expiry_date', 'DESC')
+                    ->whereDate('expiry_date', '<=' ,  Carbon::now()->format('Y-m-d'))
+                    ->OrwhereDate('expiry_date_notify', '<=' ,  Carbon::now()->format('Y-m-d'));
                     $orders = $orders->latest();
                 } else if(Auth::user()->type == 'sub-admin') {
                     $employeeCategories = UserCategory::where('user_id', Auth::id())->pluck('category_id');
                     $employeeSubCategories = UserSubCategory::where('user_id', Auth::id())->pluck('sub_category_id');
-                    $orders = Order::
-                    whereIn('category_id', $employeeCategories)
+                    $orders = Order::orderBy('expiry_date', 'DESC')
+                    ->whereIn('category_id', $employeeCategories)
                     ->whereIn('sub_category_id', $employeeSubCategories)
+                    ->whereDate('expiry_date_notify', '<=' ,  Carbon::now()->format('Y-m-d'))
+
+                    ->orWhereDate('expiry_date', '<=' ,  Carbon::now()->format('Y-m-d'))
+                    ->whereIn('category_id', $employeeCategories)
+                    ->whereIn('sub_category_id', $employeeSubCategories)
+
                     ->latest();
                 } else if(Auth::user()->type == 'user') {
-                    $orders =  $orders->where('customer_id', Auth::id())->latest();
+                    $orders = Order::orderBy('updated_at', 'DESC')->orderBy('expiry_date', 'DESC')
+                    ->whereDate('expiry_date', '<=' ,  Carbon::now()->format('Y-m-d'))
+                    ->where('customer_id', Auth::id())->latest()
+
+                    ->OrwhereDate('expiry_date_notify', '<=' ,  Carbon::now()->format('Y-m-d'))
+                    ->where('customer_id', Auth::id())->latest();
                 }
                 $orders = $orders->paginate(10);
                 return view('orders.alerts_renovations', compact('orders'));
