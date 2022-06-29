@@ -18,50 +18,56 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login', 'Api\AuthController@login')->name('login');
 
-Route::group(['middleware' => 'jwt'], function() {
-    Route::get('/orders', 'Api\OrderController@index');
+Route::group(['middleware' => 'jwt', 'namespace' => 'Api'], function() {
+
+    // Orders
+    Route::group(['prefix' => 'orders'], function() {
+        Route::get('/', 'OrderController@index');
+        Route::get('/alerts/renovations', 'OrderController@alerts_renovations')->name('alerts.renovations');
+    });
+
 
     // Inquires
     Route::group(['prefix' => 'inquires'], function() {
-        Route::get('/', 'Api\InquiresController@index');
-        Route::get('/{id}', 'Api\InquiresController@show');
-        Route::post('/', 'Api\InquiresController@store');
+        Route::get('/', 'InquiresController@index');
+        Route::get('/{id}', 'InquiresController@show');
+        Route::post('/', 'InquiresController@store');
     });
 
     // Orders Under Work
     Route::group(['prefix' => 'orders_under_work'], function() {
-        Route::get('/', 'Api\OrderUnderWorkController@index');
-        Route::post('/', 'Api\OrderUnderWorkController@store');
-        Route::get('/{id}', 'Api\OrderUnderWorkController@show');
+        Route::get('/', 'OrderUnderWorkController@index');
+        Route::post('/', 'OrderUnderWorkController@store');
+        Route::get('/{id}', 'OrderUnderWorkController@show');
     });
 
     // entry_and_exit
     Route::group(['prefix' => 'entry_and_exit'], function() {
-        Route::post('/', 'Api\EntryAndExitController@store');
+        Route::post('/', 'EntryAndExitController@store');
     });
 
     // Categories
-    Route::get('/categories', 'Api\CategoryController@index');
+    Route::get('/categories', 'CategoryController@index');
 
     // Sub Categories
-    Route::get('/sub_categories', 'Api\SubCategoryController@index');
+    Route::get('/sub_categories', 'SubCategoryController@index');
 
     // Statuses
-    Route::get('/statuses', 'Api\StatusController@index');
+    Route::get('/statuses', 'StatusController@index');
 
     // News
-    Route::get('/news', 'Api\NewsController@index');
+    Route::get('/news', 'NewsController@index');
 
     // Firebase post tokens for push notifications
-    Route::post('/fire_token', 'Api\AuthController@firebase_tokens');
+    Route::post('/fire_token', 'AuthController@firebase_tokens');
 
     // Profile
     Route::group(['prefix' => 'profile'], function() {
-        Route::get('/', 'Api\AuthController@profile');
-        Route::post('/', 'Api\AuthController@update_profile');
+        Route::get('/', 'AuthController@profile');
+        Route::post('/', 'AuthController@update_profile');
     });
 
 
     // Roles
-    Route::get('/roles', 'Api\RoleController@index');
+    Route::get('/roles', 'RoleController@index');
 });
