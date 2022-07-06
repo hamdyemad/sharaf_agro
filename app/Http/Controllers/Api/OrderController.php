@@ -67,7 +67,7 @@ class OrderController extends Controller
                     ->whereDate('created_at', '<=', $request->to)
                     ->whereDate('created_at', '>=', $request->from);
                 }
-                $orders = $orders->paginate(10);
+                $orders = $orders->with(['category', 'sub_category', 'customer', 'employee', 'status'])->get();
                 $data = [
                     'orders' => $orders,
                     'customers' => $customers,
@@ -114,7 +114,7 @@ class OrderController extends Controller
                     ->OrwhereDate('expiry_date_notify', '<=' ,  Carbon::now()->format('Y-m-d'))
                     ->where('customer_id', Auth::id())->latest();
                 }
-                $orders = $orders->paginate(10);
+                $orders = $orders->with(['category', 'sub_category', 'customer', 'employee', 'status'])->get();
                 return $this->sendRes('تم جلب طلبات التجديدات بنجاح', true, $orders);
         } else {
             return abort(401);

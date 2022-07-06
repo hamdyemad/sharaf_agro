@@ -18,7 +18,7 @@ class SubCategoryController extends Controller
         if($request->category_id) {
             $sub_categories->where('category_id', $request->category_id);
         }
-        $sub_categories = $sub_categories->paginate(10);
+        $sub_categories = $sub_categories->with('category')->get();
         return $this->sendRes('', true, $sub_categories);
     }
 }

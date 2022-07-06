@@ -16,7 +16,7 @@ class CategoryController extends Controller
         if($request->name) {
             $categories->where('name', 'like', '%' . $request->name . '%');
         }
-        $categories = $categories->paginate(10);
+        $categories = $categories->get();
         return $this->sendRes('', true, $categories);
     }
 }

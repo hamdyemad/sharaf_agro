@@ -15,7 +15,7 @@ class NewsController extends Controller
         if($request->name) {
             $news = $news->where('name','like','%' . $request->name . '%');
         }
-        $news = $news->paginate(10);
+        $news = $news->get();
         return $this->sendRes('', true, $news);
     }
 }

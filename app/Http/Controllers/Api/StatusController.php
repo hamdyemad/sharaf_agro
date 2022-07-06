@@ -15,7 +15,7 @@ class StatusController extends Controller
         if($request->name) {
            $statuses->where('name', 'like', '%' . $request->name . '%');
         }
-        $statuses = $statuses->paginate(10);
+        $statuses = $statuses->get();
         return $this->sendRes('', true, $statuses);
     }
 }

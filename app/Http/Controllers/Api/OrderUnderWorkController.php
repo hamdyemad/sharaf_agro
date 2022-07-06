@@ -69,7 +69,7 @@ class OrderUnderWorkController extends Controller
         if($request->sub_category_id) {
             $orders->where('sub_category_id', $request->sub_category_id);
         }
-        $orders = $orders->paginate(10);
+        $orders = $orders->with(['category', 'sub_category', 'customer', 'status'])->get();
         $data = [
             'orders' => $orders,
             'categories' =>  $categories,
@@ -222,26 +222,11 @@ class OrderUnderWorkController extends Controller
      */
     public function show($id)
     {
-        $order = OrderUnderWork::find($id);
+        $order = OrderUnderWork::where('id', $id)->with(['category', 'sub_category', 'customer', 'status'])->first();
         if($order) {
             if(Auth::user()->type == 'user' || Auth::user()->can('orders_under_work.show')) {
                 $pdfs = [];
                 $images = [];
-                $order_view = OrderUnderWorkView::
-                where('order_under_work_id', $order->id)
-                ->where('user_id', Auth::id())
-                ->first();
-                if(!$order_view) {
-                    OrderUnderWorkView::create([
-                        'order_under_work_id' => $order->id,
-                        'user_id' => Auth::id(),
-                        'viewed' => 1
-                    ]);
-                } else {
-                    $order_view->update([
-                        'viewed' => 1
-                    ]);
-                }
                 if($order->files) {
                     foreach (json_decode($order->files) as $file) {
                         if(strrchr($file,'.') == '.pdf') {

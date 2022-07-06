@@ -23,7 +23,7 @@ class RoleController extends Controller
     {
         $this->authorize('roles.index');
         $roles = Role::with('permessions')->latest();
-        $roles = $roles->paginate(10);
+        $roles = $roles->get();
         return $this->sendRes('', true, $roles);
     }
 }

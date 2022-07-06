@@ -52,7 +52,7 @@ class InquiresController extends Controller
         if($request->sub_category_id) {
             $inquires->where('sub_category_id', $request->sub_category_id);
         }
-        $inquires = $inquires->paginate(10);
+        $inquires = $inquires->with(['category', 'sub_category', 'customer'])->get();
         return $this->sendRes('', true, $inquires);
     }
     public function store(Request $request)
@@ -156,29 +156,9 @@ class InquiresController extends Controller
 
     public function show($id)
     {
-        $inquire = Inquire::find($id);
+        $inquire = Inquire::where('id', $id)->with(['category', 'sub_category', 'customer'])->first();
         if($inquire) {
-            if(Auth::user()->type == 'user' || Auth::user()->can('inquires.show')) {
-                return $inquire;
-                $inquire_view = InquireView::
-                where('inquire_id', $inquire->id)
-                ->where('user_id', Auth::id())
-                ->first();
-                if(!$inquire_view) {
-                    InquireView::create([
-                        'inquire_id' => $inquire->id,
-                        'user_id' => Auth::id(),
-                        'viewed' => 1
-                    ]);
-                } else {
-                    $inquire_view->update([
-                        'viewed' => 1
-                    ]);
-                }
-                return view('inquires.show', compact('inquire'));
-            } else {
-                return $this->sendRes('ليس لديك صلاحية', false);
-            }
+            return $this->sendRes('تم جلب الأستفسار', true, $inquire);
         } else {
             return $this->sendRes('الأستفسار غير موجود', false);
         }
