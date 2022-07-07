@@ -97,6 +97,8 @@ class OrderUnderWorkController extends Controller
                 'sub_category_id' => $request->sub_category_id,
                 'customer_id' => Auth::id(),
                 'status_id' => $status->id,
+                'sender_name' => $request->sender_name,
+                'sender_phone' => $request->sender_phone,
                 'name' => $request->name,
                 'details' => $request->details,
             ];
@@ -105,6 +107,8 @@ class OrderUnderWorkController extends Controller
                     'category_id' => 'required|exists:categories,id|max:255',
                     'name' => 'required|string|max:255',
                     'details' => 'required|string',
+                    'sender_name' => 'required|string',
+                    'sender_phone' => 'required|string',
                     'files.*' => ['mimes:pdf,jpg,jpeg,bmp,png', 'file', 'max:5120'],
                     'files' => 'required|max:3'
                 ];
@@ -114,6 +118,9 @@ class OrderUnderWorkController extends Controller
                     'name.required' => 'أسم المركب مطلوب',
                     'name.string' => 'أسم المركب يجب أن يكون من نوع string',
                     'name.max' => 'أسم المركب يجب أن يكون أقل من 255 حرف',
+                    'sender_name.required' => ' الأسم مطلوب',
+                    'sender_name.string' => 'الأسم يجب أن يكون من نوع string',
+                    'sender_phone.required' => ' رقم الموبيل مطلوب',
                     'details.required' => 'تفاصيل المركب مطلوبة',
                     'details.string' => 'تفاصيل المركب يجب أن يكون من نوع string',
                     'files.*.required' => ' المرفقات مطلوبة',

@@ -16,9 +16,9 @@ trait File
 
     // get file extenstion
     $fileExt = $request->file($inputName)->getClientOriginalExtension();
-    $fileName = pathinfo($request->file($inputName)->getClientOriginalName())['filename'];
+    // $fileName = pathinfo($request->file($inputName)->getClientOriginalName())['filename'];
     // rename the filename
-    $fileName = $fileName . '-' . time() . '.' . $fileExt;
+    $fileName = time() . '-' . rand(0, 1000) . '.' . $fileExt;
     // move the file to path the you are passed it into the argument on this fn..
     $request->file($inputName)->move($path, $fileName);
     // retrun the stored file with path !
@@ -28,10 +28,11 @@ trait File
 
   public function uploadFiles($file, $path) {
     // get file extenstion
-    $fileName = pathinfo($file->getClientOriginalName())['filename'];
+    // $fileName = pathinfo($file->getClientOriginalName())['filename'];
     $fileExt = $file->getClientOriginalExtension();
     // rename the filename
-    $fileName = $fileName . '-' . time() . '.' . $fileExt;
+    $fileName = time() . '-' . rand(0, 1000) . '.' . $fileExt;
+
     // move the file to path the you are passed it into the argument on this fn..
     $file->move($path, $fileName);
     // retrun the stored file with path !
