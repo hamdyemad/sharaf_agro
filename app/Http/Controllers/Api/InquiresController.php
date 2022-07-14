@@ -62,7 +62,8 @@ class InquiresController extends Controller
             'category_id' => $request->category_id,
             'sub_category_id' => $request->sub_category_id,
             'customer_id' => Auth::id(),
-            'status_id' => $status->id,
+            'sender_name' => $request->sender_name,
+            'sender_phone' => $request->sender_phone,
             'details' => $request->details,
         ];
         if($status) {
@@ -70,12 +71,17 @@ class InquiresController extends Controller
                 $rules = [
                     'category_id' => 'required|exists:categories,id|max:255',
                     'details' => 'required|string',
+                    'sender_name' => 'required|string',
+                    'sender_phone' => 'required|string',
                 ];
                 $messages = [
                     'category_id.required' => 'القسم الرئيسى مطلوب',
                     'category_id.exists' => 'القسم الرئيسى غير موجود',
                     'details.required' => 'الأستفسار مطلوب',
                     'details.string' => ' الأستفسار يجب أن يكون من نوع string',
+                    'sender_name.required' => ' الأسم مطلوب',
+                    'sender_name.string' => 'الأسم يجب أن يكون من نوع string',
+                    'sender_phone.required' => ' رقم الموبيل مطلوب',
                 ];
                 $subs = SubCategory::where('category_id', $request['category_id'])->get();
                 if($subs->count() > 0) {
@@ -89,8 +95,9 @@ class InquiresController extends Controller
                     'name' => Auth::user()->name,
                     'category_name' => Category::find($request->category_id)->name,
                     'details' => $request->details,
-                    'status_name' => $status->name,
-                    'subject' => 'أستفسار جديد من ' . Auth::user()->name
+                    'subject' => 'أستفسار جديد من ' . Auth::user()->name,
+                    'sender_name' => $request->sender_name,
+                    'sender_phone' => $request->sender_phone,
                 ];
 
                 $main_category = Category::find($request->category_id);
