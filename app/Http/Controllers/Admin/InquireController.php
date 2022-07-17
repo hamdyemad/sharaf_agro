@@ -292,7 +292,6 @@ class InquireController extends Controller
      */
     public function update(Request $request, Inquire $inquire)
     {
-
         if($request->add_reply) {
             $validator = Validator::make($request->all(), [
                 'reply' => 'required'

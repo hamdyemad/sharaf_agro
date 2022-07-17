@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\SendInquire;
 use App\Models\Category;
 use App\Models\Inquire;
+use App\Models\InquireHistory;
 use App\Models\InquireView;
 use App\Models\Status;
 use App\Models\SubCategory;
@@ -158,6 +159,89 @@ class InquiresController extends Controller
             }
         } else {
             return $this->sendRes('الحالة غير موجودة', false);
+        }
+    }
+
+
+    public function add_reply(Request $request, $id) {
+        $inquire = Inquire::find($id);
+        if($inquire) {
+            if($inquire->reply !== null) {
+                return $this->sendRes('تم اضافة رد من قبل', true);
+            } else {
+                $validator = Validator::make($request->all(), [
+                    'reply' => 'required'
+                ], [
+                    'reply.required' => 'الرد مطلوب'
+                ]);
+                if($validator->fails()) {
+                    return $this->sendRes('يوجد خطأ ما', false, $validator->errors());
+                }
+                $inquire->update([
+                    'reply' => $request->reply
+                ]);
+                $data = [
+                    'name' => $inquire->customer->name,
+                    'category_name' => $inquire->category->name,
+                    'subject' => 'أستفسار من ' . $inquire->customer->name,
+                    'user' => Auth::user()->name,
+                    'details' => $inquire->details,
+                    'sender_name' => $inquire->sender_name,
+                    'sender_phone' => $inquire->sender_phone,
+                    'reply' => $inquire->reply
+                ];
+                if($inquire->sub_category) {
+                    $data['sub_category_name'] = $inquire->sub_category->name;
+                }
+                if($inquire->sub_category_id) {
+                    $users_sub_categories = UserSubCategory::where('sub_category_id', $inquire->sub_category_id)->get();
+                    // ارسال رسائل للموظفين المختصين بالقسم الفرعى
+                    if($users_sub_categories->count() > 0) {
+                        foreach ($users_sub_categories as $users_sub_category) {
+                            try {
+                                Mail::to($users_sub_category->user->email)->send(new SendInquire($data));
+                            } catch (\Throwable $th) {
+                                //throw $th;
+                            }
+                        }
+                    }
+                } else {
+                    $users_categories = UserCategory::where('category_id', $inquire->category_id)->get();
+                    // ارسال رسائل للموظفين المختصين بالقسم الرئيسى لو مفيش فرعى
+                    if($users_categories->count() > 0) {
+                        foreach ($users_categories as $users_category) {
+                            try {
+                                Mail::to($users_category->user->email)->send(new SendInquire($data));
+                            } catch (\Throwable $th) {
+                                //throw $th;
+                            }
+                        }
+                    }
+                }
+                $admin = User::where('type', 'admin')->first();
+                // send Mail to admin
+                if($admin->email) {
+                    try {
+                        Mail::to(User::where('type', 'admin')->first()->email)->send(new SendInquire($data));
+                    } catch (\Throwable $th) {
+                        throw $th;
+                    }
+                }
+                // ارسال اميل للشركات
+                try {
+                    Mail::to($inquire->customer->email)->send(new SendInquire($data));
+                } catch (\Throwable $th) {
+                    throw $th;
+                }
+                // Make Inquire History
+                InquireHistory::create([
+                    'inquire_id' => $inquire->id,
+                    'user_id' => Auth::id()
+                ]);
+                return $this->sendRes('تم اضافة الرد بنجاح', true);
+            }
+        } else {
+            return $this->sendRes('الأستفسار غير موجود', false);
         }
     }
 

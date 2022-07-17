@@ -120,4 +120,28 @@ class OrderController extends Controller
             return abort(401);
         }
     }
+    public function alerts(Request $request) {
+        if(
+            Auth::user()->type == 'sub-admin' && $this->authorize('orders.alerts.index')
+            || Auth::user()->type == 'user' || Auth::user()->type == 'admin') {
+                $orders = Order::where('status_id', '!=', 1)->orderBy('updated_at', 'DESC')->orderBy('expected_date', 'DESC');
+                if(Auth::user()->type == 'admin') {
+                    $orders = $orders->latest();
+                } else if(Auth::user()->type == 'sub-admin') {
+                    $employeeCategories = UserCategory::where('user_id', Auth::id())->pluck('category_id');
+                    $employeeSubCategories = UserSubCategory::where('user_id', Auth::id())->pluck('sub_category_id');
+                    $orders = Order::
+                    whereIn('category_id', $employeeCategories)
+                    ->whereIn('sub_category_id', $employeeSubCategories)
+                    ->latest();
+                } else if(Auth::user()->type == 'user') {
+                    $orders =  $orders->where('customer_id', Auth::id())->latest();
+                }
+                $orders = $orders->get();
+                return $this->sendRes('', true, $orders);
+        } else {
+            return $this->sendRes('ليس لديك صلاحية', false);
+        }
+    }
+
 }

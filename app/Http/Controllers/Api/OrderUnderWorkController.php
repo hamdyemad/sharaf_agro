@@ -8,6 +8,7 @@ use App\Mail\SendOrderUnderWork;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\OrderUnderWork;
+use App\Models\OrderUnderWorkHistory;
 use App\Models\OrderUnderWorkView;
 use App\Models\Status;
 use App\Models\SubCategory;
@@ -218,6 +219,76 @@ class OrderUnderWorkController extends Controller
             }
         } else {
             return $this->sendRes('الشركات فقط من يستطعون انشاء رسائل الطلبات');
+        }
+    }
+
+    public function update_status(Request $request, $id) {
+        if(Auth::user()->type == 'admin' || Auth::user()->type == 'sub-admin') {
+            $order_under_work = OrderUnderWork::find($id);
+            if($order_under_work) {
+                $status = Status::find($request->status_id);
+                if($status) {
+                    // رفض
+                    if($status->id == '5') {
+                        $validator = Validator::make($request->all(), [
+                            'reason' => 'required'
+                        ], [
+                            'reason.required' => 'السبب مطلوب'
+                        ]);
+                        if($validator->fails()) {
+                            return $this->sendRes('السبب مطلوب فى حالة الرفض', false, $validator->errors());
+                        }
+                    }
+                    $order_under_work->update([
+                        'status_id' => $request->status_id,
+                        'reason' => $request->reason,
+                    ]);
+                    // Make Order History
+                    OrderUnderWorkHistory::create([
+                        'order_id' => $order_under_work->id,
+                        'status_id' => $order_under_work->status_id,
+                        'user_id' => Auth::id()
+                    ]);
+                    $orders_view = OrderUnderWorkView::
+                    where('order_under_work_id', $order_under_work->id)
+                    ->get();
+                    if($orders_view->count() > 0) {
+                        foreach ($orders_view as $order_view) {
+                            $order_view->update([
+                                'viewed' => 0
+                            ]);
+                        }
+                    }
+                    $data = [
+                        'name' => $order_under_work->name,
+                        'customer_name' => $order_under_work->customer->name,
+                        'status_name' => $order_under_work->status->name,
+                        'category_name' => $order_under_work->category->name,
+                        'details' => $request->details,
+                        'reason' => $order_under_work->reason,
+                        'subject' =>  'تغيير جديد على حالة رسالة الطلب'
+                    ];
+                    try {
+                        Mail::to($order_under_work->customer->email)->send(new SendOrderUnderWork($data));
+                        // Send Mail To Customer of this order under work
+                    } catch (\Throwable $th) {
+                        //throw $th;
+                    }
+                    return $this->sendRes('تم تغيير الحالة بنجاح', true);
+                } else {
+                    $validator = Validator::make($request->all(), [
+                        'status_id' => 'required|in:4,5'
+                    ], [
+                        'status_id.required' => 'الحالة مطلوبة',
+                        'status_id.in' => 'الحالة غير موجودة',
+                    ]);
+                    return $this->sendRes('الحالة مطلوبة', false , $validator->errors());
+                }
+            } else {
+                return $this->sendRes('الرسالة غير موجودة', false);
+            }
+        } else {
+            return $this->sendRes('الموظفين فقط من يستطيعون تغيير الحالة');
         }
     }
 

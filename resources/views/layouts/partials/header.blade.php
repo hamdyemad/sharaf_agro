@@ -23,20 +23,20 @@
             </div>
             {{-- Start Notification --}}
                 @php
-                        // News
+                    // News
                     if(Auth::user()->can('news.show') || Auth::user()->type == 'user') {
                         $news_ids_view = App\Models\NewsView::where('user_id', Auth::id())
-                        ->where('viewed', 0)
+                        ->where('viewed', 1)
                         ->pluck('new_id');
                         if(Auth::user()->type == 'admin') {
-                            $news = App\Models\News::whereIn('id', $news_ids_view)
+                            $news = App\Models\News::whereNotIn('id', $news_ids_view)
                             ->orderBy('updated_at', 'DESC')
                             ->get();
                         } else if(Auth::user()->type == 'sub-admin') {
                             $news = App\Models\News::
-                            whereIn('id', $news_ids_view)->latest()->get();
+                            whereNotIn('id', $news_ids_view)->latest()->get();
                         } else {
-                            $news = App\Models\News::whereIn('id', $news_ids_view)
+                            $news = App\Models\News::whereNotIn('id', $news_ids_view)
                             ->latest()
                             ->get();
                         }
@@ -47,10 +47,10 @@
                     // Orders
                     if(Auth::user()->can('orders.show') || Auth::user()->type == 'user') {
                         $orders_view_ids = App\Models\OrderView::where('user_id', Auth::id())
-                        ->where('viewed', 0)
+                        ->where('viewed', 1)
                         ->pluck('order_id');
                         if(Auth::user()->type == 'admin') {
-                            $orders = App\Models\Order::whereIn('id', $orders_view_ids)
+                            $orders = App\Models\Order::whereNotIn('id', $orders_view_ids)
                             ->orderBy('updated_at', 'DESC')
                             ->get();
                         } else if(Auth::user()->type == 'sub-admin') {
@@ -58,7 +58,7 @@
                             $userSubCategories = App\Models\UserSubCategory::where('user_id', Auth::id())->pluck('sub_category_id');
                             $orders = App\Models\Order::
                             whereIn('category_id',$userCategories)
-                            ->whereIn('id', $orders_view_ids)
+                            ->whereNotIn('id', $orders_view_ids)
                             ->whereIn('sub_category_id',$userSubCategories)->latest()->get();
                         } else {
                             $orders = App\Models\Order::
@@ -75,10 +75,10 @@
                     // Orders Under Work
                     if(Auth::user()->can('orders_under_work.show') || Auth::user()->type == 'user') {
                         $orders_under_work_ids_views = App\Models\OrderUnderWorkView::where('user_id', Auth::id())
-                        ->where('viewed', 0)
+                        ->where('viewed', 1)
                         ->pluck('order_under_work_id');
                         if(Auth::user()->type == 'admin') {
-                            $orders_under_work = App\Models\OrderUnderWork::whereIn('id', $orders_under_work_ids_views)
+                            $orders_under_work = App\Models\OrderUnderWork::whereNotIn('id', $orders_under_work_ids_views)
                             ->orderBy('updated_at', 'DESC')
                             ->get();
                         } else if(Auth::user()->type == 'sub-admin') {
@@ -86,12 +86,12 @@
                             $userSubCategories = App\Models\UserSubCategory::where('user_id', Auth::id())->pluck('sub_category_id');
                             $orders_under_work = App\Models\OrderUnderWork::
                             whereIn('category_id',$userCategories)
-                            ->whereIn('id', $orders_under_work_ids_views)
+                            ->whereNotIn('id', $orders_under_work_ids_views)
                             ->whereIn('sub_category_id',$userSubCategories)->latest()->get();
                         } else {
                             $orders_under_work = App\Models\OrderUnderWork::
                             where('customer_id', Auth::id())
-                            ->whereIn('id', $orders_under_work_ids_views)
+                            ->whereNotIn('id', $orders_under_work_ids_views)
                             ->latest()
                             ->get();
                         }
@@ -102,10 +102,10 @@
                     // Inquires
                     if(Auth::user()->can('inquires.show') || Auth::user()->type == 'user') {
                         $inquires_ids_view = App\Models\InquireView::where('user_id', Auth::id())
-                        ->where('viewed', 0)
+                        ->where('viewed', 1)
                         ->pluck('inquire_id');
                         if(Auth::user()->type == 'admin') {
-                            $inquires = App\Models\Inquire::whereIn('id', $inquires_ids_view)
+                            $inquires = App\Models\Inquire::whereNotIn('id', $inquires_ids_view)
                             ->orderBy('updated_at', 'DESC')
                             ->get();
                         } else if(Auth::user()->type == 'sub-admin') {

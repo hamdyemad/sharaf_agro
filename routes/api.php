@@ -24,6 +24,7 @@ Route::group(['middleware' => 'jwt', 'namespace' => 'Api'], function() {
     Route::group(['prefix' => 'orders'], function() {
         Route::get('/', 'OrderController@index');
         Route::get('/alerts/renovations', 'OrderController@alerts_renovations')->name('alerts.renovations');
+        Route::get('/alerts', 'OrderController@alerts')->name('alerts');
     });
 
 
@@ -32,6 +33,8 @@ Route::group(['middleware' => 'jwt', 'namespace' => 'Api'], function() {
         Route::get('/', 'InquiresController@index');
         Route::get('/{id}', 'InquiresController@show');
         Route::post('/', 'InquiresController@store');
+        Route::post('/add_reply/{id}', 'InquiresController@add_reply');
+
     });
 
     // Orders Under Work
@@ -39,6 +42,8 @@ Route::group(['middleware' => 'jwt', 'namespace' => 'Api'], function() {
         Route::get('/', 'OrderUnderWorkController@index');
         Route::post('/', 'OrderUnderWorkController@store');
         Route::get('/{id}', 'OrderUnderWorkController@show');
+        Route::post('/status/{id}', 'OrderUnderWorkController@update_status');
+
     });
 
     // entry_and_exit
@@ -70,4 +75,22 @@ Route::group(['middleware' => 'jwt', 'namespace' => 'Api'], function() {
 
     // Roles
     Route::get('/roles', 'RoleController@index');
+
+    // Alerts
+    Route::group(['prefix' => 'alerts'], function() {
+        Route::get('/news', 'AlertsController@news');
+        Route::post('/news/{id}/seen', 'AlertsController@news_seen');
+
+        Route::get('/orders', 'AlertsController@orders');
+        Route::post('/orders/{id}/seen', 'AlertsController@orders_seen');
+
+
+        Route::get('/orders_under_work', 'AlertsController@orders_under_work');
+        Route::post('/orders_under_work/{id}/seen', 'AlertsController@orders_under_work_seen');
+
+        Route::get('/inquires', 'AlertsController@inquires');
+        Route::post('/inquires/{id}/seen', 'AlertsController@inquire_seen');
+    });
+
+
 });
