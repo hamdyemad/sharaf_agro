@@ -176,7 +176,6 @@ class OrderController extends Controller
             || Auth::user()->type == 'user' || Auth::user()->type == 'admin') {
                 if(Auth::user()->type == 'admin') {
                     $orders = Order::orderBy('updated_at', 'DESC')->orderBy('expiry_date', 'DESC')
-                    ->whereDate('expiry_date', '<=' ,  Carbon::now()->format('Y-m-d'))
                     ->OrwhereDate('expiry_date_notify', '<=' ,  Carbon::now()->format('Y-m-d'));
                     $orders = $orders->latest();
                 } else if(Auth::user()->type == 'sub-admin') {
@@ -186,17 +185,9 @@ class OrderController extends Controller
                     ->whereIn('category_id', $employeeCategories)
                     ->whereIn('sub_category_id', $employeeSubCategories)
                     ->whereDate('expiry_date_notify', '<=' ,  Carbon::now()->format('Y-m-d'))
-
-                    ->orWhereDate('expiry_date', '<=' ,  Carbon::now()->format('Y-m-d'))
-                    ->whereIn('category_id', $employeeCategories)
-                    ->whereIn('sub_category_id', $employeeSubCategories)
-
                     ->latest();
                 } else if(Auth::user()->type == 'user') {
                     $orders = Order::orderBy('updated_at', 'DESC')->orderBy('expiry_date', 'DESC')
-                    ->whereDate('expiry_date', '<=' ,  Carbon::now()->format('Y-m-d'))
-                    ->where('customer_id', Auth::id())->latest()
-
                     ->OrwhereDate('expiry_date_notify', '<=' ,  Carbon::now()->format('Y-m-d'))
                     ->where('customer_id', Auth::id())->latest();
                 }
