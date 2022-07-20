@@ -73,22 +73,21 @@ class AlertsController extends Controller
         ->pluck('order_id');
         if(Auth::user()->type == 'admin') {
             $orders = Order::whereNotIn('id', $orders_view_ids)
-            ->orderBy('updated_at', 'DESC')
-            ->get();
+            ->orderBy('updated_at', 'DESC');
         } else if(Auth::user()->type == 'sub-admin') {
             $userCategories = UserCategory::where('user_id', Auth::id())->pluck('category_id');
             $userSubCategories = UserSubCategory::where('user_id', Auth::id())->pluck('sub_category_id');
             $orders = Order::
             whereIn('category_id',$userCategories)
             ->whereNotIn('id', $orders_view_ids)
-            ->whereIn('sub_category_id',$userSubCategories)->latest()->get();
+            ->whereIn('sub_category_id',$userSubCategories)->latest();
         } else {
             $orders = Order::
             where('customer_id', Auth::id())
             ->whereNotIn('id', $orders_view_ids)
-            ->latest()
-            ->get();
+            ->latest();
         }
+        $orders = $orders->with(['category', 'sub_category', 'customer', 'employee', 'status'])->get();
         return $this->sendRes('تم جلب الطلبات', true, $orders);
     }
     // Orders Seen
@@ -123,22 +122,21 @@ class AlertsController extends Controller
         ->pluck('order_under_work_id');
         if(Auth::user()->type == 'admin') {
             $orders_under_work = OrderUnderWork::whereNotIn('id', $orders_under_work_ids_views)
-            ->orderBy('updated_at', 'DESC')
-            ->get();
+            ->orderBy('updated_at', 'DESC');
         } else if(Auth::user()->type == 'sub-admin') {
             $userCategories = UserCategory::where('user_id', Auth::id())->pluck('category_id');
             $userSubCategories = UserSubCategory::where('user_id', Auth::id())->pluck('sub_category_id');
             $orders_under_work = OrderUnderWork::
             whereIn('category_id',$userCategories)
             ->whereNotIn('id', $orders_under_work_ids_views)
-            ->whereIn('sub_category_id',$userSubCategories)->latest()->get();
+            ->whereIn('sub_category_id',$userSubCategories)->latest();
         } else {
             $orders_under_work = OrderUnderWork::
             where('customer_id', Auth::id())
             ->whereNotIn('id', $orders_under_work_ids_views)
-            ->latest()
-            ->get();
+            ->latest();
         }
+        $orders_under_work = $orders_under_work->with(['category', 'sub_category', 'customer', 'status'])->get();
         return $this->sendRes('تم جلب الرسائل', true, $orders_under_work);
     }
     // Orders Under Work Seen
@@ -173,22 +171,23 @@ class AlertsController extends Controller
         ->pluck('inquire_id');
         if(Auth::user()->type == 'admin') {
             $inquires = Inquire::whereNotIn('id', $inquires_ids_view)
-            ->orderBy('updated_at', 'DESC')
-            ->get();
+            ->orderBy('updated_at', 'DESC');
         } else if(Auth::user()->type == 'sub-admin') {
             $userCategories = UserCategory::where('user_id', Auth::id())->pluck('category_id');
             $userSubCategories = UserSubCategory::where('user_id', Auth::id())->pluck('sub_category_id');
             $inquires = Inquire::
             whereIn('category_id',$userCategories)
             ->whereNotIn('id', $inquires_ids_view)
-            ->whereIn('sub_category_id',$userSubCategories)->latest()->get();
+            ->whereIn('sub_category_id',$userSubCategories)->latest();
         } else {
             $inquires = Inquire::
             where('customer_id', Auth::id())
             ->whereNotIn('id', $inquires_ids_view)
-            ->latest()
-            ->get();
+            ->latest();
         }
+
+        $inquires = $inquires->with(['category', 'sub_category', 'customer'])->get();
+
         return $this->sendRes('تم جلب الأستفسارات', true, $inquires);
 
     }
